@@ -1,0 +1,12 @@
+# Comparison data. The format is defined by fpsot-spec-doc (model/jurisdiction.yaml).
+# This example row compares requirement TPL-001. Replace it with the rows of this specification.
+# Add one file per jurisdiction, such as ca.yaml or ca/qc.yaml, only when a source exists.
+topics:
+  keywords: {en: Requirement keywords, fr: Mots clés des exigences}
+rows:
+  - id: TPL-001
+    topic: keywords
+    requirement: {en: Use the BCP 14 keywords., fr: Utiliser les mots clés du BCP 14.}
+    international: {en: "BCP 14 defines MUST, SHOULD and MAY. Only the capital forms carry that meaning.", fr: "Le BCP 14 définit MUST, SHOULD et MAY. Seules les majuscules ont ce sens."}
+    international_source: {title: "RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words (BCP 14)", version: "BCP 14", date: "2017-05", url: "https://www.rfc-editor.org/info/rfc8174", archive: "https://web.archive.org/web/20261103005743/https://www.rfc-editor.org/info/rfc8174/"}
+    fpsot: {en: "Keywords in capitals, with a fixed French mapping.", fr: "Mots clés en majuscules, avec une correspondance française fixe."}

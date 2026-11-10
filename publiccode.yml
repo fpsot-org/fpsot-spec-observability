@@ -1,0 +1,36 @@
+publiccodeYmlVersion: "0.4"
+name: FPSOT specification template
+url: "https://github.com/fpsot-org/fpsot-spec-template"
+platforms:
+  - web
+categories:
+  - it-development
+developmentStatus: concept
+softwareType: "standalone/other"
+description:
+  en:
+    shortDescription: Template for FPSOT specification repositories.
+    longDescription: >
+      Starting point for an FPSOT specification repository. It holds the
+      layout, the Community Specification License files, and the CI that
+      checks requirement IDs, links, languages and prose.
+    features:
+      - Specification repository layout
+  fr:
+    shortDescription: Gabarit des dépôts de spécification de FPSOT.
+    longDescription: >
+      Point de départ d'un dépôt de spécification de FPSOT. Il contient la
+      structure, les fichiers de la Community Specification License, et
+      l'intégration continue qui vérifie les identifiants, les liens, les
+      langues et la rédaction.
+    features:
+      - Structure d'un dépôt de spécification
+legal:
+  license: Community-Spec-1.0
+maintenance:
+  type: community
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - fr

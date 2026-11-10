@@ -1,0 +1,61 @@
+= FPSOT specification template
+
+This repository is the starting point for an FPSOT specification.
+Create a new repository from it, then replace this text.
+
+== Start a specification
+
+. Set `SPEC_PREFIX` in `.github/workflows/ci.yml` to the three-letter prefix of the requirement IDs.
+. Replace the titles in `spec/`, `docs/antora.yml`, `publiccode.yml`, `AGENTS.md`, `NOTICE` and `skill/SKILL.md`.
+. Replace the example requirement TPL-001 and the example row in `jurisdictions/baseline.yaml`.
+. List each spec page in `spec/<lang>/book.adoc`. The glossary stays the last include.
+
+Each page ends with a document history.
+Each guide page sets `:page-type:` to tutorial, how-to, reference or explanation.
+Write abbreviations and defined terms as `{abbr-…}` and `{term-…}` from the term base of `fpsot-spec-writing`.
+Write English in US spelling.
+Each page that cites outside sources ends with a References section, right before its document history.
+Each code block names its language, such as `[source,text]` or `[source,plantuml]`.
+The continuous integration writes `_fpsot-terms.adoc`, the glossaries and the comparison pages. Git ignores them.
+
+== Implement this spec
+
+Read the normative text in `spec/en/` or `spec/fr/`.
+Each requirement has an ID, such as `XYZ-001`.
+Check your implementation against every requirement.
+
+== Adopt this spec
+
+Read the guides in `docs/modules/en/pages/` or `docs/modules/fr/pages/`.
+They explain what the spec gives your organization and how to require it.
+
+== Layout
+
+[cols="1,3"]
+|===
+| Folder | Content
+
+| `spec/`
+| Normative text, in English and French. `book.adoc` joins the pages into one book.
+
+| `docs/`
+| Guides, in the Antora folder layout.
+
+| `skill/`
+| The agent skill: a short summary that cites requirement IDs.
+
+| `rules/`
+| Machine-checkable rules.
+
+| `diagrams/`
+| PlantUML sources and their rendered SVG files.
+
+| `jurisdictions/`
+| Comparison data per jurisdiction. `baseline.yaml` lists the compared requirements.
+|===
+
+== License
+
+The specification is under the Community Specification License 1.0.
+Source code is under the Apache License 2.0.
+See `LICENSE.md` and `NOTICE`.

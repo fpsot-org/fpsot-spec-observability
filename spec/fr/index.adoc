@@ -1,0 +1,45 @@
+= Titre de la spécification
+include::_fpsot-terms.adoc[]
+
+Remplacez cette page par le texte normatif de la spécification.
+Commencez par la portée, puis les classes de conformité, puis les exigences.
+
+== Conformité
+
+[quote, 'link:https://www.rfc-editor.org/info/rfc8174[RFC 8174]']
+____
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 (link:https://www.rfc-editor.org/info/rfc2119[RFC 2119], link:https://www.rfc-editor.org/info/rfc8174[RFC 8174]) when, and only when, they appear in all capitals, as shown here.
+____
+
+Les mots clés suivent l'exigence WRT-010 de la spécification de rédaction de la {abbr-fpsot-first}.
+La version française emploie les mots clés français de l'exigence WRT-011.
+
+== Exigences
+
+Donnez à chaque exigence une ancre avec son identifiant, juste au-dessus de son paragraphe.
+L'ancre ressemble à `+[[XYZ-001]]+`.
+L'exemple ci-dessous montre la forme. Remplacez-le par la première exigence.
+
+[[TPL-001]]
+*TPL-001.* Un énoncé normatif DOIT employer un des mots clés du {abbr-bcp-first} 14, en majuscules.
+Le mot clé donne sa force à la règle.
+
+== Références
+
+Donnez ici chaque source externe que cite cette page, avec la même adresse que son lien dans le texte.
+Chaque entrée donne le titre, l'éditeur, la version, la date et une copie archivée.
+
+=== Références normatives
+
+* link:https://www.rfc-editor.org/info/rfc2119[RFC 2119, Key words for use in RFCs to Indicate Requirement Levels], IETF, BCP 14, 1997-03. link:https://web.archive.org/web/20261103005705/https://www.rfc-editor.org/info/rfc2119/[Copie archivée]
+* link:https://www.rfc-editor.org/info/rfc8174[RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words], IETF, BCP 14, 2017-05. link:https://web.archive.org/web/20261103005743/https://www.rfc-editor.org/info/rfc8174/[Copie archivée]
+
+== Historique du document
+
+Ajoutez une ligne pour chaque version qui modifie cette page.
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-03 |Première version.
+|===

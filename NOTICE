@@ -1,0 +1,11 @@
+FPSOT specification
+Copyright 2026 The FPSOT Authors
+FPSOT: Foundation for Public Sector Open Technology
+
+The licensing and governance files (LICENSE.md, COMMUNITY_SPECIFICATION_LICENSE.md,
+CONTRIBUTOR_LICENSE_AGREEMENT.md, SCOPE.md, NOTICES.md, GOVERNANCE.md, CONTRIBUTING.md,
+CODE_OF_CONDUCT.md) come from the Community Specification 1.0 repository,
+https://github.com/CommunitySpecification/Community_Specification
+at commit 8a05e46d768ac0525af882b619c42f3380a9e869.
+LICENSE.md is changed to name Apache-2.0, instead of MIT, as the source code license.
+NOTICES.md names the Code of Conduct contact and drops the instruction about it.

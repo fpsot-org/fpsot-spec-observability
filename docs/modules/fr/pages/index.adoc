@@ -1,0 +1,15 @@
+= Guide
+:page-type: explanation
+include::_fpsot-terms.adoc[]
+
+Cette page explique la spécification aux personnes qui l’adoptent.
+Chaque page de guide a un seul type.
+C’est un tutoriel, un guide pratique, une référence ou une explication.
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-03 |Première version.
+|===
