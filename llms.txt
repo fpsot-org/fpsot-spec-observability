@@ -1,0 +1,31 @@
+# FPSOT observability specification
+
+> How FPSOT software records logs, traces and metrics, and how a public body keeps, protects and destroys them: a log inventory, the OpenTelemetry logs data model, names and UTC timestamps, audit events, W3C Trace Context, metrics, business events for process mining with an OCEL 2.0 export, JSON Lines and OTLP output, privacy and keyed pseudonyms, retention with the ca-qc-floor profile, legal hold and destruction records, and tamper evidence with Merkle trees and signed C2SP checkpoints.
+
+## Specification
+
+- [Overview](spec/en/index.adoc): scope, parties, profiles, conformance and cited versions; OBS-001 to OBS-004.
+- [Log inventory and schema](spec/en/inventory.adoc): OBS-010 to OBS-014.
+- [Records, names and time](spec/en/records.adoc): OBS-020 to OBS-033.
+- [Audit events](spec/en/audit-events.adoc): OBS-040 to OBS-046.
+- [Traces and propagation](spec/en/traces.adoc): OBS-050 to OBS-054.
+- [Metrics](spec/en/metrics.adoc): OBS-060 to OBS-063.
+- [Business events for process mining](spec/en/business-events.adoc): OBS-070 to OBS-079.
+- [Export and transport](spec/en/export.adoc): OBS-080 to OBS-087.
+- [Privacy and minimization](spec/en/privacy.adoc): OBS-090 to OBS-096.
+- [Retention, legal hold and destruction](spec/en/retention.adoc): OBS-100 to OBS-106.
+- [Integrity and tamper evidence](spec/en/integrity.adoc): OBS-110 to OBS-117.
+- [Implementation profiles](spec/en/implementation.adoc): informative.
+- [Questions for counsel](spec/en/counsel.adoc): informative, not legal advice.
+
+## Examples
+
+- [JSON Lines audit record](examples/log-record.jsonl)
+- [Business events in OTLP/JSON](examples/business-events.otlp.json)
+- [OCEL 2.0 export](examples/ocel-export.json)
+- [How-to guide: make a component observable](docs/modules/en/pages/index.adoc)
+
+## Optional
+
+- [Agent skill](skill/SKILL.md)
+- [Français](spec/fr/index.adoc)

@@ -1,0 +1,88 @@
+= Vie privée et minimisation
+include::_fpsot-terms.adoc[]
+
+Ces règles fixent les renseignements personnels qu’un enregistrement peut contenir.
+Un enregistrement qui dit qu’un membre du personnel a consulté le dossier d’une personne concerne ces deux personnes.
+En droit québécois et en droit fédéral, cet enregistrement est aussi un document que détient l’organisme public.
+
+== Ce qu’un enregistrement peut contenir
+
+[[OBS-090]]
+*OBS-090.* Un composant DOIT écrire des renseignements personnels seulement dans les attributs que son inventaire déclare à cette fin.
+Ce sont les attributs dont la classe n’est pas `none`, selon OBS-011.
+L’exploitant DOIT désactiver chacun de ces attributs que l’{term-privacy-impact-assessment} du système ne nomme pas.
+Le `Body` et les noms d’événements, de segments et de métriques NE DOIVENT PAS contenir de renseignements personnels.
+La mesure `AU-03(03)` du {abbr-cgcd-first} limite les renseignements personnels des enregistrements d’audit aux éléments que désigne cette évaluation.
+Un champ que personne n’a déclaré est un champ que personne ne protège.
+
+[[OBS-091]]
+*OBS-091.* Un enregistrement NE DOIT PAS contenir de mot de passe, de secret, de clé, de jeton ni de témoin.
+Il NE DOIT PAS contenir d’en-tête d’autorisation, ni le contenu complet d’un message avec des renseignements personnels, selon SEC-020.
+Un enregistrement DOIT garder seulement le préfixe réseau d’une adresse client, comme `192.0.2.0/24`, dans l’attribut `org.fpsot.client.network`.
+Le préfixe compte 24 bits en IPv4 et 48 bits en IPv6.
+Un événement d’authentification PEUT garder l’adresse complète dans l’attribut `client.address`, si l’évaluation de la vie privée la nomme.
+Une adresse complète mène à un domicile, et un préfixe suffit à repérer la plupart des attaques.
+
+[[OBS-092]]
+*OBS-092.* Un enregistrement DOIT désigner une personne par un identifiant interne opaque, selon DAT-061 et DAT-062.
+Il NE DOIT PAS la désigner par un nom, une adresse courriel ou un identifiant qu’un autre organisme délivre.
+Le numéro d’assurance sociale et le numéro d’assurance maladie sont des exemples d’identifiants délivrés par un autre organisme.
+Un outil qui affiche les enregistrements PEUT chercher le nom pour une personne autorisée à le voir.
+Le nom reste alors dans un seul endroit protégé, et les copies des journaux ne le répandent pas.
+
+== Exploration de processus
+
+[[OBS-093]]
+*OBS-093.* Une exportation vers l’exploration de processus DOIT remplacer chaque identifiant menant à une personne par un pseudonyme à clé.
+Le pseudonyme DOIT être un link:https://www.rfc-editor.org/info/rfc2104[condensé à clé], comme HMAC-SHA-256, avec une clé par finalité et par période.
+Une personne gardienne extérieure à l’équipe d’analyse DOIT détenir la clé, et la détruire à la fin de la période.
+Un outil NE DOIT PAS employer de condensé sans clé, car on peut calculer celui de chaque numéro possible.
+La personne qui fait une étape DEVRAIT paraître comme un rôle ou une unité, selon OBS-075.
+Cette façon de faire est la pratique de la {abbr-fpsot-first}, et non la consigne d’une autorité de contrôle.
+
+[[OBS-094]]
+*OBS-094.* La documentation d’un composant et d’un magasin de journaux DOIT préciser que les enregistrements pseudonymes restent des renseignements personnels.
+Elle NE DOIT PAS qualifier une exportation d’anonyme, sauf si l’exploitant a suivi le processus que fixe son droit.
+Au Québec, un règlement sur l’anonymisation des renseignements personnels fixe ce processus.
+Au fédéral, l’link:https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[avis du Conseil du Trésor sur la dépersonnalisation] traite de cette question.
+L’information dépersonnalisée y reste soumise à la Loi sur la protection des renseignements personnels.
+Une fausse promesse d’anonymat pousse à partager des données que la loi protège encore.
+
+== Demandes des personnes
+
+[[OBS-095]]
+*OBS-095.* Un événement d’accès DOIT garder le code de finalité d’OBS-042 dans son propre attribut, à part de l’acteur.
+Un magasin DEVRAIT permettre à un rôle autorisé de trouver les événements d’audit d’un objet, comme le dossier d’une personne.
+Cette personne peut alors savoir quand et pourquoi on a consulté son dossier.
+L’exploitant décide de nommer ou non le personnel.
+La Cour de justice de l’Union européenne a reconnu ce droit dans l’link:https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[arrêt Pankki S].
+Cet arrêt ne lie pas le Canada.
+
+== Tests
+
+[[OBS-096]]
+*OBS-096.* Un environnement de test, de démonstration ou de formation DOIT employer seulement des données synthétiques, selon TST-050.
+Ses enregistrements ne contiennent alors aucun renseignement personnel de la production.
+Un enregistrement d’un tel environnement NE DOIT PAS atteindre le magasin de journaux de la production.
+Les exemples de cette spécification suivent cette règle, avec des adresses du link:https://www.rfc-editor.org/info/rfc5737[RFC 5737] et des identifiants inventés.
+Les journaux des systèmes de test sont souvent moins protégés que ceux de la production.
+
+== Références
+
+=== Références normatives
+
+* link:https://www.rfc-editor.org/info/rfc2104[RFC 2104, HMAC: Keyed-Hashing for Message Authentication], IETF, Informational, 1997-02. link:https://web.archive.org/web/20261101142147/https://www.rfc-editor.org/info/rfc2104/[Copie archivée]
+* link:https://www.rfc-editor.org/info/rfc5737[RFC 5737, IPv4 Address Blocks Reserved for Documentation], IETF, Informational, 2010-01. link:https://web.archive.org/web/20261101195317/https://www.rfc-editor.org/info/rfc5737/[Copie archivée]
+
+=== Références informatives
+
+* link:https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[Privacy Implementation Notice 2023-01: De-identification], Treasury Board of Canada Secretariat, 2023. link:https://web.archive.org/web/20260924091633/https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[Copie archivée]
+* link:https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[Press release 107/23, Judgment in Case C-579/21 Pankki S], Court of Justice of the European Union, 2023-06-22. link:https://web.archive.org/web/20251127124614/https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

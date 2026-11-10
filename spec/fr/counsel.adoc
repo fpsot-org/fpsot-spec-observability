@@ -1,0 +1,69 @@
+= Questions pour le conseiller juridique
+include::_fpsot-terms.adoc[]
+
+Cette page est informative.
+Elle ne fixe aucune règle, et elle ne constitue pas un avis juridique.
+Elle énumère les points juridiques que la recherche de la {abbr-fpsot-first} a soulevés sans pouvoir les trancher.
+Une ou un juriste doit répondre à chacun avant que la {abbr-fpsot} ou un exploitant s’y fie.
+Certains numéros d’articles ci-dessous viennent de sources secondaires, et personne ne les a vérifiés dans le texte officiel.
+Cette page marque chacun d’eux comme _à vérifier_.
+
+== Statut des mesures québécoises
+
+1. Le référentiel de mesures de sécurité du {abbr-cgcd-first} lie-t-il chaque organisme public, ou seulement certaines catégories d’organismes?
+La question vise les mesures `AU-02`, `AU-03`, `AU-08`, `AU-09`, `AU-11` et `SC-45(01)`.
+La loi québécoise sur la gouvernance des ressources informationnelles donne leur force à ces mesures.
+L’article de cette loi qui le fait est _à vérifier_.
+2. La Directive gouvernementale sur la sécurité de l’information fixe-t-elle un format ou une durée de conservation pour les journaux?
+Son article sur le registre des événements de sécurité pourrait le faire, et son numéro est _à vérifier_.
+
+== Journaux et renseignements personnels
+
+1. Selon la loi québécoise sur l’accès, la mention « la personne X a consulté le dossier Y » concerne-t-elle les deux personnes?
+Quel article régit sa collecte, comme la règle de nécessité?
+Le numéro de cet article est _à vérifier_.
+2. Une exportation avec des pseudonymes à clé reste-t-elle un renseignement dépersonnalisé au sens de la loi sur l’accès?
+Le numéro de l’article sur les renseignements dépersonnalisés est _à vérifier_.
+Une exportation réaliste pourrait-elle atteindre le faible risque qu’exige le règlement québécois sur l’anonymisation?
+3. Après une destruction selon le calendrier de conservation, les condensés salés des feuilles d’OBS-111 restent-ils des renseignements personnels?
+Sont-ils des documents publics?
+Cette conception peut-elle respecter à la fois la Loi sur les archives et la loi québécoise sur les technologies?
+4. Une étude de la charge de travail ou du partage des tâches peut utiliser la personne qui fait chaque étape.
+Est-ce une nouvelle finalité?
+Cette finalité exigerait-elle sa propre évaluation des facteurs relatifs à la vie privée et une consultation des syndicats?
+Où s’arrête une telle étude, et où commence la surveillance du personnel?
+
+== Demandes des personnes
+
+1. Un organisme public québécois doit-il nommer à une personne les membres du personnel qui ont consulté son dossier?
+L’arrêt européen Pankki S répond non, sauf exception, mais il ne lie pas le Québec.
+La Commission d’accès à l’information a tranché une demande semblable dans un hôpital en 2005.
+Personne à la {abbr-fpsot} n’a lu le résultat.
+2. La loi québécoise sur l’accès limite l’accès aux documents qui exigent un calcul ou une comparaison.
+Une requête de journaux par personne compte-t-elle comme un tel calcul?
+Les numéros des articles sur cette limite et sur la portée des documents sont _à vérifier_.
+Une requête que le logiciel offre change-t-elle la réponse?
+3. Au fédéral, quand le règlement sur la vie privée traite-t-il un journal d’audit applicatif comme utilisé à des fins administratives?
+L’alinéa `4(1)(a)` le garde alors au moins 2 ans après sa dernière utilisation.
+Quand le journal n’est-il qu’une télémétrie de sécurité?
+
+== Conservation
+
+1. Combien de temps un organisme public doit-il garder les inscriptions de son registre des incidents de confidentialité?
+La recherche a trouvé 5 ans, et cette valeur est _à vérifier_.
+Les journaux qui appuient une inscription doivent-ils rester aussi longtemps?
+
+== Le règlement sur la cyberrésilience
+
+1. Un organisme public peut déployer un logiciel de la {abbr-fpsot} qui consigne des activités.
+Qui est alors l’utilisateur qui peut désactiver cette consignation, selon le règlement européen sur la cyberrésilience?
+Le point `(2)(l)` de la partie I de l’annexe I prévoit cette désactivation.
+La {abbr-fpsot} est-elle un fabricant ou un intendant de logiciels ouverts pour ces composants?
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

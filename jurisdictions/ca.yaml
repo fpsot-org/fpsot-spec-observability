@@ -1,0 +1,28 @@
+code: CA
+name: {en: Canada, fr: Canada}
+rows:
+  - id: OBS-030
+    text: {en: "The guardrail asks departments to set an appropriate time zone on audit records in the cloud. It does not ask for UTC or for a timestamp format.", fr: "La mesure de protection demande aux ministères de régler un fuseau horaire approprié sur les enregistrements d’audit dans l’infonuagique. Elle n’exige ni l’UTC ni un format d’horodatage."}
+    status: looser
+    source: {title: "Government of Canada, Cloud Guardrails, Guardrail 11, Logging and Monitoring", date: "2024-02-01", url: "https://github.com/canada-ca/cloud-guardrails/blob/27236a73da39b52ff65a50ef26c5de69d85ab3c2/EN/11_Logging-and-Monitoring.md", archive: "https://github.com/canada-ca/cloud-guardrails/blob/27236a73da39b52ff65a50ef26c5de69d85ab3c2/EN/11_Logging-and-Monitoring.md"}
+    last_checked: "2026-11-10"
+  - id: OBS-042
+    text: {en: "For applications, the guidance lists user authentication, file and object access, audit log access and transactions as events to log. It asks databases to log access to privacy-related data. It sets no purpose code and does not name exports or prints.", fr: "Pour les applications, le guide énumère l’authentification, l’accès aux fichiers et aux objets, l’accès aux journaux d’audit et les transactions comme événements à journaliser. Il demande aux bases de données de journaliser l’accès aux données liées à la vie privée. Il ne fixe aucun code de finalité et ne nomme ni les exportations ni les impressions."}
+    status: looser
+    source: {title: "Treasury Board of Canada Secretariat, Event Logging Guidance, tables A-11 and A-12", date: "2025-12-08", url: "https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html", archive: "https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html"}
+    last_checked: "2026-11-10"
+  - id: OBS-082
+    text: {en: "Departments forward event logs to an approved central log system of the Government of Canada, and back up current logs promptly to a central log server or to write-once media.", fr: "Les ministères transmettent leurs journaux d’événements à un système central de journaux approuvé du gouvernement du Canada, et sauvegardent rapidement les journaux courants sur un serveur central ou sur un support à écriture unique."}
+    status: same
+    source: {title: "Treasury Board of Canada Secretariat, Event Logging Guidance, sections 1.1 and 1.5.3", date: "2025-12-08", url: "https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html", archive: "https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html"}
+    last_checked: "2026-11-10"
+  - id: OBS-101
+    text: {en: "For cloud services at Protected B, the guidance cites at least 3 months online and 6 months in storage, and at least 2 years for logs tied to a security incident. Library and Archives Canada recommends 2 years after the last administrative use.", fr: "Pour les services infonuagiques de niveau Protégé B, le guide cite au moins 3 mois en ligne et 6 mois en stockage, et au moins 2 ans pour les journaux liés à un incident de sécurité. Bibliothèque et Archives Canada recommande 2 ans après la dernière utilisation administrative."}
+    status: same
+    source: {title: "Treasury Board of Canada Secretariat, Event Logging Guidance, section 1.5.2", date: "2025-12-08", url: "https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html", archive: "https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html"}
+    last_checked: "2026-11-10"
+  - id: OBS-110
+    text: {en: "The guidance asks for access control or segregation, prompt backup to write-once media and file integrity verification on logs. It does not ask for signed hashes or checkpoints.", fr: "Le guide demande un contrôle d’accès ou une séparation, une sauvegarde rapide sur un support à écriture unique et une vérification de l’intégrité des fichiers de journaux. Il n’exige ni condensés signés ni points de contrôle."}
+    status: looser
+    source: {title: "Treasury Board of Canada Secretariat, Event Logging Guidance, section 1.5.3", date: "2025-12-08", url: "https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html", archive: "https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html"}
+    last_checked: "2026-11-10"

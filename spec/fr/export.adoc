@@ -1,0 +1,125 @@
+= Exportation et transport
+include::_fpsot-terms.adoc[]
+
+Ces règles fixent les formats dans lesquels un composant écrit ses enregistrements.
+Elles fixent aussi la façon dont les enregistrements atteignent le magasin de journaux, et l’exportation des événements d’affaires.
+
+== Sortie d’un composant
+
+[[OBS-080]]
+*OBS-080.* Un composant DOIT écrire chaque enregistrement sur sa sortie standard, dans la forme {abbr-json-first} Lines de cette règle.
+Chaque ligne DOIT être un objet {abbr-json}, encodé selon DAT-001 et DAT-003, avec les membres de ce tableau.
+
+[cols="2,3",options="header"]
+|===
+|Membre |Contenu
+|`timestamp` |Le `Timestamp` de l’enregistrement, selon OBS-030 et OBS-032.
+|`observedTimestamp` |L’`ObservedTimestamp` de l’enregistrement, selon OBS-030.
+|`severityNumber` et `severityText` |La gravité, selon OBS-025.
+|`eventName` |L’`EventName`, selon OBS-021, quand l’enregistrement est un événement.
+|`body` |Le `Body`, selon OBS-020, quand l’enregistrement en a un.
+|`traceId`, `spanId` et `traceFlags` |Le contexte de trace, selon OBS-051, quand l’enregistrement vient d’un segment.
+|`resource` |Un objet avec les attributs de ressource, selon OBS-023.
+|`attributes` |Un objet avec les attributs de l’enregistrement.
+|===
+
+Les membres de l’enveloppe suivent NAM-010.
+Les clés de `resource` et d’`attributes` gardent leurs noms OpenTelemetry, selon NAM-007.
+Le fichier `examples/log-record.jsonl` montre un enregistrement.
+La sortie standard fonctionne dans tout environnement, et link:https://jsonlines.org/[JSON Lines] permet à tout outil de lire un enregistrement par ligne.
+L’exportateur de fichiers d’OpenTelemetry conviendrait aussi, mais son statut est Development, selon OBS-003.
+
+[[OBS-081]]
+*OBS-081.* Un composant DEVRAIT aussi exporter ses enregistrements au moyen du link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol] d’opentelemetry-proto 1.11.1.
+Il le fait sur {abbr-http-first} ou sur gRPC.
+Le cadriciel Java de référence de la {abbr-fpsot-first} rendra peut-être sa prise en charge des journaux OpenTelemetry généralement disponible.
+Cette règle deviendra alors une règle DOIT dans la version mineure suivante de cette spécification.
+La page sur les profils de mise en œuvre nomme ce cadriciel.
+L’{abbr-otlp-first} est Stable pour les journaux, les traces et les métriques, mais certains cadriciels l’offrent en aperçu.
+
+== Transport
+
+[[OBS-082]]
+*OBS-082.* Chaque enregistrement d’audit et d’affaires DOIT atteindre un magasin situé sur un autre système que celui qu’il consigne.
+Il DOIT circuler sur {abbr-tls-first} 1.2 ou 1.3, et le magasin DOIT authentifier chaque expéditeur.
+Un composant NE DOIT PAS garder la seule copie d’un enregistrement d’audit sur son hôte plus longtemps que la livraison.
+L’exigence 16.4.3 de l’link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[ASVS 5.0.0] demande un système distinct.
+Un attaquant qui prend le contrôle d’un hôte ne peut alors pas effacer la trace de l’attaque.
+
+[[OBS-083]]
+*OBS-083.* Un composant DOIT retirer ou masquer les renseignements personnels et les secrets avant qu’un enregistrement quitte son processus.
+OBS-090 et OBS-091 fixent ce qu’il faut retirer.
+Un collecteur du magasin de journaux PEUT filtrer de nouveau les enregistrements, comme seconde défense.
+Une règle de cette spécification NE DOIT PAS reposer sur un composant de collecteur au statut Alpha.
+Le processeur de caviardage de l’OpenTelemetry Collector est encore Alpha pour les journaux.
+Un enregistrement qui quitte le processus sans masquage a déjà fui.
+
+[[OBS-084]]
+*OBS-084.* Un magasin de journaux DEVRAIT accepter des enregistrements link:https://www.rfc-editor.org/info/rfc5424[syslog], et les associer au modèle de données selon son annexe.
+Il PEUT exporter les événements d’audit en Common Event Format pour un outil de sécurité, mais jamais comme seul format.
+Les anciens systèmes envoient souvent du syslog, alors que le Common Event Format appartient à un seul fournisseur.
+
+[[OBS-085]]
+*OBS-085.* Un événement d’affaires qu’un service envoie à un autre DEVRAIT être un événement CloudEvents selon API-100.
+Il DEVRAIT porter l’link:https://github.com/cloudevents/spec/blob/fc1f6f31f5f011a72183f1bcea20c987cb683ade/cloudevents/extensions/distributed-tracing.md[extension de traçage distribué] de CloudEvents.
+Son `id` DEVRAIT être égal à son `org.fpsot.event.id`.
+Le destinataire peut alors relier l’événement à la trace et aux enregistrements de l’expéditeur.
+
+== Exportation pour l’exploration de processus
+
+[[OBS-086]]
+*OBS-086.* Un outil qui exporte des événements d’affaires vers l’exploration de processus DOIT les écrire en {abbr-json} selon link:https://www.ocel-standard.org/[OCEL 2.0].
+L’exportation DOIT être valide selon le schéma publié.
+Il DOIT associer chaque événement d’affaires à un seul événement {abbr-ocel-first}, comme le montre ce tableau.
+
+[cols="2,3",options="header"]
+|===
+|Événement d’affaires |{abbr-ocel} 2.0
+|`org.fpsot.event.id` |L’`id` de l’événement
+|`org.fpsot.activity.key` |Le `type` de l’événement, déclaré dans `eventTypes`
+|`Timestamp` |Le `time` de l’événement, selon OBS-030
+|`org.fpsot.lifecycle` |L’attribut d’événement `lifecycle`
+|`org.fpsot.bpmn.element_id` |L’attribut d’événement `bpmn-element-id`, s’il est présent
+|Chaque référence d’`org.fpsot.objects` |Une relation, avec l’`objectId` et le `qualifier`, et un objet avec son `type`, déclaré dans `objectTypes`
+|===
+
+L’outil DEVRAIT aussi offrir le format SQLite d’{abbr-ocel} 2.0 pour les grandes exportations.
+Le fichier `examples/ocel-export.json` est l’exportation des trois événements de `examples/business-events.otlp.json`.
+Le format {abbr-ocel} 2.0 est ouvert, a un schéma et garde chaque objet de chaque événement.
+Un journal à plat avec un seul dossier par événement ne le peut pas.
+
+[[OBS-087]]
+*OBS-087.* Une exportation vers l’exploration de processus DOIT remplacer par un pseudonyme chaque identifiant menant à une personne, selon OBS-093.
+Elle DOIT le faire avant que l’exportation quitte le magasin de journaux.
+Cela vise les identifiants d’objets d’affaires qui appartiennent à une personne, comme une demande.
+Une exportation va à des analystes qui ont besoin de tendances, pas de noms.
+Elle sort souvent du contrôle de l’équipe qui exploite le système.
+
+== Exportations à plat
+
+Cette note est informative.
+Cette version ne fixe aucune exportation au format XES de link:https://standards.ieee.org/ieee/1849/10907/[IEEE 1849-2023], dont le texte n’est pas en accès libre.
+Un outil peut en offrir une hors de cette spécification, construite à partir du dossier principal d’OBS-079.
+
+== Références
+
+=== Références normatives
+
+* link:https://jsonlines.org/[JSON Lines], jsonlines.org. link:https://web.archive.org/web/20261021102619/https://jsonlines.org/[Copie archivée]
+* link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol Specification], OpenTelemetry, opentelemetry-proto 1.11.1, 2026-09-29.
+* link:https://www.ocel-standard.org/[OCEL 2.0 Standard and Schemas], RWTH Aachen University, 2.0. link:https://web.archive.org/web/20261027031045/https://www.ocel-standard.org/[Copie archivée]
+* link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+
+=== Références informatives
+
+* link:https://www.rfc-editor.org/info/rfc5424[RFC 5424, The Syslog Protocol], IETF, Proposed Standard, 2009-03. link:https://web.archive.org/web/20261021143712/https://www.rfc-editor.org/info/rfc5424/[Copie archivée]
+* link:https://github.com/cloudevents/spec/blob/fc1f6f31f5f011a72183f1bcea20c987cb683ade/cloudevents/extensions/distributed-tracing.md[CloudEvents Distributed Tracing Extension], CloudEvents, 1.0.2.
+* link:https://standards.ieee.org/ieee/1849/10907/[IEEE 1849-2023, Standard for eXtensible Event Stream (XES) for Achieving Interoperability in Event Logs and Event Streams], IEEE, 2023. link:https://web.archive.org/web/20260808221231/https://standards.ieee.org/ieee/1849/10907/[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

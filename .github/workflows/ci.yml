@@ -26,6 +26,18 @@ jobs:
     with:
       prefix: ${{ needs.prefix.outputs.value }}
       doc-rules: true
+  examples:
+    # Parses the example files and checks their required fields, then checks
+    # that the check rejects broken copies (OBS-004). Python standard library
+    # only. A required check of the main branch once the ruleset lists it.
+    if: github.ref_type != 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.14'
+      - run: bash examples/test-examples.sh
   diagrams:
     if: github.ref_type != 'tag'
     uses: fpsot-org/GitHub-Actions/.github/workflows/diagrams.yml@v0

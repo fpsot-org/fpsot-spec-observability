@@ -1,0 +1,64 @@
+= Traces and propagation
+include::_fpsot-terms.adoc[]
+
+These rules set how a request carries its trace from one service to the next.
+They also set how records point to that trace.
+A trace shows what happened inside one request.
+It does not show a business case, which can span many requests over days, as OBS-074 states.
+
+== Propagation
+
+[[OBS-050]]
+*OBS-050.* A component MUST read and send the headers of link:https://www.w3.org/TR/trace-context/[W3C Trace Context Level 1], `traceparent` and `tracestate`.
+It MUST do so on each {abbr-http-first} request that it receives or sends.
+A component that serves the public MAY start a new trace, and keep the incoming identifier as an attribute.
+A component SHOULD set the random flag of link:https://www.w3.org/TR/trace-context-2/[Trace Context Level 2] when its library supports it.
+It MUST NOT need that flag from others, because Level 2 is a draft while Level 1 is a Recommendation.
+
+[[OBS-051]]
+*OBS-051.* A record that a component writes inside a span MUST carry the `TraceId`, `SpanId` and `TraceFlags` of the span.
+In the {abbr-json-first} Lines output of OBS-080, they MUST appear in lower-case hexadecimal digits.
+The member `traceId` has 32 digits, `spanId` has 16 and `traceFlags` has 2.
+A reader can then move from a log record to its trace and back.
+
+[[OBS-052]]
+*OBS-052.* A component MUST NOT put personal information, a secret or a token in link:https://www.w3.org/TR/baggage/[W3C Baggage] or in `tracestate`.
+It SHOULD NOT accept baggage that comes from outside its trust boundary.
+These headers travel in clear text to each service on the path.
+Some services pass them on to third parties.
+
+== Spans
+
+[[OBS-053]]
+*OBS-053.* A component MUST describe its spans with the Stable parts of the link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/http/http-spans.md[semantic conventions 1.45.0].
+This covers its spans of {abbr-http}, of databases and of remote calls.
+It MAY add conventions in Development, such as those of messaging, under OBS-003.
+A span name MUST NOT hold a value that varies, such as a path with an identifier in it.
+Stable names let every tool read the spans in the same way.
+Fixed span names also keep the number of distinct names small.
+
+[[OBS-054]]
+*OBS-054.* A span attribute MUST follow the privacy rules of OBS-090 to OBS-092.
+A component MUST remove personal information and secrets from each recorded address and query string, under API-085.
+An address or a query in a span is as much a record as a log line.
+It goes to the same places.
+
+== References
+
+=== Normative
+
+* link:https://www.w3.org/TR/trace-context/[Trace Context], W3C, Level 1, Recommendation. link:https://web.archive.org/web/20261101165619/https://www.w3.org/TR/trace-context/[Archived copy]
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/http/http-spans.md[OpenTelemetry Semantic Conventions, HTTP spans], OpenTelemetry, 1.45.0, 2026-11-02.
+
+=== Informative
+
+* link:https://www.w3.org/TR/trace-context-2/[Trace Context Level 2], W3C, Candidate Recommendation Draft, 2024-03-28. link:https://web.archive.org/web/20261022055055/https://www.w3.org/TR/trace-context-2/[Archived copy]
+* link:https://www.w3.org/TR/baggage/[Propagation format for distributed context: Baggage], W3C, Candidate Recommendation Snapshot, 2024-05-30. link:https://web.archive.org/web/20261025182929/https://www.w3.org/TR/baggage/[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

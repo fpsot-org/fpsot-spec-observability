@@ -1,0 +1,47 @@
+= Metrics
+include::_fpsot-terms.adoc[]
+
+These rules set the measurements that a component exports.
+The page stays short on purpose.
+No government source that {abbr-fpsot-first} read sets rules on metrics, apart from an alert when logging stops.
+The time that a business step waits or takes comes from the business events of OBS-072, not from metrics.
+
+[[OBS-060]]
+*OBS-060.* A component that serves or sends {abbr-http-first} requests MUST export the Stable duration metrics of link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/http/http-metrics.md[semantic conventions 1.45.0].
+An example is `http.server.request.duration`.
+A component that makes remote procedure calls MUST export the Stable call duration metrics of the same release.
+Standard metrics let one dashboard and one alert rule serve every component.
+
+[[OBS-061]]
+*OBS-061.* A component and a log store MUST export the health of their log pipeline, for each stream.
+The health covers the records written, the records dropped and the exports that failed.
+It also covers the time of the last export that worked.
+A host SHOULD also export the offset of its clock from the source of OBS-033.
+The operator can then raise the alert of OBS-045.
+It can also show that its clocks were right when it uses a record as evidence.
+
+[[OBS-062]]
+*OBS-062.* A metric attribute MUST NOT hold the identifier of a person or of a business object.
+It MUST NOT hold any other value without a fixed bound either.
+An attribute such as a status code or a route template is fine.
+Each distinct value of an attribute creates a new time series, which costs storage.
+A person identifier in a metric also escapes the privacy rules of logs.
+
+[[OBS-063]]
+*OBS-063.* A component SHOULD export its metrics over the {abbr-otlp-first} of OBS-081.
+It MAY also expose them in another open format that its log store reads.
+The metrics part of {abbr-otlp} is Stable, while some frameworks still label their own support as a preview.
+
+== References
+
+=== Normative
+
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/http/http-metrics.md[OpenTelemetry Semantic Conventions, HTTP metrics], OpenTelemetry, 1.45.0, 2026-11-02.
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

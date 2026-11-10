@@ -1,0 +1,115 @@
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {"key": "service.name", "value": {"stringValue": "permit-intake"}},
+          {"key": "service.namespace", "value": {"stringValue": "example-municipality"}},
+          {"key": "service.version", "value": {"stringValue": "1.4.2"}},
+          {"key": "service.instance.id", "value": {"stringValue": "6b1f2c9e-3d4a-4f5b-8c7d-9e0a1b2c3d4e"}},
+          {"key": "deployment.environment.name", "value": {"stringValue": "production"}}
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {"name": "org.fpsot.example.permit", "version": "1.4.2"},
+          "logRecords": [
+            {
+              "timeUnixNano": "1794319375120000000",
+              "observedTimeUnixNano": "1794319375121000000",
+              "severityNumber": 9,
+              "severityText": "INFO",
+              "eventName": "org.fpsot.observability.activity.transitioned",
+              "traceId": "5b8efff798038103d269b633813fc60c",
+              "spanId": "eee19b7ec3c1b174",
+              "flags": 1,
+              "attributes": [
+                {"key": "org.fpsot.event.id", "value": {"stringValue": "01a1c5c4-db10-7b10-9e2a-6c4d8f1e0a57"}},
+                {"key": "org.fpsot.stream", "value": {"stringValue": "business"}},
+                {"key": "org.fpsot.activity.key", "value": {"stringValue": "submit-application"}},
+                {"key": "org.fpsot.lifecycle", "value": {"stringValue": "complete"}},
+                {"key": "org.fpsot.objects", "value": {"arrayValue": {"values": [
+                  {"kvlistValue": {"values": [
+                    {"key": "type", "value": {"stringValue": "Application"}},
+                    {"key": "id", "value": {"stringValue": "01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23"}},
+                    {"key": "qualifier", "value": {"stringValue": "subject"}}
+                  ]}},
+                  {"kvlistValue": {"values": [
+                    {"key": "type", "value": {"stringValue": "PartyRole"}},
+                    {"key": "id", "value": {"stringValue": "applicant"}},
+                    {"key": "qualifier", "value": {"stringValue": "performer"}}
+                  ]}}
+                ]}}},
+                {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
+                {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
+                {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "submit-application-task"}}
+              ]
+            },
+            {
+              "timeUnixNano": "1794319392418000000",
+              "observedTimeUnixNano": "1794319392419000000",
+              "severityNumber": 9,
+              "severityText": "INFO",
+              "eventName": "org.fpsot.observability.activity.transitioned",
+              "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "spanId": "a2fb4a1d1a96d312",
+              "flags": 1,
+              "attributes": [
+                {"key": "org.fpsot.event.id", "value": {"stringValue": "01a1c5c5-1ea2-7c22-a1b3-4e5f60718293"}},
+                {"key": "org.fpsot.stream", "value": {"stringValue": "business"}},
+                {"key": "org.fpsot.activity.key", "value": {"stringValue": "review-application"}},
+                {"key": "org.fpsot.lifecycle", "value": {"stringValue": "start"}},
+                {"key": "org.fpsot.objects", "value": {"arrayValue": {"values": [
+                  {"kvlistValue": {"values": [
+                    {"key": "type", "value": {"stringValue": "Application"}},
+                    {"key": "id", "value": {"stringValue": "01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23"}},
+                    {"key": "qualifier", "value": {"stringValue": "subject"}}
+                  ]}},
+                  {"kvlistValue": {"values": [
+                    {"key": "type", "value": {"stringValue": "PartyRole"}},
+                    {"key": "id", "value": {"stringValue": "case-officer"}},
+                    {"key": "qualifier", "value": {"stringValue": "performer"}}
+                  ]}}
+                ]}}},
+                {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
+                {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
+                {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "review-application-task"}}
+              ]
+            },
+            {
+              "timeUnixNano": "1794325650006000000",
+              "observedTimeUnixNano": "1794325650007000000",
+              "severityNumber": 9,
+              "severityText": "INFO",
+              "eventName": "org.fpsot.observability.activity.transitioned",
+              "traceId": "0af7651916cd43dd8448eb211c80319c",
+              "spanId": "b7ad6b7169203331",
+              "flags": 1,
+              "attributes": [
+                {"key": "org.fpsot.event.id", "value": {"stringValue": "01a1c624-9a56-7d31-b2c4-5f60718293a4"}},
+                {"key": "org.fpsot.stream", "value": {"stringValue": "business"}},
+                {"key": "org.fpsot.activity.key", "value": {"stringValue": "review-application"}},
+                {"key": "org.fpsot.lifecycle", "value": {"stringValue": "complete"}},
+                {"key": "org.fpsot.objects", "value": {"arrayValue": {"values": [
+                  {"kvlistValue": {"values": [
+                    {"key": "type", "value": {"stringValue": "Application"}},
+                    {"key": "id", "value": {"stringValue": "01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23"}},
+                    {"key": "qualifier", "value": {"stringValue": "subject"}}
+                  ]}},
+                  {"kvlistValue": {"values": [
+                    {"key": "type", "value": {"stringValue": "PartyRole"}},
+                    {"key": "id", "value": {"stringValue": "case-officer"}},
+                    {"key": "qualifier", "value": {"stringValue": "performer"}}
+                  ]}}
+                ]}}},
+                {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
+                {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
+                {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "review-application-task"}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

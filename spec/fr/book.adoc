@@ -4,4 +4,28 @@
 
 include::index.adoc[leveloffset=+1]
 
+include::inventory.adoc[leveloffset=+1]
+
+include::records.adoc[leveloffset=+1]
+
+include::audit-events.adoc[leveloffset=+1]
+
+include::traces.adoc[leveloffset=+1]
+
+include::metrics.adoc[leveloffset=+1]
+
+include::business-events.adoc[leveloffset=+1]
+
+include::export.adoc[leveloffset=+1]
+
+include::privacy.adoc[leveloffset=+1]
+
+include::retention.adoc[leveloffset=+1]
+
+include::integrity.adoc[leveloffset=+1]
+
+include::implementation.adoc[leveloffset=+1]
+
+include::counsel.adoc[leveloffset=+1]
+
 include::glossary.adoc[leveloffset=+1]

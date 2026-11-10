@@ -1,0 +1,13 @@
+code: CA-QC
+name: {en: Québec, fr: Québec}
+rows:
+  - id: OBS-042
+    text: {en: "Public bodies must set up a process that supervises access to sensitive data and its use, downloads and prints included, in particular through monitoring and logging. The indication sets no fields, no purpose code and no retention.", fr: "Les organismes publics doivent mettre en place un processus qui supervise l’accès aux données sensibles et leur utilisation, téléchargements et impressions compris, notamment par la surveillance et la journalisation. L’indication ne fixe aucun champ, aucun code de finalité ni aucune durée de conservation."}
+    status: looser
+    source: {title: "Gouvernement du Québec, Dirigeant principal de l’information, IA-SI-2023-001-OP, Mesures minimales de sécurité au regard des données lors de l’utilisation de solutions technologiques, section 4", date: "2023-02-01", url: "https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf", archive: "https://web.archive.org/web/20260129213432/https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf"}
+    last_checked: "2026-11-10"
+  - id: OBS-010
+    text: {en: "A public body must carry out a privacy impact assessment for each project to acquire, develop or overhaul an information system that involves personal information. It does not ask for a machine-readable list of log fields.", fr: "Un organisme public doit réaliser une évaluation des facteurs relatifs à la vie privée pour chaque projet d’acquisition, de développement ou de refonte d’un système d’information qui touche des renseignements personnels. Il n’exige pas de liste des champs de journaux lisible par machine."}
+    status: looser
+    source: {title: "Gouvernement du Québec, Évaluation des facteurs relatifs à la vie privée", url: "https://www.quebec.ca/gouvernement/travailler-gouvernement/normes-gouvernance-pratiques-internes/protection-des-renseignements-personnels/evaluation-facteurs-relatifs-vie-privee", archive: "https://web.archive.org/web/20261010130121/https://www.quebec.ca/gouvernement/travailler-gouvernement/normes-gouvernance-pratiques-internes/protection-des-renseignements-personnels/evaluation-facteurs-relatifs-vie-privee"}
+    last_checked: "2026-11-10"

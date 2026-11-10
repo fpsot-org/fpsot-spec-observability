@@ -1,0 +1,59 @@
+= Implementation profiles
+include::_fpsot-terms.adoc[]
+
+This page is informative.
+It sets no rule, and the rules of the other pages name no product.
+It shows how two stacks that {abbr-fpsot-first} uses can meet the rules today, and where they fall short.
+The versions are those of 10 November 2026.
+
+== Quarkus 3.40
+
+Quarkus is the reference Java framework of {abbr-fpsot}, and its 3.40 release is the reference for this version.
+
+* The link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/opentelemetry.adoc[OpenTelemetry guide of Quarkus 3.40.1] turns traces on by default.
+* Its support of OpenTelemetry logs and metrics is a technical preview, and is off by default.
+The settings `quarkus.otel.logs.enabled` and `quarkus.otel.metrics.enabled` turn them on.
+For this reason, OBS-081 is a SHOULD in this version.
+* The guide does not recommend the OpenTelemetry Java agent, which does not work in native mode.
+* The extension for {abbr-json-first} logs offers an Elastic Common Schema format.
+The link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/logging.adoc[logging guide] lists its fields, such as `@timestamp`, `log.level` and `process.thread.name`.
+That format does not match OBS-080, so a component needs its own formatter or a documented mapping.
+* The guide offers security events through `quarkus.otel.security-events.enabled`.
+A component can map them to the audit events of the identity and access catalog, under OBS-040.
+
+Quarkus may move its OpenTelemetry logs support to general availability.
+OBS-081 then becomes a MUST in the next minor version of this specification.
+
+== Go
+
+{abbr-fpsot} writes tools outside its public sector capabilities in Go, such as the future conformance tool of OBS-004.
+
+* link:https://github.com/open-telemetry/opentelemetry-go/blob/66cfc9520e205b7d450183532772401bc2b6674c/CHANGELOG.md[OpenTelemetry Go 1.47.0] is the first release with a stable logs {abbr-api-first} and library.
+* Its exporters of logs over {abbr-otlp-first} and its bridge for the standard `log/slog` package are still below version 1.0.
+A tool that uses them pins the exact version of each, under SEC-030.
+
+== Collector
+
+The OpenTelemetry Collector suits the role of the collector of a log store.
+
+* Its receiver and exporters of {abbr-otlp} are Stable for logs, traces and metrics.
+* Its link:https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/f56f9a38c9864e892af542f1dbd28f475d6779dc/processor/redactionprocessor/metadata.yaml[redaction processor] is still Alpha for logs.
+For this reason, OBS-083 makes the component mask personal information.
+A collector serves only as a second defense.
+
+== References
+
+=== Informative
+
+* link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/opentelemetry.adoc[Quarkus, Using OpenTelemetry], Quarkus project, 3.40.1.
+* link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/logging.adoc[Quarkus, Logging configuration], Quarkus project, 3.40.1.
+* link:https://github.com/open-telemetry/opentelemetry-go/blob/66cfc9520e205b7d450183532772401bc2b6674c/CHANGELOG.md[OpenTelemetry Go, Changelog], OpenTelemetry, 1.47.0, 2026-10-02.
+* link:https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/f56f9a38c9864e892af542f1dbd28f475d6779dc/processor/redactionprocessor/metadata.yaml[OpenTelemetry Collector Contrib, Redaction Processor], OpenTelemetry, 0.165.0.
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

@@ -1,0 +1,47 @@
+= Métriques
+include::_fpsot-terms.adoc[]
+
+Ces règles fixent les mesures qu’un composant exporte.
+La page reste courte à dessein.
+Les sources gouvernementales lues par la {abbr-fpsot-first} ne fixent rien sur les métriques, sauf une alerte si la journalisation s’arrête.
+Le temps qu’une étape d’affaires attend ou prend vient des événements d’affaires d’OBS-072, pas des métriques.
+
+[[OBS-060]]
+*OBS-060.* Un composant client ou serveur {abbr-http-first} DOIT exporter les métriques Stable de durée des link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/http/http-metrics.md[conventions sémantiques 1.45.0].
+Un exemple est `http.server.request.duration`.
+Un composant qui fait des appels distants DOIT exporter les métriques Stable de durée d’appel de la même version.
+Des métriques normalisées permettent à un seul tableau de bord et à une seule règle d’alerte de servir chaque composant.
+
+[[OBS-061]]
+*OBS-061.* Un composant et un magasin de journaux DOIVENT exporter l’état de leur chaîne de journalisation, pour chaque flux.
+L’état comprend les enregistrements écrits, les enregistrements perdus et les exportations échouées.
+Il comprend aussi le moment de la dernière exportation réussie.
+Un hôte DEVRAIT aussi exporter l’écart de son horloge par rapport à la source d’OBS-033.
+L’exploitant peut alors lancer l’alerte d’OBS-045.
+Il peut aussi montrer que ses horloges étaient justes quand il utilise un enregistrement comme preuve.
+
+[[OBS-062]]
+*OBS-062.* Un attribut de métrique NE DOIT PAS contenir l’identifiant d’une personne ou d’un objet d’affaires.
+Il NE DOIT PAS non plus contenir une autre valeur sans borne fixe.
+Un attribut comme un code d’état ou un modèle de route convient.
+Chaque valeur distincte d’un attribut crée une nouvelle série chronologique, qui coûte du stockage.
+Un identifiant de personne dans une métrique échappe aussi aux règles de vie privée des journaux.
+
+[[OBS-063]]
+*OBS-063.* Un composant DEVRAIT exporter ses métriques au moyen de l’{abbr-otlp-first} d’OBS-081.
+Il PEUT aussi les exposer dans un autre format ouvert que son magasin de journaux lit.
+La partie métriques de l’{abbr-otlp} est Stable, mais certains cadriciels présentent encore leur prise en charge comme un aperçu.
+
+== Références
+
+=== Références normatives
+
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/http/http-metrics.md[OpenTelemetry Semantic Conventions, HTTP metrics], OpenTelemetry, 1.45.0, 2026-11-02.
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

@@ -1,15 +1,80 @@
-= Guide
-:page-type: explanation
+= Make a component observable
+:page-type: how-to
 include::_fpsot-terms.adoc[]
 
-This page explains the specification for the people who adopt it.
-Each guide page has one type.
-It is a tutorial, a how-to guide, a reference or an explanation.
+This guide takes a team from a new component to records that meet the `base` and `process-mining` profiles.
+Each step cites the rule it meets.
+
+== Before you write code
+
+Write the log inventory of the component, under OBS-010.
+List each event, its stream and its attributes.
+Give each attribute a personal information class, under OBS-011.
+Send the list of personal fields to the person who writes the {term-privacy-impact-assessment-first} of the system.
+
+== Write each record
+
+Write each record as one line of {abbr-json-first} on the standard output, under OBS-080.
+Put the time of the event in `timestamp`, in {abbr-utc-first} with milliseconds, under OBS-030 and OBS-032.
+Give each audit and business event a new `org.fpsot.event.id`, under OBS-024.
+The file `examples/log-record.jsonl` shows an audit event, which looks like this once indented.
+
+[source,json]
+----
+{
+  "timestamp": "2026-11-10T17:01:41.250Z",
+  "severityNumber": 9,
+  "eventName": "org.fpsot.permit.application.exported",
+  "attributes": {
+    "org.fpsot.event.id": "01a1c668-8602-7e40-8d5e-60718293a4b5",
+    "org.fpsot.stream": "audit",
+    "org.fpsot.outcome": "success",
+    "org.fpsot.purpose": "case-processing",
+    "org.fpsot.client.network": "192.0.2.0/24"
+  }
+}
+----
+
+Name people by opaque identifiers only, under OBS-092.
+Keep only the network prefix of a client address, under OBS-091.
+Mask secrets and personal fields in the component, before the record leaves it, under OBS-083.
+
+== Record the audit events
+
+Record each identity and access event that the component uses, under OBS-040.
+Record each change of configuration, each access to personal information and each failure of a control, under OBS-041 to OBS-044.
+Give each access a purpose code from the scheme of the operator, under OBS-042.
+
+== Record the business steps
+
+Ask the owner of the process for the activity scheme, under OBS-071.
+At each step boundary, emit an event with its key, lifecycle and objects, under OBS-070 to OBS-073.
+Name the performer by role, under OBS-075.
+Never use the trace identifier as a case, under OBS-074.
+The file `examples/business-events.otlp.json` shows three such events.
+
+== Check the output
+
+Run the example check on your own output, with the same three files as the folder `examples/`.
+
+[source,text]
+----
+python3 examples/check-examples.py path/to/your/output
+----
+
+A pass shows the main fields of OBS-020 to OBS-033 and OBS-070 to OBS-087.
+It does not prove the whole profile, and a conformance tool will follow, under OBS-004.
+
+== Hand over to the operator
+
+Give the operator the inventory and the deployment guide.
+The guide states the time source, under OBS-033, and the destinations, under OBS-012.
+The operator then sets the retention profile, `ca-qc-floor` by default, under OBS-101.
 
 == Document history
 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Change
-|0.1.0 |2026-11-03 |First version.
+|0.1.0 |2026-11-10 |First version.
 |===

@@ -1,0 +1,92 @@
+= Événements d’audit
+include::_fpsot-terms.adoc[]
+
+Ces règles fixent les événements que consigne le flux d’audit.
+Chaque événement d’audit suit les règles des enregistrements, et OBS-027 fixe son contenu.
+
+La spécification FPSOT sur l’identité et l’accès énumère les événements de connexion, de session, de compte, de rôle et d’accès.
+Elle fixe aussi ce que chacun contient.
+Cette page ajoute les autres événements que les gouvernements du Canada et du Québec demandent aux organismes publics de consigner.
+
+== Événements à consigner
+
+[[OBS-040]]
+*OBS-040.* Un composant DOIT consigner, comme événement d’audit, chaque événement du catalogue d’identité et d’accès qu’il utilise.
+Il DOIT suivre les règles d’enregistrement de cette spécification pour cet événement.
+Le magasin de journaux conserve l’événement selon les règles de conservation et d’intégrité.
+Pour chaque événement d’audit qu’il consigne, un composant DOIT consigner à la fois la réussite et l’échec.
+La mesure `AU-02` du {abbr-cgcd-first} énumère chacun de ses événements avec les deux résultats.
+Une tentative ratée est souvent le premier signe d’une attaque.
+
+[[OBS-041]]
+*OBS-041.* Un composant DOIT consigner chaque changement de sa configuration, de ses politiques ou de ses règles d’alerte.
+Les politiques visées sont celles de sécurité et de journalisation.
+L’événement DOIT nommer le paramètre modifié et l’acteur.
+Il NE DOIT PAS contenir la nouvelle valeur d’un paramètre secret, selon SEC-020.
+La mesure `AU-02` demande les changements aux règles d’alerte, comme un audit de l’auditeur.
+Qui peut désactiver une mesure sans laisser de trace peut ensuite agir sans laisser de trace.
+
+[[OBS-042]]
+*OBS-042.* Un composant DOIT consigner chaque accès aux renseignements personnels ou sensibles qu’il détient.
+Un accès est une lecture, une création, une modification, une suppression, une exportation, un téléchargement ou une impression.
+Chaque tel événement DOIT porter un code de finalité dans `org.fpsot.purpose`, tiré d’un schéma de l’exploitant selon VOC-001 et VOC-064.
+L’link:https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[indication d’application IA-SI-2023-001-OP] du Québec demande de surveiller l’accès à ces données.
+Elle vise aussi leurs téléchargements et leurs impressions.
+Un code de finalité permet de répondre à une personne qui demande quand et pourquoi on a consulté son dossier.
+
+[[OBS-043]]
+*OBS-043.* Un magasin de journaux DOIT consigner chaque accès aux enregistrements qu’il conserve, comme événement d’audit.
+Cela vise chaque lecture, requête et exportation, chaque changement de règle de conservation et chaque changement de {term-legal-hold}.
+La mesure `AU-02` inscrit l’accès aux journaux d’audit parmi les événements à consigner.
+Les personnes qui lisent les journaux peuvent aussi en abuser, et leurs lectures doivent donc laisser une trace.
+
+[[OBS-044]]
+*OBS-044.* Un composant DOIT consigner chaque défaillance d’une mesure de sécurité et chaque tentative de la contourner.
+Il DOIT aussi consigner chaque erreur imprévue et chaque plantage.
+Un jeton qui échoue à la vérification de sa signature est un exemple de défaillance.
+Les exigences 16.3.3 et 16.3.4 de l’link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[ASVS 5.0.0] demandent ces événements.
+Ils montrent une attaque en cours, ou une faille qu’un attaquant pourrait exploiter.
+
+[[OBS-045]]
+*OBS-045.* Un composant DOIT consigner le début et la fin de sa journalisation, et chaque échec de livraison d’enregistrements.
+Un magasin de journaux DOIT lancer une alerte quand une source attendue n’envoie rien pendant plus d’une période fixée.
+L’exploitant fixe cette période.
+Le link:https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[guide du National Cyber Security Centre du Royaume-Uni] demande une alerte quand les journaux cessent d’arriver.
+Un attaquant coupe souvent la journalisation en premier, et le silence ressemble alors au calme.
+
+== Correspondances
+
+[[OBS-046]]
+*OBS-046.* Un composant DEVRAIT associer chacun de ses événements d’audit à une classe de l’link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework 1.9.0].
+Un magasin de journaux PEUT alors envoyer les événements d’audit aux outils de sécurité dans la forme {abbr-ocsf-first}.
+De nombreux outils de sécurité lisent l’{abbr-ocsf}, et une correspondance publiée évite à chaque exploitant d’écrire la sienne.
+
+== Consignation des activités et désactivation
+
+Cette note est informative.
+Le link:https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[règlement européen sur la cyberrésilience] demande aux produits de consigner les activités utiles à la sécurité.
+Il prévoit une désactivation par l’utilisateur, au point `(2)(l)` de la partie I de l’annexe I.
+Les règles des gouvernements du Canada et du Québec supposent que la journalisation reste active.
+Cette spécification confie cette désactivation à l’exploitant, jamais à l’utilisatrice ou l’utilisateur final.
+Savoir si l’exploitant est l’utilisateur au sens de ce règlement fait partie des questions pour le conseiller juridique.
+
+== Références
+
+=== Références normatives
+
+* link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+
+=== Références informatives
+
+* link:https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[IA-SI-2023-001-OP, Mesures minimales de sécurité au regard des données lors de l’utilisation de solutions technologiques], Gouvernement du Québec, Dirigeant principal de l’information, 2023-02-01. link:https://web.archive.org/web/20260129213432/https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[Copie archivée]
+* link:https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[Introduction to logging for security purposes], National Cyber Security Centre, United Kingdom. link:https://web.archive.org/web/20261031113648/https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[Copie archivée]
+* link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework], OCSF project of the Linux Foundation, 1.9.0, 2026-08-03.
+* link:https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[Regulation (EU) 2024/2847 on horizontal cybersecurity requirements for products with digital elements (Cyber Resilience Act)], European Parliament and Council of the European Union, 2024-10-23. link:https://web.archive.org/web/20261108180849/https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

@@ -1,0 +1,81 @@
+= Log inventory and schema
+include::_fpsot-terms.adoc[]
+
+These rules set the file that lists what a component records.
+The inventory lets an operator, an auditor and a privacy officer see every record before the software runs.
+It is also the machine-readable schema that a conformance suite checks the records against.
+
+== The inventory file
+
+[[OBS-010]]
+*OBS-010.* Each component MUST ship a log inventory in its repository and with each release.
+The inventory MUST be a {abbr-json-first} or YAML file that a published {abbr-json} Schema describes.
+It MUST list:
+
+* the profiles that the component claims, under OBS-001;
+* each event name that the component emits, with its stream under OBS-014 and its default severity;
+* each attribute of each event, with its type and whether it is always present;
+* each place where the records go, under OBS-012;
+* the retention class of each stream, under OBS-100;
+* the roles that may read each stream;
+* the concept scheme and its version, for each field that holds a code, such as an activity key;
+* each OpenTelemetry feature in Development or Alpha that the component uses, under OBS-003.
+
+link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP ASVS 5.0.0] asks for such an inventory in requirement 16.1.1.
+Control `AU-02` of the Québec security référentiel asks each body to define the events it records.
+A file that the build checks stays true, while a document that people update by hand drifts.
+
+[[OBS-011]]
+*OBS-011.* The inventory MUST give each attribute a personal information class from this table.
+An attribute whose class is not `none` MUST also state its purpose.
+
+[cols="1,3",options="header"]
+|===
+|Class |Meaning
+|`none` |The attribute never holds information about a person, such as a duration or a status code.
+|`pseudonymous` |The attribute holds an identifier that leads to a person only with other data, such as an opaque internal identifier.
+|`personal` |The attribute holds information about a person that names or describes them, such as a network address.
+|`sensitive` |The attribute holds information that the law or the operator treats as sensitive, such as health or financial information.
+|===
+
+The {term-privacy-impact-assessment} of the system can then cite each field by name.
+Control `AU-03(03)` of the {abbr-cgcd-first} limits personal information in audit records to the elements that this assessment identifies.
+A pseudonymous identifier is still personal information, as OBS-094 states.
+The class only shows how directly it points to a person.
+
+[[OBS-012]]
+*OBS-012.* A component MUST send records only to the destinations that its inventory lists.
+A destination is a stream such as the standard output.
+It can also be an address, such as the endpoint of a log store.
+Requirement 16.2.3 of {abbr-asvs-first} 5.0.0 sets the same limit.
+A record that goes to an unlisted place escapes the retention and access rules of the operator.
+
+[[OBS-013]]
+*OBS-013.* The operator SHOULD review the events of a component at each major version and at a set interval.
+The review SHOULD check that the events still help to investigate incidents.
+It SHOULD also check that each personal field still has a purpose.
+Control `AU-02` asks for such a review, at an interval that each body sets.
+Needs change, and a field without a purpose is a privacy risk with no benefit.
+
+== Streams
+
+[[OBS-014]]
+*OBS-014.* Each event MUST belong to exactly one stream: `technical`, `audit` or `business`.
+An audit or business event MUST carry the attribute `org.fpsot.stream` with its stream.
+A technical record MAY leave it out, and a reader then treats it as `technical`.
+Each stream has its own rules for retention, readers and integrity.
+A log store can then sort records without reading their content.
+
+== References
+
+=== Normative
+
+* link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

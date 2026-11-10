@@ -1,0 +1,85 @@
+= Privacy and minimization
+include::_fpsot-terms.adoc[]
+
+These rules set what personal information a record may hold.
+A record that says that an employee consulted the file of a citizen is personal information about both people.
+In Québec and in federal law, such a record is also a document that the public body holds.
+
+== What a record may hold
+
+[[OBS-090]]
+*OBS-090.* A component MUST write personal information only in the attributes that its inventory declares for it.
+These are the attributes with a class other than `none`, under OBS-011.
+The operator MUST turn off each such attribute that the {term-privacy-impact-assessment} of the system does not name.
+The `Body` and the names of events, spans and metrics MUST NOT hold personal information.
+Control `AU-03(03)` of the {abbr-cgcd-first} limits personal information in audit records to the elements that this assessment identifies.
+A field that nobody declared is a field that nobody protects.
+
+[[OBS-091]]
+*OBS-091.* A record MUST NOT hold a password, a secret, a key, a token or a session cookie, under SEC-020.
+It MUST NOT hold an authorization header, or the full content of a request or response with personal information.
+A record MUST keep only the network prefix of a client address, such as `192.0.2.0/24`, in the attribute `org.fpsot.client.network`.
+The prefix is 24 bits for IPv4 and 48 bits for IPv6.
+An authentication event MAY keep the full address in the attribute `client.address`, when the privacy impact assessment names it.
+A full address points to a home or a device, while a prefix is enough to spot most attacks.
+
+[[OBS-092]]
+*OBS-092.* A record MUST name a person by an opaque internal identifier, under DAT-061 and DAT-062.
+It MUST NOT name them by a name, an email address or an identifier that another body issues.
+Examples of identifiers from another body are a social insurance number and a health insurance number.
+A tool that shows records MAY look up the name for a reader who may see it.
+The name then stays in one protected place, and the copies of the logs do not spread it.
+
+== Process mining
+
+[[OBS-093]]
+*OBS-093.* An export for process mining MUST replace each identifier that leads to a person with a keyed pseudonym.
+The pseudonym MUST be a link:https://www.rfc-editor.org/info/rfc2104[keyed hash], such as HMAC-SHA-256, with a key for one purpose and one period.
+A custodian outside the team of analysts MUST hold the key, and MUST destroy it when the period ends.
+A tool MUST NOT use a hash without a key, since anyone can hash every possible file number and compare.
+The performer of a step SHOULD appear as a role or a unit, under OBS-075.
+This pattern is the practice of {abbr-fpsot-first}, not the guidance of a regulator.
+
+[[OBS-094]]
+*OBS-094.* The documentation of a component and of a log store MUST state that pseudonymous records are still personal information.
+It MUST NOT call an export anonymous, unless the operator has run the process that its law sets.
+In Québec, a regulation on anonymizing personal information sets that process.
+Federally, the link:https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[notice of the Treasury Board on de-identification] says that de-identified information stays under the Privacy Act.
+A false claim of anonymity leads people to share data that the law still protects.
+
+== Requests from people
+
+[[OBS-095]]
+*OBS-095.* An access event MUST keep the purpose code of OBS-042 in its own attribute, apart from the actor.
+A log store SHOULD let an authorized role find the audit events of one object, such as a person’s file.
+The person can then learn when and why someone consulted the file, and the operator decides on employee names.
+The European Court of Justice gave this right in the link:https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[Pankki S judgment], which does not bind Canada.
+
+== Tests
+
+[[OBS-096]]
+*OBS-096.* A test, a demonstration or a training environment MUST use synthetic data only, under TST-050.
+Its records then hold no personal information from production.
+A record of such an environment MUST NOT reach the log store of production.
+The examples of this specification follow this rule, with addresses from link:https://www.rfc-editor.org/info/rfc5737[RFC 5737] and made-up identifiers.
+Logs of test systems often have weaker protection than production logs.
+
+== References
+
+=== Normative
+
+* link:https://www.rfc-editor.org/info/rfc2104[RFC 2104, HMAC: Keyed-Hashing for Message Authentication], IETF, Informational, 1997-02. link:https://web.archive.org/web/20261101142147/https://www.rfc-editor.org/info/rfc2104/[Archived copy]
+* link:https://www.rfc-editor.org/info/rfc5737[RFC 5737, IPv4 Address Blocks Reserved for Documentation], IETF, Informational, 2010-01. link:https://web.archive.org/web/20261101195317/https://www.rfc-editor.org/info/rfc5737/[Archived copy]
+
+=== Informative
+
+* link:https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[Privacy Implementation Notice 2023-01: De-identification], Treasury Board of Canada Secretariat, 2023. link:https://web.archive.org/web/20260924091633/https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[Archived copy]
+* link:https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[Press release 107/23, Judgment in Case C-579/21 Pankki S], Court of Justice of the European Union, 2023-06-22. link:https://web.archive.org/web/20251127124614/https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

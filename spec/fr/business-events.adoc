@@ -1,0 +1,119 @@
+= Événements d’affaires pour l’exploration de processus
+include::_fpsot-terms.adoc[]
+
+Ces règles fixent les événements qui consignent les étapes des processus d’affaires.
+L’exploration de processus lit ces événements pour voir comment un processus se déroule vraiment.
+Elle montre où le travail attend et où il tourne en boucle.
+Aucune norme ne fixe encore ces événements, et la {abbr-fpsot-first} les définit donc ici.
+
+Un événement d’affaires consigne une étape d’un processus, comme l’examen d’une demande.
+Il nomme l’activité, le changement de son cycle de vie et chaque objet d’affaires que l’étape touche.
+Un outil d’exportation peut ensuite transformer les événements en journal d’événements centré sur les objets, selon OBS-086.
+
+== L’événement
+
+[[OBS-070]]
+*OBS-070.* Un composant DOIT émettre un événement d’affaires explicite à chaque frontière de chaque étape que son inventaire énumère.
+L’événement DOIT avoir l’`EventName` `org.fpsot.observability.activity.transitioned`.
+Il DOIT porter l’attribut `org.fpsot.stream` avec la valeur `business`.
+Un outil NE DOIT PAS déduire des événements d’affaires de segments {abbr-http-first} ou de changements dans une base de données.
+Tous les événements d’affaires ont la même structure, et un seul nom leur convient, comme le demandent les conventions sémantiques.
+Le link:https://www.vdaalst.com/publications/p658.pdf[Process Mining Manifesto] note que des événements techniques n’ont de sens qu’une fois regroupés en activités d’affaires.
+
+[[OBS-071]]
+*OBS-071.* Chaque événement d’affaires DOIT porter l’attribut `org.fpsot.activity.key`, avec le code d’un concept d’un schéma d’activités.
+Le code DOIT suivre VOC-005, VOC-006 et VOC-064, comme `review-application`, et NE DOIT PAS être un libellé.
+Le schéma DOIT suivre la spécification sur les vocabulaires, et l’inventaire le nomme avec sa version.
+Un code DOIT désigner une seule étape d’affaires, et le cycle de vie d’OBS-072 donne son état.
+Les libellés viennent du schéma dans les deux langues, et un système bilingue ne scinde jamais une activité.
+
+[[OBS-072]]
+*OBS-072.* Chaque événement d’affaires DOIT porter l’attribut `org.fpsot.lifecycle`, avec un code de ce tableau.
+
+[cols="1,2,2",options="header"]
+|===
+|Code |Sens |Libellé en français
+|`schedule` |Quelqu’un a planifié l’étape, ou l’a mise en file. |planifiée
+|`start` |Le travail sur l’étape a commencé. |commencée
+|`suspend` |Le travail sur l’étape a fait une pause. |suspendue
+|`resume` |Le travail sur l’étape a repris après une pause. |reprise
+|`complete` |L’étape s’est terminée avec son résultat. |terminée
+|`abort` |L’étape s’est terminée sans son résultat. |abandonnée
+|===
+
+Une étape instantanée DOIT émettre seulement `complete`.
+Une étape qui dure DOIT émettre au moins `start`, puis `complete` ou `abort`.
+Ces événements DOIVENT porter la même clé d’activité et les mêmes objets.
+Un journal d’événements a besoin des deux bouts d’une étape.
+Il peut alors distinguer le temps qu’une étape attend du temps qu’elle prend.
+
+== Objets
+
+[[OBS-073]]
+*OBS-073.* Chaque événement d’affaires DOIT porter l’attribut `org.fpsot.objects`, une liste d’une ou de plusieurs références à des objets.
+Chaque référence DOIT être une table associative avec exactement trois membres.
+
+* `type` est le nom de la classe LinkML de l’objet, comme `Application` ou `PartyRole`.
+La spécification sur les modèles de données définit ces classes.
+* `id` est l’identifiant de l’objet, sous forme de chaîne selon DAT-060 et DAT-066.
+* `qualifier` est un code en kebab-case pour le rôle de l’objet dans cet événement, comme `subject` ou `performer`.
+
+Un magasin de journaux qui ne peut pas conserver de listes de tables PEUT plutôt utiliser des attributs à plat.
+Leur forme est `org.fpsot.object.<type>.<qualifier>`, avec le type en snake_case et une liste d’identifiants comme valeur.
+Un exemple est `org.fpsot.object.application.subject`.
+Un outil qui convertit d’une forme à l’autre NE DOIT PAS perdre de référence.
+Une étape peut toucher plusieurs objets, comme une demande, un paiement et un permis.
+Un seul numéro de dossier le cacherait.
+
+[[OBS-074]]
+*OBS-074.* Un composant ou un outil NE DOIT PAS désigner un dossier ou un objet par un identifiant de trace.
+Il en va de même pour un identifiant de segment.
+Les identifiants de trace et de segment montrent d’où vient un enregistrement, rien de plus.
+Un dossier d’affaires dure des jours et couvre de nombreuses requêtes, alors qu’une requête peut toucher plusieurs dossiers.
+
+[[OBS-075]]
+*OBS-075.* Un événement d’affaires DEVRAIT nommer qui a fait l’étape, avec une référence au qualificatif `performer`.
+La référence DEVRAIT désigner le rôle ou l’unité, comme un `PartyRole` avec le code `case-officer`.
+Elle PEUT désigner une personne seulement si l’{term-privacy-impact-assessment} du système le permet.
+Elle nomme alors la personne seulement par un identifiant selon OBS-092.
+Un rôle suffit pour étudier un processus, alors qu’un identifiant de personne en fait une surveillance du personnel.
+
+== Modèles et corrections
+
+[[OBS-076]]
+*OBS-076.* Quand un modèle {abbr-bpmn-first} décrit le processus, chaque événement d’affaires DEVRAIT porter trois attributs.
+Ce sont `org.fpsot.bpmn.process_id`, `org.fpsot.bpmn.process_version` et `org.fpsot.bpmn.element_id`.
+L’identifiant d’élément est l’`id` de la tâche ou de l’événement dans le modèle.
+Chaque version d’un modèle DOIT rester inchangée et accessible dès qu’un composant l’a utilisée.
+La vérification de conformité compare chaque événement à son élément de modèle, dans la version en vigueur à ce moment.
+
+[[OBS-077]]
+*OBS-077.* Une clé d’activité, un qualificatif ou un nom d’événement NE DOIT PAS contenir de texte libre ni d’information personnelle.
+Il NE DOIT PAS non plus contenir de valeur propre à un dossier.
+Ces valeurs vont dans les objets d’OBS-073 ou dans d’autres attributs.
+Une clé qui varie selon le dossier fausse les comptes de l’exploration de processus.
+Elle peut aussi faire fuir des renseignements personnels dans chaque rapport.
+
+[[OBS-078]]
+*OBS-078.* Un composant ou un magasin NE DOIT PAS modifier ni supprimer un événement d’affaires avant sa fin de conservation.
+Pour corriger un événement erroné, un composant DOIT émettre un nouvel événement avec l’attribut `org.fpsot.event.corrects`.
+Cet attribut contient l’`org.fpsot.event.id` de l’événement erroné.
+Un journal qu’un système réécrit après coup donne des résultats que personne ne peut reproduire.
+
+[[OBS-079]]
+*OBS-079.* L’inventaire DEVRAIT nommer, pour chaque processus, le type d’objet qui sert de dossier principal, comme `Application`.
+Un outil qui a besoin d’un dossier par événement peut alors le construire chaque fois de la même façon.
+
+== Références
+
+=== Références informatives
+
+* link:https://www.vdaalst.com/publications/p658.pdf[Process Mining Manifesto], IEEE Task Force on Process Mining, 2011. link:https://web.archive.org/web/20240703163130/https://vdaalst.com/publications/p658.pdf[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

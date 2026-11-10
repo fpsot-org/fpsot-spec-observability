@@ -9,22 +9,44 @@ developmentStatus: concept
 softwareType: "standalone/other"
 description:
   en:
-    shortDescription: Template for FPSOT specification repositories.
+    shortDescription: Logging, tracing and metrics rules for FPSOT software, with process mining and tamper-evident audit logs.
     longDescription: >
-      Starting point for an FPSOT specification repository. It holds the
-      layout, the Community Specification License files, and the CI that
-      checks requirement IDs, links, languages and prose.
+      Rules for how FPSOT software records logs, traces and metrics, and how a
+      public body keeps, protects and destroys those records. They build on
+      the stable OpenTelemetry logs data model, OTLP and W3C Trace Context,
+      and add a machine-readable log inventory, audit events, business events
+      for process mining with an export to OCEL 2.0, the minimization of
+      personal information and keyed pseudonyms, the ca-qc-floor retention
+      profile, legal hold and destruction records, and tamper evidence with
+      Merkle trees and signed C2SP checkpoints. The rules name capabilities
+      and standards, not products.
     features:
-      - Specification repository layout
+      - Four profiles that a buyer can require by name
+      - OpenTelemetry records with JSON Lines output and UTC timestamps
+      - Business events with activity keys, lifecycle and object lists, exported to OCEL 2.0
+      - Retention profile ca-qc-floor, legal hold and destruction records
+      - Merkle tree over salted hashes with signed checkpoints
   fr:
-    shortDescription: Gabarit des dépôts de spécification de FPSOT.
+    shortDescription: Règles de journalisation, de traçage et de métriques des logiciels FPSOT, avec l’exploration de processus et des journaux d’audit inviolables.
     longDescription: >
-      Point de départ d'un dépôt de spécification de FPSOT. Il contient la
-      structure, les fichiers de la Community Specification License, et
-      l'intégration continue qui vérifie les identifiants, les liens, les
-      langues et la rédaction.
+      Règles sur la façon dont les logiciels FPSOT consignent leurs journaux,
+      leurs traces et leurs métriques, et dont un organisme public conserve,
+      protège et détruit ces enregistrements. Elles reposent sur le modèle de
+      données stable des journaux d’OpenTelemetry, l’OTLP et W3C Trace
+      Context, et ajoutent un inventaire de journaux lisible par machine, les
+      événements d’audit, les événements d’affaires pour l’exploration de
+      processus avec une exportation en OCEL 2.0, la minimisation des
+      renseignements personnels et les pseudonymes à clé, le profil de
+      conservation ca-qc-floor, la préservation de la preuve et les traces de
+      destruction, et la preuve d’altération par des arbres de Merkle et des
+      points de contrôle C2SP signés. Les règles nomment des capacités et des
+      normes, pas des produits.
     features:
-      - Structure d'un dépôt de spécification
+      - Quatre profils qu’un organisme acheteur peut exiger par leur nom
+      - Enregistrements OpenTelemetry avec sortie JSON Lines et horodatage UTC
+      - Événements d’affaires avec clé d’activité, cycle de vie et liste d’objets, exportés en OCEL 2.0
+      - Profil de conservation ca-qc-floor, préservation de la preuve et traces de destruction
+      - Arbre de Merkle sur des condensés salés avec des points de contrôle signés
 legal:
   license: Community-Spec-1.0
 maintenance:

@@ -1,0 +1,89 @@
+= Conservation, préservation de la preuve et destruction
+include::_fpsot-terms.adoc[]
+
+Ces règles fixent combien de temps un magasin de journaux conserve les enregistrements, et comment il les détruit.
+Un enregistrement que détient un organisme public est un document de cet organisme.
+Au Québec, un organisme peut détruire ses documents seulement selon son calendrier de conservation.
+Une tâche qui efface de vieux journaux détruit donc des documents de l’organisme.
+Elle doit ainsi laisser une trace de ce qu’elle a détruit.
+
+== Conservation
+
+[[OBS-100]]
+*OBS-100.* Un magasin de journaux DOIT permettre à l’exploitant de fixer une durée de conservation par flux, en deux niveaux.
+Au niveau en ligne, les enregistrements sont prêts pour la recherche.
+Au niveau de stockage, ils sont hors de la recherche, mais peuvent revenir sur demande.
+Un composant et un magasin NE DOIVENT PAS fixer de durée de conservation dans leur code.
+Un magasin NE DOIT PAS détruire un enregistrement avant la fin de la durée qui s’applique à lui.
+Les lois varient selon le territoire, et seul l’exploitant peut donc fixer la durée.
+
+[[OBS-101]]
+*OBS-101.* Un magasin de journaux DOIT livrer le profil de conservation `ca-qc-floor`, et l’appliquer quand l’exploitant n’en fixe aucun autre.
+
+[cols="2,1,1",options="header"]
+|===
+|Enregistrements |Niveau en ligne |Niveau de stockage
+|Chaque flux |90 jours |180 jours après le niveau en ligne
+|Enregistrements liés à un incident de sécurité |2 ans |Aucun
+|===
+
+Les 180 jours du niveau de stockage suivent les 90 jours du niveau en ligne, pour 270 jours en tout.
+
+L’exploitant DOIT fixer une durée plus longue quand une loi ou son calendrier de conservation l’exige.
+Un magasin PEUT livrer d’autres profils nommés.
+La mesure `AU-11` du {abbr-cgcd-first} fixe 90 jours en ligne, 180 en stockage et 2 ans pour les incidents.
+Le link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[guide sur la consignation des événements] du Secrétariat du Conseil du Trésor fixe des valeurs presque identiques pour l’infonuagique.
+Le profil respecte donc les deux comme plancher, et les autres lois peuvent seulement l’allonger.
+
+[[OBS-102]]
+*OBS-102.* Chaque règle de conservation d’un magasin DOIT nommer la règle du calendrier de conservation qu’elle applique.
+Une règle d’un calendrier de conservation du Québec ou une autorisation fédérale de disposition en sont des exemples.
+Un magasin DOIT consigner cette référence avec chaque destruction, selon OBS-104.
+Une équipe d’audit peut alors vérifier chaque destruction par rapport au calendrier qui l’a permise.
+
+== Préservation de la preuve
+
+[[OBS-103]]
+*OBS-103.* Un magasin de journaux DOIT permettre à un rôle autorisé d’imposer une {term-legal-hold} sur des enregistrements.
+Un magasin NE DOIT PAS détruire les enregistrements visés avant la levée de la mesure, même après leur conservation.
+La mesure DOIT pouvoir viser les enregistrements d’un objet, d’une période ou d’un flux.
+Chaque mesure, et chaque levée de mesure, DOIT créer un événement d’audit selon OBS-043.
+L’exploitant impose la mesure pour une demande d’accès ouverte, une plainte, un incident ou une poursuite.
+Au fédéral, l’article 4 du link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Règlement sur la protection des renseignements personnels] exige une telle mesure jusqu’à l’épuisement des recours.
+
+== Destruction
+
+[[OBS-104]]
+*OBS-104.* Chaque destruction d’un magasin de journaux DOIT créer un événement d’audit avec l’`EventName` `org.fpsot.observability.record-batch.destroyed`.
+L’événement DOIT donner le flux, la période et le nombre d’enregistrements.
+Il DOIT aussi donner la règle de conservation selon OBS-102 et le dernier point de contrôle d’OBS-112.
+Il NE DOIT PAS contenir le contenu des enregistrements détruits.
+L’événement prouve qu’une destruction a suivi le calendrier, sans garder ce que le calendrier demandait de détruire.
+
+[[OBS-105]]
+*OBS-105.* Un magasin qui transfère des enregistrements vers un autre format ou support DOIT garder une trace du transfert.
+Cette trace DOIT donner la méthode, la date et le nombre d’enregistrements.
+Elle DOIT aussi donner un condensé des enregistrements avant et après le transfert.
+La loi québécoise sur les technologies de l’information demande de documenter un transfert, dans des articles _à vérifier_.
+Un condensé avant et après montre que le transfert n’a rien changé.
+
+[[OBS-106]]
+*OBS-106.* Avant de commencer, chaque exportation vers l’exploration de processus DOIT indiquer sa finalité et sa durée de conservation.
+Elle DOIT aussi indiquer la date de fin de sa clé de pseudonyme.
+La personne gardienne DOIT détruire la clé à cette date, selon OBS-093.
+Sans date de fin, une exportation resterait un renseignement personnel pour toujours.
+
+== Références
+
+=== Références informatives
+
+* link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance], Treasury Board of Canada Secretariat, 2025-12-08. link:https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Copie archivée]
+* link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Privacy Regulations, SOR/83-508, section 4], Government of Canada, Justice Laws Website. link:https://web.archive.org/web/20260520065359/https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

@@ -1,8 +1,113 @@
 = Spécification FPSOT sur l'observabilité
 include::_fpsot-terms.adoc[]
 
-Remplacez cette page par le texte normatif de la spécification.
-Commencez par la portée, puis les classes de conformité, puis les exigences.
+Cette spécification fixe comment les logiciels de la {abbr-fpsot-first} consignent leurs journaux, leurs traces et leurs métriques.
+Elle fixe aussi comment un organisme public conserve, protège et détruit ces enregistrements.
+Les mêmes enregistrements servent trois publics.
+Certains exploitent le logiciel, d’autres le vérifient et d’autres étudient ses processus.
+
+Les règles reposent sur link:https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md[OpenTelemetry], une norme ouverte de la Cloud Native Computing Foundation.
+Elles nomment des capacités et des normes, pas des produits.
+Les produits n’apparaissent que dans la page informative sur les profils de mise en œuvre.
+
+== Parties et flux
+
+Les règles visent trois parties.
+
+* Un composant est un programme qui émet des enregistrements, comme un service ou un traitement par lots.
+* Un magasin de journaux est le système qui reçoit les enregistrements, les conserve et les détruit selon le calendrier.
+Il comprend tout collecteur placé entre les composants et le stockage.
+* L’exploitant est l’organisme public qui fait fonctionner les composants et le magasin de journaux, et qui répond de ses enregistrements.
+
+Chaque événement appartient à l’un de trois flux, selon OBS-014.
+
+* Le flux technique aide les personnes qui exploitent le logiciel, avec les erreurs, les avertissements et les diagnostics.
+* Le flux d’audit consigne qui a fait quoi à quelle information, pour la sécurité et la reddition de comptes.
+* Le flux d’affaires consigne les étapes des processus d’affaires, pour l’exploration de processus.
+
+== Parties de la spécification
+
+Les règles se répartissent en dix parties, que suivent deux pages informatives.
+
+* xref:inventory.adoc[Inventaire et schéma des journaux] fixe le fichier qui énumère ce que consigne chaque composant.
+* xref:records.adoc[Enregistrements, noms et temps] fixe le modèle d’enregistrement, les noms, les identifiants et l’horodatage.
+* xref:audit-events.adoc[Événements d’audit] fixe les événements que consigne le flux d’audit.
+* xref:traces.adoc[Traces et propagation] fixe comment une requête transmet sa trace d’un service au suivant.
+* xref:metrics.adoc[Métriques] fixe les mesures, dont l’état de la chaîne de journalisation.
+* xref:business-events.adoc[Événements d’affaires pour l’exploration de processus] fixe l’activité, le cycle de vie et les objets de chaque étape.
+* xref:export.adoc[Exportation et transport] fixe les formats de sortie et la façon dont les enregistrements atteignent le magasin.
+* xref:privacy.adoc[Vie privée et minimisation] fixe les renseignements personnels qu’un enregistrement peut contenir.
+* xref:retention.adoc[Conservation, préservation de la preuve et destruction] fixe la durée de vie des enregistrements et leur fin.
+* xref:integrity.adoc[Intégrité et preuve d’altération] fixe comment un magasin prouve que personne n’a modifié ses enregistrements.
+* xref:implementation.adoc[Profils de mise en œuvre] est informative, et montre comment certains cadriciels respectent les règles.
+* xref:counsel.adoc[Questions pour le conseiller juridique] est informative, et énumère les points qu’une ou un juriste doit trancher.
+
+== Spécifications connexes
+
+Cette spécification s’appuie sur d’autres spécifications de la {abbr-fpsot}, et cite leurs règles par numéro.
+
+* La spécification sur le nommage fixe la forme des noms d’événements, selon NAM-050 et NAM-051.
+* La spécification sur les types de données fixe la forme des instants et des identifiants, selon DAT-010 et DAT-063.
+* La spécification sur les vocabulaires fixe les schémas de concepts des clés d’activité et des codes de finalité.
+* La spécification sur la sécurité fixe comment un projet gère ses secrets et signale une {term-vulnerability}, selon SEC-020 et SEC-040.
+* La spécification sur la conception des {abbr-api-first} fixe les interfaces {abbr-http-first} et les événements entre services.
+* La spécification sur les tests fixe les suites de conformité, selon TST-044 à TST-048.
+
+La spécification FPSOT sur l’identité et l’accès énumère les événements d’identité et d’accès, et fixe ce que chacun contient.
+Cette spécification fixe comment un composant consigne tout événement d’audit, et comment un magasin le conserve et le protège.
+
+== Profils
+
+Un composant ou un magasin de journaux revendique un ou plusieurs profils.
+Chaque profil est un ensemble de règles qu’un organisme acheteur peut exiger par son nom.
+
+[cols="2,3,3",options="header"]
+|===
+|Profil |Qui le revendique |Règles
+|`base` |Chaque composant et chaque magasin de journaux |OBS-001 à OBS-004, OBS-010 à OBS-014, OBS-020 à OBS-033, OBS-040 à OBS-046, OBS-080 à OBS-085, OBS-090 à OBS-096, OBS-100 à OBS-106
+|`traces-metrics` |Chaque composant qui sert ou envoie des requêtes |OBS-050 à OBS-054, OBS-060 à OBS-063
+|`process-mining` |Chaque composant qui émet des événements d’affaires, et chaque outil qui les exporte |OBS-070 à OBS-079, OBS-086, OBS-087
+|`audit-integrity` |Chaque magasin de journaux qui conserve un flux d’audit ou un flux d’affaires |OBS-110 à OBS-117
+|===
+
+[[OBS-001]]
+*OBS-001.* Un composant ou un magasin de journaux DOIT déclarer, dans son inventaire selon OBS-010, les profils qu’il revendique.
+Il DOIT respecter chaque règle DOIT de chaque profil qu’il revendique.
+Chaque composant et chaque magasin de journaux DOIVENT revendiquer le profil `base`.
+Un composant qui émet des événements d’affaires DOIT revendiquer le profil `process-mining`.
+Un magasin qui conserve un flux d’audit ou d’affaires DOIT revendiquer le profil `audit-integrity`.
+Un profil nommé permet d’exiger un ensemble connu de règles, et indique aux équipes de test quoi vérifier.
+
+[[OBS-002]]
+*OBS-002.* Une mise en œuvre DOIT suivre les versions des normes externes que cette page énumère sous Normes.
+Elle PEUT suivre une version mineure ultérieure de la même norme.
+Cela vaut seulement si les parties qu’elle utilise gardent le même statut et le même sens.
+OpenTelemetry publie souvent, et une version épinglée indique à tout le lectorat le texte qui s’applique.
+
+[[OBS-003]]
+*OBS-003.* Une mise en œuvre NE DOIT PAS dépendre d’une fonction OpenTelemetry en Development ou Alpha pour respecter une règle.
+Elle PEUT utiliser une telle fonction à une autre fin.
+Elle DOIT alors inscrire la fonction et sa version épinglée dans son inventaire.
+Les profils, les entités, l’exportateur de fichiers et les conventions sémantiques en Development en sont des exemples.
+Ces fonctions peuvent changer à chaque version, et une règle qui en dépendrait se briserait.
+
+[[OBS-004]]
+*OBS-004.* Une suite de conformité de cette spécification DOIT vérifier la sortie d’une mise en œuvre, selon TST-044.
+La sortie comprend ses enregistrements, ses exportations et ses points de contrôle.
+La suite NE DOIT PAS avoir besoin du code source de la mise en œuvre.
+Chaque règle de cette spécification nomme la sortie qui la démontre.
+Un outil de conformité suivra dans une version ultérieure, et le dossier `examples/` contient les premiers jeux d’essai.
+
+== Exemples
+
+Le dossier `examples/` contient trois fichiers qui respectent ces règles.
+
+* `log-record.jsonl` est un événement d’audit dans la forme {abbr-json-first} Lines d’OBS-080.
+* `business-events.otlp.json` contient trois événements d’affaires dans la forme {abbr-otlp-first} d’OBS-081.
+* `ocel-export.json` est l’exportation {abbr-ocel-first} 2.0 de ces trois événements, selon OBS-086 et OBS-087.
+
+Le script `examples/check-examples.py` les vérifie.
+Le script `examples/test-examples.sh` vérifie qu’il rejette des copies erronées.
 
 == Conformité
 
@@ -11,35 +116,44 @@ ____
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 (link:https://www.rfc-editor.org/info/rfc2119[RFC 2119], link:https://www.rfc-editor.org/info/rfc8174[RFC 8174]) when, and only when, they appear in all capitals, as shown here.
 ____
 
-Les mots clés suivent l'exigence WRT-010 de la spécification de rédaction de la {abbr-fpsot-first}.
-La version française emploie les mots clés français de l'exigence WRT-011.
+Les mots clés suivent l’exigence WRT-010 de la spécification de rédaction de la {abbr-fpsot}.
+La version française emploie les mots clés français de l’exigence WRT-011.
 
-== Exigences
+== Statut juridique
 
-Donnez à chaque exigence une ancre avec son identifiant, juste au-dessus de son paragraphe.
-L'ancre ressemble à `+[[XYZ-001]]+`.
-L'exemple ci-dessous montre la forme. Remplacez-le par la première exigence.
+La spécification énonce la pratique de la {abbr-fpsot}, et elle ne constitue pas un avis juridique.
+Les points qui demandent un avis juridique figurent dans des notes informatives et dans les questions pour le conseiller juridique.
+Ils ne figurent jamais dans une règle.
 
-[[TPL-001]]
-*TPL-001.* Un énoncé normatif DOIT employer un des mots clés du {abbr-bcp-first} 14, en majuscules.
-Le mot clé donne sa force à la règle.
+== Normes
+
+Les règles résument les normes externes dans leurs propres mots et n’en reprennent aucun texte.
+Elles citent ces versions :
+
+* link:https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md[OpenTelemetry Specification 1.62.0], pour le modèle de données des journaux et l’{abbr-api} des journaux;
+* link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol, opentelemetry-proto 1.11.1];
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[OpenTelemetry semantic conventions 1.45.0], pour les parties au statut Stable;
+* link:https://www.w3.org/TR/trace-context/[W3C Trace Context Level 1];
+* link:https://arxiv.org/abs/2403.01975[OCEL 2.0 Specification], pour l’exportation vers l’exploration de processus;
+* link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[C2SP tlog-checkpoint v1.1.0], pour les points de contrôle signés.
 
 == Références
-
-Donnez ici chaque source externe que cite cette page, avec la même adresse que son lien dans le texte.
-Chaque entrée donne le titre, l'éditeur, la version, la date et une copie archivée.
 
 === Références normatives
 
 * link:https://www.rfc-editor.org/info/rfc2119[RFC 2119, Key words for use in RFCs to Indicate Requirement Levels], IETF, BCP 14, 1997-03. link:https://web.archive.org/web/20261103005705/https://www.rfc-editor.org/info/rfc2119/[Copie archivée]
 * link:https://www.rfc-editor.org/info/rfc8174[RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words], IETF, BCP 14, 2017-05. link:https://web.archive.org/web/20261103005743/https://www.rfc-editor.org/info/rfc8174/[Copie archivée]
+* link:https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md[OpenTelemetry Specification, Logs Data Model], OpenTelemetry, 1.62.0, 2026-10-22.
+* link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol Specification], OpenTelemetry, opentelemetry-proto 1.11.1, 2026-09-29.
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[OpenTelemetry Semantic Conventions, Naming], OpenTelemetry, 1.45.0, 2026-11-02.
+* link:https://www.w3.org/TR/trace-context/[Trace Context], W3C, Level 1, Recommendation. link:https://web.archive.org/web/20261101165619/https://www.w3.org/TR/trace-context/[Copie archivée]
+* link:https://arxiv.org/abs/2403.01975[OCEL (Object-Centric Event Log) 2.0 Specification], RWTH Aachen University, 2.0, 2024-03-04. link:https://web.archive.org/web/20261024211221/https://arxiv.org/abs/2403.01975[Copie archivée]
+* link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[Transparency Log Checkpoints], Community Cryptography Specification Project, v1.1.0, 2026-10-07.
 
 == Historique du document
-
-Ajoutez une ligne pour chaque version qui modifie cette page.
 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Changement
-|0.1.0 |2026-11-03 |Première version.
+|0.1.0 |2026-11-10 |Première version.
 |===

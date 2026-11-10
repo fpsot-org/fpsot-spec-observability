@@ -1,0 +1,97 @@
+= Integrity and tamper evidence
+include::_fpsot-terms.adoc[]
+
+These rules set how a log store proves that nobody changed, added or removed a record.
+They cover the audit and business streams.
+They apply to each log store that claims the `audit-integrity` profile.
+
+The log store adds each record to a Merkle tree, where each leaf commits to one record.
+It then signs, at regular times, a short checkpoint that states the size of the tree and its root hash.
+Anyone with the public key can check that a record is in the tree.
+They can also check that a later tree still holds every earlier record.
+The design keeps a salted hash in each leaf, never the record itself.
+A log store can then destroy a record on schedule, and the proofs over the other records stay valid.
+
+== The tree
+
+[[OBS-110]]
+*OBS-110.* A log store MUST add each audit and business record to an append-only Merkle tree, as it arrives.
+The tree MUST be the Merkle hash tree of link:https://www.rfc-editor.org/info/rfc6962[RFC 6962], which the checkpoints of OBS-112 use.
+A log store MAY also add the records of the technical stream, in the same tree or in another.
+Control `AU-09(03)` of the {abbr-cgcd-first} asks to protect audit information with cryptography, such as signed hashes.
+
+[[OBS-111]]
+*OBS-111.* Each leaf MUST commit to a salted hash of one record, never to the record itself.
+The hash MUST be SHA-256 over a random salt of 32 bytes or more, then the canonical record.
+The canonical form MUST be the link:https://www.rfc-editor.org/info/rfc8785[JSON Canonicalization Scheme] of the {abbr-json-first} Lines record of OBS-080.
+The log store MUST keep each salt with its record, and MUST destroy the salt when it destroys the record.
+Without the salt, nobody can test a guess against the leaf, and a destroyed record leaves a useless hash.
+
+== Checkpoints
+
+[[OBS-112]]
+*OBS-112.* A log store MUST sign checkpoints of its tree in the format of link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[C2SP tlog-checkpoint v1.1.0].
+Each checkpoint MUST carry an Ed25519 log signature, under link:https://www.rfc-editor.org/info/rfc8032[RFC 8032].
+It MUST sign a new checkpoint at the interval that its inventory states, and SHOULD do so at least hourly.
+The origin line of the checkpoint MUST name the log store and its operator.
+This specification follows the format by reference, which is short, open and in use by public transparency logs.
+
+[[OBS-113]]
+*OBS-113.* A log store MUST publish each checkpoint to a store on another system, under the control of another role.
+It MUST publish the public key of the log.
+It MUST keep the private key in a secret store, under SEC-020 and SEC-023.
+Control `AU-09(02)` of the {abbr-cgcd} asks for a separate repository.
+Someone who controls the log store cannot then replace the history and its checkpoints at once.
+
+[[OBS-114]]
+*OBS-114.* At least one independent witness SHOULD cosign each checkpoint.
+The witness can be another public body or the archives function of the operator.
+A witness MAY add an ML-DSA-44 cosignature of link:https://csrc.nist.gov/pubs/fips/204/final[FIPS 204], as the format allows.
+A witness checks that each new checkpoint is consistent with the last one that it saw.
+A log store that shows two different histories to two readers would then need the witness to lie too.
+
+== Verification and access
+
+[[OBS-115]]
+*OBS-115.* A log store MUST check the inclusion proof of each record that it returns.
+It MUST check that each new checkpoint is consistent with the last one.
+It MUST also check the whole tree on a schedule that the operator sets.
+A failed check MUST raise an alert to the roles that the operator names, and MUST create an audit event.
+A check that nobody runs proves nothing.
+
+[[OBS-116]]
+*OBS-116.* A log store SHOULD move each closed part of the tree and its records to write-once storage.
+Such storage allows no change before a set date.
+An example is object storage with a retention lock.
+Write-once storage adds a second barrier, which the federal link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance] also recommends.
+
+[[OBS-117]]
+*OBS-117.* Only a small set of privileged roles MAY manage a log store.
+Other roles MUST have read access only.
+A role whose actions the log store records MUST NOT be able to change or delete those records.
+A log store SHOULD map its integrity fields to the `record_integrity` profile of the link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework 1.9.0].
+Controls `AU-09(04)` and `AU-09(06)` of the {abbr-cgcd} ask for this split of roles.
+An administrator who can erase the trace of their own actions makes every trace doubtful.
+
+== References
+
+=== Normative
+
+* link:https://www.rfc-editor.org/info/rfc6962[RFC 6962, Certificate Transparency], IETF, Experimental, 2013-06. link:https://web.archive.org/web/20261101080644/https://www.rfc-editor.org/info/rfc6962/[Archived copy]
+* link:https://www.rfc-editor.org/info/rfc8785[RFC 8785, JSON Canonicalization Scheme (JCS)], IETF, Informational, 2020-06. link:https://web.archive.org/web/20261101103813/https://www.rfc-editor.org/info/rfc8785/[Archived copy]
+* link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[Transparency Log Checkpoints], Community Cryptography Specification Project, v1.1.0, 2026-10-07.
+* link:https://www.rfc-editor.org/info/rfc8032[RFC 8032, Edwards-Curve Digital Signature Algorithm (EdDSA)], IETF, Informational, 2017-01. link:https://web.archive.org/web/20261029183021/https://www.rfc-editor.org/info/rfc8032/[Archived copy]
+
+=== Informative
+
+* link:https://csrc.nist.gov/pubs/fips/204/final[FIPS 204, Module-Lattice-Based Digital Signature Standard], NIST, 2024-08-13. link:https://web.archive.org/web/20261101165037/https://csrc.nist.gov/pubs/fips/204/final[Archived copy]
+* link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance], Treasury Board of Canada Secretariat, 2025-12-08. link:https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Archived copy]
+* link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework], OCSF project of the Linux Foundation, 1.9.0, 2026-08-03.
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===
