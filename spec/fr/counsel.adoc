@@ -11,7 +11,7 @@ Cette page marque chacun d’eux comme _à vérifier_.
 == Statut des mesures québécoises
 
 1. Le référentiel de mesures de sécurité du {abbr-cgcd-first} lie-t-il chaque organisme public, ou seulement certaines catégories d’organismes?
-La question vise les mesures `AU-02`, `AU-03`, `AU-08`, `AU-09`, `AU-11` et `SC-45(01)`.
+La question vise les mesures `AU-02`, `AU-03`, `AU-08`, `AU-11`, `AU-12` et `SC-45(01)`, que les fiches marquent comme obligatoires.
 La loi québécoise sur la gouvernance des ressources informationnelles donne leur force à ces mesures.
 L’article de cette loi qui le fait est _à vérifier_.
 2. La Directive gouvernementale sur la sécurité de l’information fixe-t-elle un format ou une durée de conservation pour les journaux?
@@ -49,7 +49,11 @@ Quand le journal n’est-il qu’une télémétrie de sécurité?
 
 == Conservation
 
-1. Combien de temps un organisme public doit-il garder les inscriptions de son registre des incidents de confidentialité?
+1. La mesure `AU-11` fixe 90 jours en ligne et 180 jours en stockage pour les enregistrements d’audit.
+Les 180 jours s’ajoutent-ils aux 90 jours, pour 270 jours en tout, ou les comprennent-ils?
+OBS-101 prend la lecture additive comme plancher, et cette lecture est une interprétation de la {abbr-fpsot}.
+La mesure vise-t-elle aussi les enregistrements des processus d’affaires, qu’OBS-101 garde aussi longtemps?
+2. Combien de temps un organisme public doit-il garder les inscriptions de son registre des incidents de confidentialité?
 La recherche a trouvé 5 ans, et cette valeur est _à vérifier_.
 Les journaux qui appuient une inscription doivent-ils rester aussi longtemps?
 

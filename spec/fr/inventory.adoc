@@ -40,6 +40,7 @@ Un attribut dont la classe n’est pas `none` DOIT aussi indiquer sa finalité.
 
 L’{term-privacy-impact-assessment} du système peut alors citer chaque champ par son nom.
 La mesure `AU-03(03)` du {abbr-cgcd-first} limite les renseignements personnels des enregistrements d’audit aux éléments que cette évaluation désigne.
+Cette mesure n’est pas obligatoire, mais la mesure obligatoire `AU-12` demande de retirer ceux dont la vérification n’a pas besoin.
 Un identifiant pseudonyme reste un renseignement personnel, comme le précise OBS-094.
 La classe montre seulement à quel point il mène directement à une personne.
 
@@ -66,11 +67,34 @@ Un enregistrement technique PEUT l’omettre, et un lecteur le traite alors comm
 Chaque flux a ses propres règles de conservation, de lecture et d’intégrité.
 Un magasin de journaux peut ainsi trier les enregistrements sans lire leur contenu.
 
+== L’inventaire d’un magasin de journaux
+
+[[OBS-015]]
+*OBS-015.* Chaque magasin de journaux DOIT livrer un inventaire, dans la forme d’OBS-010.
+Un déploiement DOIT aussi avoir un inventaire, qui couvre les parties qu’aucun inventaire de composant ne couvre.
+L’inventaire d’un magasin de journaux ou d’un déploiement DOIT énumérer :
+
+* les profils que revendique chaque partie, selon OBS-001, et la partie qui revendique `audit-integrity`;
+* les flux qu’il conserve, et les composants qui envoient chacun d’eux;
+* le profil de conservation et la durée de chaque flux, selon OBS-100 et OBS-101;
+* les rôles qui peuvent lire, interroger ou exporter chaque flux;
+* l’intervalle des points de contrôle et l’origine de chaque arbre, selon OBS-112;
+* chaque clé publique du journal, avec sa période de validité, selon OBS-113.
+
+L’audit a besoin d’un seul endroit qui dit comment les enregistrements sont conservés et protégés.
+Les inventaires des composants ne peuvent pas le dire, car l’exploitant fait ces choix au déploiement.
+
 == Références
 
 === Références normatives
 
 * link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+
+=== Références informatives
+
+* Référentiel de sécurité, fiche AU-02, Journalisation d’événements, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-02/ref-au-02.pdf`.
+* Référentiel de sécurité, fiche AU-03(03), Limitation des éléments liés aux renseignements personnels, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-03-03/ref-au-03-03.pdf`.
+* Référentiel de sécurité, fiche AU-12, Génération d’enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-12/ref-au-12.pdf`.
 
 == Historique du document
 

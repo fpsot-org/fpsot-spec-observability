@@ -17,6 +17,8 @@ The rules address three parties.
 * A component is a program that emits records, such as a service or a batch job.
 * A log store is the system that receives records, keeps them and destroys them on schedule.
 It includes any collector between the components and the storage.
+* An integrity service is a separate part of a deployment that builds the Merkle tree of the integrity rules.
+It can be a sidecar or a collector stage that reads the records of the log store.
 * The operator is the public body that runs the components and the log store, and that answers for its records.
 
 Each event belongs to one of three streams, under OBS-014.
@@ -64,19 +66,26 @@ Each profile is a set of rules that a buyer can require by name.
 [cols="2,3,3",options="header"]
 |===
 |Profile |Who claims it |Rules
-|`base` |Each component and each log store |OBS-001 to OBS-004, OBS-010 to OBS-014, OBS-020 to OBS-033, OBS-040 to OBS-046, OBS-080 to OBS-085, OBS-090 to OBS-096, OBS-100 to OBS-106
-|`traces-metrics` |Each component that serves or sends requests |OBS-050 to OBS-054, OBS-060 to OBS-063
+|`base` |Each component and each log store |OBS-001 to OBS-004, OBS-010 to OBS-015, OBS-020 to OBS-033, OBS-040 to OBS-046, OBS-080 to OBS-085, OBS-090 to OBS-096, OBS-100 to OBS-106
+|`traces-metrics` |Each component that serves or sends {abbr-http} requests or remote procedure calls |OBS-050 to OBS-054, OBS-060 to OBS-063
 |`process-mining` |Each component that emits business events, and each tool that exports them |OBS-070 to OBS-079, OBS-086, OBS-087
-|`audit-integrity` |Each log store that keeps an audit stream or a business stream |OBS-110 to OBS-117
+|`audit-integrity` |Each log store or integrity service that protects an audit stream or a business stream |OBS-110 to OBS-117
 |===
 
 [[OBS-001]]
-*OBS-001.* A component or a log store MUST state, in its inventory under OBS-010, the profiles that it claims.
+*OBS-001.* Each component, log store and integrity service MUST state its profiles in its inventory, under OBS-010 or OBS-015.
 It MUST meet every MUST rule of each profile that it claims.
 Each component and each log store MUST claim the `base` profile.
+A component that serves or sends {abbr-http} requests or remote procedure calls MUST claim the `traces-metrics` profile.
 A component that emits business events MUST claim the `process-mining` profile.
-A log store that keeps an audit stream or a business stream MUST claim the `audit-integrity` profile.
 A named profile lets a buyer ask for a known set of rules, and tells a tester what to check.
+
+A deployment that keeps an audit stream or a business stream MUST protect it under the `audit-integrity` profile.
+The log store MAY claim that profile itself.
+Otherwise, an integrity service of the deployment MUST claim it for those streams.
+A plain log store then claims only `base`, and the rules of the integrity page apply to the integrity service.
+The deployment inventory of OBS-015 MUST name the part that claims the profile.
+Operators can then keep a log store that they already run, and add the tree beside it.
 
 [[OBS-002]]
 *OBS-002.* An implementation MUST follow the versions of the outside standards that this page lists under Standards.
@@ -123,6 +132,20 @@ The French version uses the French keywords of WRT-011.
 The specification states the practice of {abbr-fpsot}, and it is not legal advice.
 Points that need a lawyer sit in informative notes and in the questions for counsel, never in a rule.
 
+== Status of the Québec controls
+
+This section is informative.
+The security référentiel of the {abbr-cgcd-first} marks some controls as mandatory, with a deadline of 2024-12-14.
+They are `AU-02`, `AU-03`, `AU-08`, `AU-11`, `AU-12`, `SC-45` and `SC-45(01)`.
+Other controls that this specification cites name no responsible party, so they are not mandatory.
+They are `AU-03(03)`, `AU-09`, `AU-09(02)`, `AU-09(03)`, `AU-09(04)`, `AU-09(06)` and `SI-12`.
+
+The integrity rules therefore do not come from a Québec mandate.
+These rules are a choice of {abbr-fpsot}, which lets a reader detect changes to the audit and business streams.
+The limit on personal information in OBS-090 rests on the mandatory control `AU-12`.
+That control asks to remove personal information that an audit does not need.
+The sheets cited below are those of 15 July 2026.
+
 == Standards
 
 The rules summarize outside standards in their own words and take no text from them.
@@ -133,7 +156,7 @@ They cite these versions:
 * link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[OpenTelemetry semantic conventions 1.45.0], for the parts with the status Stable;
 * link:https://www.w3.org/TR/trace-context/[W3C Trace Context Level 1];
 * link:https://arxiv.org/abs/2403.01975[OCEL 2.0 Specification], for the process-mining export;
-* link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[C2SP tlog-checkpoint v1.1.0], for signed checkpoints.
+* link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[C2SP tlog-checkpoint v1.1.0], for signed checkpoints, known as `c2sp.org/tlog-checkpoint@v1.1.0`.
 
 == References
 
@@ -147,6 +170,23 @@ They cite these versions:
 * link:https://www.w3.org/TR/trace-context/[Trace Context], W3C, Level 1, Recommendation. link:https://web.archive.org/web/20261101165619/https://www.w3.org/TR/trace-context/[Archived copy]
 * link:https://arxiv.org/abs/2403.01975[OCEL (Object-Centric Event Log) 2.0 Specification], RWTH Aachen University, 2.0, 2024-03-04. link:https://web.archive.org/web/20261024211221/https://arxiv.org/abs/2403.01975[Archived copy]
 * link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[Transparency Log Checkpoints], Community Cryptography Specification Project, v1.1.0, 2026-10-07.
+
+=== Informative
+
+* Référentiel de sécurité, fiche AU-02, Journalisation d’événements, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-02/ref-au-02.pdf`.
+* Référentiel de sécurité, fiche AU-03, Contenu des enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-03/ref-au-03.pdf`.
+* Référentiel de sécurité, fiche AU-03(03), Limitation des éléments liés aux renseignements personnels, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-03-03/ref-au-03-03.pdf`.
+* Référentiel de sécurité, fiche AU-08, Horodatage du contrôle, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-08/ref-au-08.pdf`.
+* Référentiel de sécurité, fiche AU-09, Protection de l’information de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09/ref-au-09.pdf`.
+* Référentiel de sécurité, fiche AU-09(02), Stockage sur des systèmes ou des composants physiques séparés, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-02/ref-au-09-02.pdf`.
+* Référentiel de sécurité, fiche AU-09(03), Protection cryptographique, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-03/ref-au-09-03.pdf`.
+* Référentiel de sécurité, fiche AU-09(04), Accès par un sous-ensemble d’utilisateurs privilégiés, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-04/ref-au-09-04.pdf`.
+* Référentiel de sécurité, fiche AU-09(06), Accès en lecture seule, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-06/ref-au-09-06.pdf`.
+* Référentiel de sécurité, fiche AU-11, Conservation des enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-11/ref-au-11.pdf`.
+* Référentiel de sécurité, fiche AU-12, Génération d’enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-12/ref-au-12.pdf`.
+* Référentiel de sécurité, fiche SC-45, Synchronisation temporelle des systèmes, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/sc-45/ref-sc-45.pdf`.
+* Référentiel de sécurité, fiche SC-45(01), Synchronisation avec une source de temps faisant autorité, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/sc-45-01/ref-sc-45-01.pdf`.
+* Référentiel de sécurité, fiche SI-12, Gestion et conservation de l’information, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/si-12/ref-si-12.pdf`.
 
 == Document history
 

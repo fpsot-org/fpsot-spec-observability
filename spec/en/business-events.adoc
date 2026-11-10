@@ -32,12 +32,12 @@ The labels come from the scheme in both languages, so a bilingual system never s
 [cols="1,2,2",options="header"]
 |===
 |Code |Meaning |Label in French
-|`schedule` |Someone planned the step, or put it in a queue. |planifiée
-|`start` |Work on the step began. |commencée
-|`suspend` |Work on the step paused. |suspendue
+|`schedule` |Someone planned the step, or put it in a queue. |planification
+|`start` |Work on the step began. |début
+|`suspend` |Work on the step paused. |suspension
 |`resume` |Work on the step went on after a pause. |reprise
-|`complete` |The step ended with its result. |terminée
-|`abort` |The step ended without its result. |abandonnée
+|`complete` |The step ended with its result. |achèvement
+|`abort` |The step ended without its result. |abandon
 |===
 
 A step that takes no time MUST emit only `complete`.
@@ -46,23 +46,51 @@ These events MUST carry the same activity key and the same objects.
 An event log needs both ends of a step.
 It can then tell the time that a step waits from the time that it takes.
 
+This note is informative.
+The codes and labels of this table will move to a concept scheme of the vocabularies specification.
+The activity keys of OBS-071 live in such a scheme already, and the codes will stay the same.
+
+This note is informative.
+A tool that writes the lifecycle extension of link:https://standards.ieee.org/ieee/1849/10907/[XES] can map the codes as follows.
+
+[cols="1,2",options="header"]
+|===
+|Code |Transition in XES
+|`schedule` |`schedule`
+|`start` |`start`
+|`suspend` |`suspend`
+|`resume` |`resume`
+|`complete` |`complete`
+|`abort` |`ate_abort` after a `start`, and `withdraw` before any `start`
+|===
+
+{abbr-ocel-first} 2.0 has no lifecycle of its own, so OBS-086 exports the code as an event attribute.
+
 == Objects
 
 [[OBS-073]]
 *OBS-073.* Each business event MUST carry the attribute `org.fpsot.objects`, a list of one or more object references.
 Each reference MUST be a map with exactly three members.
 
-* `type` is the name of the LinkML class of the object, such as `Application` or `PartyRole`.
-The data models specification defines these classes.
-* `id` is the identifier of the object, as a string under DAT-060 and DAT-066.
-* `qualifier` is a kebab-case code for the role of the object in this event, such as `subject` or `performer`.
+* `type` is the name of a class of the data models specification, or of the LinkML schema of the product.
+The inventory names each such class, which follows DMO-020, such as `PartyRole` or a product class `Application`.
+* `id` is the internal identifier of the object, as a string under DAT-060 and DAT-061.
+A {abbr-uuid-first} takes the canonical form of DAT-065.
+* `qualifier` is a kebab-case code for the role of the object in this event, such as `subject` or `co-applicant`.
 
 A log store that cannot hold lists of maps MAY use flat attributes instead, of the form `org.fpsot.object.<type>.<qualifier>`.
-The type is then in snake_case, and the value is a list of identifiers.
-An example is `org.fpsot.object.application.subject`.
+The type and the qualifier are then in snake_case, as OBS-022 asks, and the value is a list of identifiers.
+An example is `org.fpsot.object.party_role.co_applicant`.
 A tool that converts between the two forms MUST lose no reference.
 One step can touch several objects, such as an application, a payment and a permit.
 A single case number would hide that.
+
+The conversion is reversible, because a class name treats each abbreviation as one word, under NAM-011.
+
+* To get the snake_case type, put `_` before each capital letter but the first, then use lower case.
+`PartyRole` becomes `party_role`.
+* To get the class name back, write the first letter of each word in capitals, then drop each `_`.
+* The qualifier changes each `-` into `_`, and back.
 
 [[OBS-074]]
 *OBS-074.* A component or a tool MUST NOT use a trace identifier to identify a case or a business object.
@@ -71,10 +99,11 @@ Trace and span identifiers show where a record came from, and nothing more.
 A business case lasts for days and spans many requests, while one request can touch several cases.
 
 [[OBS-075]]
-*OBS-075.* A business event SHOULD name who did the step, as a reference with the qualifier `performer`.
-The reference SHOULD point to the role or the unit, such as a `PartyRole` with the code `case-officer`.
-It MAY point to a person only when the {term-privacy-impact-assessment} of the system allows it.
-It then names the person only by an identifier under OBS-092.
+*OBS-075.* A business event SHOULD carry `org.fpsot.performer.role`, with the code of the role or unit that did the step.
+An example is `case-officer`, from a scheme of the operator under VOC-064.
+The event MAY also carry a `performer` object reference to the person, when the {term-privacy-impact-assessment} allows it.
+That reference names a real person by an identifier under OBS-092, and an export replaces it under OBS-087.
+It MUST NOT point to a role or a unit, which the role attribute holds.
 A role is enough to study a process, while a person identifier turns process mining into the monitoring of staff.
 
 == Models and corrections
@@ -106,6 +135,7 @@ A tool that needs one case per event can then build it in the same way each time
 
 === Informative
 
+* link:https://standards.ieee.org/ieee/1849/10907/[IEEE 1849-2023, Standard for eXtensible Event Stream (XES) for Achieving Interoperability in Event Logs and Event Streams], IEEE, 2023. link:https://web.archive.org/web/20260808221231/https://standards.ieee.org/ieee/1849/10907/[Archived copy]
 * link:https://www.vdaalst.com/publications/p658.pdf[Process Mining Manifesto], IEEE Task Force on Process Mining, 2011. link:https://web.archive.org/web/20240703163130/https://vdaalst.com/publications/p658.pdf[Archived copy]
 
 == Document history

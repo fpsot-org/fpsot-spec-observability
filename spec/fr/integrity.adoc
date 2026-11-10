@@ -1,9 +1,11 @@
-= Intégrité et preuve d’altération
+= Intégrité et détection des altérations
 include::_fpsot-terms.adoc[]
 
 Ces règles fixent comment un magasin de journaux prouve que personne n’a modifié, ajouté ou retiré un enregistrement.
 Elles visent les flux d’audit et d’affaires.
 Elles s’appliquent à chaque magasin de journaux qui revendique le profil `audit-integrity`.
+Elles s’appliquent de la même façon à un service d’intégrité qui le revendique à la place du magasin, selon OBS-001.
+Dans cette page, « magasin de journaux » désigne alors ce service.
 
 Le magasin ajoute chaque enregistrement à un arbre de Merkle, dont chaque feuille engage un seul enregistrement.
 Il signe ensuite, à intervalles réguliers, un court point de contrôle avec la taille de l’arbre et son condensé racine.
@@ -12,18 +14,25 @@ On peut aussi vérifier qu’un arbre ultérieur contient encore chaque enregist
 La conception place un condensé salé dans chaque feuille, jamais l’enregistrement lui-même.
 Un magasin peut alors détruire un enregistrement selon le calendrier, et les preuves des autres enregistrements restent valides.
 
+Cette spécification nomme cette propriété la détection des altérations.
+Aucune mesure du Québec ne la rend obligatoire, car `AU-09` et ses parties ne nomment aucun responsable.
+Ces règles sont le choix de la {abbr-fpsot-first}.
+
 == L’arbre
 
 [[OBS-110]]
 *OBS-110.* Un magasin DOIT ajouter sans délai chaque enregistrement d’audit et d’affaires à un arbre de Merkle en ajout seul.
 L’arbre DOIT être l’arbre de hachage de Merkle du link:https://www.rfc-editor.org/info/rfc6962[RFC 6962], qu’utilisent les points de contrôle d’OBS-112.
 Un magasin PEUT aussi ajouter les enregistrements du flux technique, dans le même arbre ou dans un autre.
-La mesure `AU-09(03)` du {abbr-cgcd-first} demande de protéger l’information d’audit par la cryptographie, comme des condensés signés.
+Il DOIT garder chaque condensé de feuille, ou la tuile qui le contient, pendant toute la vie de l’arbre.
+La mesure `AU-09(03)` du {abbr-cgcd-first}, qui n’est pas obligatoire, suggère des condensés signés pour protéger l’information d’audit.
+Les preuves de chaque enregistrement encore présent ont besoin des condensés de feuille des enregistrements détruits.
 
 [[OBS-111]]
 *OBS-111.* Chaque feuille DOIT engager un condensé salé d’un enregistrement, jamais l’enregistrement lui-même.
 Le condensé DOIT être un SHA-256 d’un sel aléatoire d’au moins 32 octets, suivi de l’enregistrement canonique.
-La forme canonique DOIT être le link:https://www.rfc-editor.org/info/rfc8785[JSON Canonicalization Scheme] de l’enregistrement {abbr-json-first} Lines d’OBS-080.
+L’enregistrement canonique DOIT être la forme UTF-8 link:https://www.rfc-editor.org/info/rfc8785[JSON Canonicalization Scheme] de l’enregistrement conservé d’OBS-080.
+L’enregistrement conservé suit tout filtre d’un collecteur, et chaque entier au-delà de 2^53^ y DOIT être une chaîne.
 Le magasin DOIT garder chaque sel avec son enregistrement, et DOIT détruire le sel en même temps que l’enregistrement.
 Sans le sel, personne ne peut tester une supposition sur la feuille, et un enregistrement détruit laisse un condensé inutile.
 
@@ -32,30 +41,38 @@ Sans le sel, personne ne peut tester une supposition sur la feuille, et un enreg
 [[OBS-112]]
 *OBS-112.* Un magasin de journaux DOIT signer des points de contrôle de son arbre au format link:https://github.com/C2SP/C2SP/blob/b2dd9892338af7009733a4575a6da05811ffae6c/tlog-checkpoint.md[C2SP tlog-checkpoint v1.1.0].
 Chaque point de contrôle DOIT porter une signature de journal Ed25519, selon le link:https://www.rfc-editor.org/info/rfc8032[RFC 8032].
-Il DOIT signer un point de contrôle à l’intervalle de son inventaire, et DEVRAIT le faire au moins chaque heure.
+Il DOIT en signer un à l’intervalle de l’inventaire d’OBS-015, et DEVRAIT le faire au moins chaque heure.
 La ligne d’origine du point de contrôle DOIT nommer le magasin et son exploitant.
+Elle DEVRAIT avoir la forme `<operator domain>/<log name>`, comme `logs.example.org/permit-audit`.
 Cette spécification suit ce format par renvoi, car il est court, ouvert et employé par des journaux de transparence publics.
+
+Ce format est connu sous le nom `c2sp.org/tlog-checkpoint@v1.1.0`.
+Une signature de journal Ed25519 ne contient aucun horodatage.
+L’intervalle se voit donc seulement dans les cosignatures des témoins selon OBS-114, qui en portent un.
 
 [[OBS-113]]
 *OBS-113.* Un magasin DOIT publier chaque point de contrôle dans un dépôt externe, sous le contrôle d’un autre rôle.
-Il DOIT publier la clé publique du journal.
 Il DOIT garder la clé privée dans un magasin de secrets, selon SEC-020 et SEC-023.
-La mesure `AU-09(02)` du {abbr-cgcd} demande un dépôt distinct.
+SEC-023 demande de changer une clé au moins une fois par année.
+Le magasin DOIT donc publier chaque clé publique que le journal a employée, avec sa période de validité.
 Qui contrôle le magasin ne peut alors pas remplacer à la fois l’historique et ses points de contrôle.
+Un lecteur peut encore vérifier un ancien point de contrôle après le changement de clé.
 
 [[OBS-114]]
-*OBS-114.* Au moins un témoin indépendant DEVRAIT cosigner chaque point de contrôle.
+*OBS-114.* Au moins un témoin, c’est-à-dire un cosignataire indépendant, DEVRAIT cosigner chaque point de contrôle.
 Le témoin peut être un autre organisme public ou la fonction des archives de l’exploitant.
-Un témoin PEUT ajouter une cosignature ML-DSA-44 de la link:https://csrc.nist.gov/pubs/fips/204/final[FIPS 204], comme le format le permet.
+Le format recommande les cosignatures ML-DSA-44 de la link:https://csrc.nist.gov/pubs/fips/204/final[FIPS 204], et un témoin DEVRAIT les employer.
+Un magasin PEUT aussi ajouter une cosignature ML-DSA-44 avec une clé à lui, à côté de sa signature Ed25519.
 Un témoin vérifie que chaque nouveau point de contrôle concorde avec le dernier qu’il a vu.
 Un magasin qui montrerait deux historiques différents à deux lecteurs aurait alors besoin que le témoin mente aussi.
 
 == Vérification et accès
 
 [[OBS-115]]
-*OBS-115.* Un magasin de journaux DOIT vérifier la preuve d’inclusion de chaque enregistrement qu’il renvoie.
-Il DOIT vérifier que chaque nouveau point de contrôle concorde avec le dernier.
+*OBS-115.* Un magasin DOIT vérifier la preuve d’inclusion de chaque enregistrement renvoyé, et la concordance de chaque point de contrôle.
 Il DOIT aussi vérifier l’arbre entier selon un calendrier que fixe l’exploitant.
+Elle DOIT alors recalculer la racine du dernier point de contrôle à partir des condensés de feuille d’OBS-110.
+Elle DOIT aussi recalculer la feuille de chaque enregistrement encore présent, à partir de l’enregistrement et de son sel.
 Un échec de vérification DOIT lancer une alerte aux rôles que nomme l’exploitant, et DOIT créer un événement d’audit.
 Une vérification que personne ne fait ne prouve rien.
 
@@ -63,14 +80,16 @@ Une vérification que personne ne fait ne prouve rien.
 *OBS-116.* Un magasin DEVRAIT déplacer chaque partie close de l’arbre et ses enregistrements vers un stockage à écriture unique.
 Un tel stockage n’admet aucun changement avant une date fixée.
 Le stockage d’objets avec verrou de conservation en est un exemple.
+Le verrou d’un enregistrement et chacune de ses sauvegardes DOIVENT prendre fin à sa date de destruction, sauf sous {term-legal-hold}.
 Le stockage à écriture unique ajoute une seconde barrière, que recommande aussi le link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[guide fédéral sur la consignation des événements].
+Un verrou qui dure plus que le calendrier empêcherait la destruction que le calendrier demande.
 
 [[OBS-117]]
 *OBS-117.* Seul un petit ensemble de rôles privilégiés PEUT gérer un magasin de journaux.
 Les autres rôles DOIVENT avoir un accès en lecture seulement.
 Un rôle dont le magasin consigne les actions NE DOIT PAS pouvoir modifier ni supprimer ces enregistrements.
 Un magasin DEVRAIT associer ses champs d’intégrité au profil `record_integrity` de l’link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework 1.9.0].
-Les mesures `AU-09(04)` et `AU-09(06)` du {abbr-cgcd} demandent ce partage des rôles.
+Les mesures `AU-09(04)` et `AU-09(06)` du {abbr-cgcd}, qui ne sont pas obligatoires, décrivent ce partage des rôles.
 Une personne qui peut effacer la trace de ses propres actions rend toute trace douteuse.
 
 == Références
@@ -84,6 +103,10 @@ Une personne qui peut effacer la trace de ses propres actions rend toute trace d
 
 === Références informatives
 
+* Référentiel de sécurité, fiche AU-09, Protection de l’information de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09/ref-au-09.pdf`.
+* Référentiel de sécurité, fiche AU-09(03), Protection cryptographique, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-03/ref-au-09-03.pdf`.
+* Référentiel de sécurité, fiche AU-09(04), Accès par un sous-ensemble d’utilisateurs privilégiés, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-04/ref-au-09-04.pdf`.
+* Référentiel de sécurité, fiche AU-09(06), Accès en lecture seule, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-06/ref-au-09-06.pdf`.
 * link:https://csrc.nist.gov/pubs/fips/204/final[FIPS 204, Module-Lattice-Based Digital Signature Standard], NIST, 2024-08-13. link:https://web.archive.org/web/20261101165037/https://csrc.nist.gov/pubs/fips/204/final[Copie archivée]
 * link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance], Treasury Board of Canada Secretariat, 2025-12-08. link:https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Copie archivée]
 * link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework], OCSF project of the Linux Foundation, 1.9.0, 2026-08-03.

@@ -37,6 +37,21 @@ Le nom d’un segment NE DOIT PAS contenir de valeur variable, comme un chemin q
 Des noms Stable permettent à chaque outil de lire les segments de la même façon.
 Des noms fixes gardent aussi petit le nombre de noms distincts.
 
+Certains attributs Stable de ces conventions peuvent contenir des renseignements personnels ou des secrets.
+Le composant DOIT les retirer ou les tronquer avant l’exportation, dans son propre processus, comme l’indique ce tableau.
+
+[cols="2,3",options="header"]
+|===
+|Attribut |Action
+|`client.address` |Le retirer, ou le tronquer au préfixe réseau d’OBS-091.
+|`network.peer.address` |Le retirer, ou le tronquer au préfixe réseau d’OBS-091.
+|`url.query` |Le retirer, ou garder seulement les noms des paramètres.
+|`url.full` |Le tronquer avant la requête et le fragment.
+|`user_agent.original` |Le retirer, ou le tronquer au nom et à la version du produit.
+|===
+
+Un collecteur qui filtre plus tard arrive trop tard, car la valeur a déjà quitté le processus, selon OBS-083.
+
 [[OBS-054]]
 *OBS-054.* Un attribut de segment DOIT suivre les règles de vie privée d’OBS-090 à OBS-092.
 Un composant DOIT retirer les renseignements personnels et les secrets de chaque adresse et chaîne de requête, selon API-085.

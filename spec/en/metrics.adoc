@@ -24,8 +24,9 @@ It can also show that its clocks were right when it uses a record as evidence.
 *OBS-062.* A metric attribute MUST NOT hold the identifier of a person or of a business object.
 It MUST NOT hold any other value without a fixed bound either.
 An attribute such as a status code or a route template is fine.
+This rule and OBS-090 also apply to the exemplars of a metric, and to their filtered attributes.
 Each distinct value of an attribute creates a new time series, which costs storage.
-A person identifier in a metric also escapes the privacy rules of logs.
+A person identifier in a metric or in its exemplar also escapes the privacy rules of logs.
 
 [[OBS-063]]
 *OBS-063.* A component SHOULD export its metrics over the {abbr-otlp-first} of OBS-081.

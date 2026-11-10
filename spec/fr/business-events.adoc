@@ -33,12 +33,12 @@ Les libellés viennent du schéma dans les deux langues, et un système bilingue
 [cols="1,2,2",options="header"]
 |===
 |Code |Sens |Libellé en français
-|`schedule` |Quelqu’un a planifié l’étape, ou l’a mise en file. |planifiée
-|`start` |Le travail sur l’étape a commencé. |commencée
-|`suspend` |Le travail sur l’étape a fait une pause. |suspendue
+|`schedule` |Quelqu’un a planifié l’étape, ou l’a mise en file. |planification
+|`start` |Le travail sur l’étape a commencé. |début
+|`suspend` |Le travail sur l’étape a fait une pause. |suspension
 |`resume` |Le travail sur l’étape a repris après une pause. |reprise
-|`complete` |L’étape s’est terminée avec son résultat. |terminée
-|`abort` |L’étape s’est terminée sans son résultat. |abandonnée
+|`complete` |L’étape s’est terminée avec son résultat. |achèvement
+|`abort` |L’étape s’est terminée sans son résultat. |abandon
 |===
 
 Une étape instantanée DOIT émettre seulement `complete`.
@@ -47,23 +47,51 @@ Ces événements DOIVENT porter la même clé d’activité et les mêmes objets
 Un journal d’événements a besoin des deux bouts d’une étape.
 Il peut alors distinguer le temps qu’une étape attend du temps qu’elle prend.
 
+Cette note est informative.
+Les codes et les libellés de ce tableau passeront dans un schéma de concepts de la spécification sur les vocabulaires.
+Les clés d’activité d’OBS-071 se trouvent déjà dans un tel schéma, et les codes ne changeront pas.
+
+Cette note est informative.
+Un outil qui écrit l’extension de cycle de vie de link:https://standards.ieee.org/ieee/1849/10907/[XES] peut faire correspondre les codes ainsi.
+
+[cols="1,2",options="header"]
+|===
+|Code |Transition en XES
+|`schedule` |`schedule`
+|`start` |`start`
+|`suspend` |`suspend`
+|`resume` |`resume`
+|`complete` |`complete`
+|`abort` |`ate_abort` après un `start`, et `withdraw` avant tout `start`
+|===
+
+L’{abbr-ocel-first} 2.0 n’a pas de cycle de vie propre, et OBS-086 exporte donc le code comme attribut d’événement.
+
 == Objets
 
 [[OBS-073]]
 *OBS-073.* Chaque événement d’affaires DOIT porter l’attribut `org.fpsot.objects`, une liste d’une ou de plusieurs références à des objets.
 Chaque référence DOIT être une table associative avec exactement trois membres.
 
-* `type` est le nom de la classe LinkML de l’objet, comme `Application` ou `PartyRole`.
-La spécification sur les modèles de données définit ces classes.
-* `id` est l’identifiant de l’objet, sous forme de chaîne selon DAT-060 et DAT-066.
-* `qualifier` est un code en kebab-case pour le rôle de l’objet dans cet événement, comme `subject` ou `performer`.
+* `type` est le nom d’une classe de la spécification sur les modèles de données, ou du schéma LinkML du produit.
+L’inventaire nomme chacune de ces classes, qui suit DMO-020, comme `PartyRole` ou une classe de produit `Application`.
+* `id` est l’identifiant interne de l’objet, sous forme de chaîne selon DAT-060 et DAT-061.
+Un {abbr-uuid-first} prend la forme canonique de DAT-065.
+* `qualifier` est un code en kebab-case pour le rôle de l’objet dans cet événement, comme `subject` ou `co-applicant`.
 
 Un magasin de journaux qui ne peut pas conserver de listes de tables PEUT plutôt utiliser des attributs à plat.
-Leur forme est `org.fpsot.object.<type>.<qualifier>`, avec le type en snake_case et une liste d’identifiants comme valeur.
-Un exemple est `org.fpsot.object.application.subject`.
+Leur forme est `org.fpsot.object.<type>.<qualifier>`, en snake_case selon OBS-022, avec une liste d’identifiants comme valeur.
+Un exemple est `org.fpsot.object.party_role.co_applicant`.
 Un outil qui convertit d’une forme à l’autre NE DOIT PAS perdre de référence.
 Une étape peut toucher plusieurs objets, comme une demande, un paiement et un permis.
 Un seul numéro de dossier le cacherait.
+
+La conversion est réversible, car un nom de classe traite chaque abréviation comme un seul mot, selon NAM-011.
+
+* Pour obtenir le type en snake_case, mettre `_` avant chaque majuscule sauf la première, puis écrire chaque lettre en minuscule.
+`PartyRole` devient `party_role`.
+* Pour retrouver le nom de classe, écrire en majuscule la première lettre de chaque mot, puis retirer chaque `_`.
+* Le qualificatif change chaque `-` en `_`, et inversement.
 
 [[OBS-074]]
 *OBS-074.* Un composant ou un outil NE DOIT PAS désigner un dossier ou un objet par un identifiant de trace.
@@ -72,10 +100,11 @@ Les identifiants de trace et de segment montrent d’où vient un enregistrement
 Un dossier d’affaires dure des jours et couvre de nombreuses requêtes, alors qu’une requête peut toucher plusieurs dossiers.
 
 [[OBS-075]]
-*OBS-075.* Un événement d’affaires DEVRAIT nommer qui a fait l’étape, avec une référence au qualificatif `performer`.
-La référence DEVRAIT désigner le rôle ou l’unité, comme un `PartyRole` avec le code `case-officer`.
-Elle PEUT désigner une personne seulement si l’{term-privacy-impact-assessment} du système le permet.
-Elle nomme alors la personne seulement par un identifiant selon OBS-092.
+*OBS-075.* Un événement d’affaires DEVRAIT porter `org.fpsot.performer.role`, avec le code du rôle ou de l’unité qui a fait l’étape.
+Un exemple est `case-officer`, tiré d’un schéma de l’exploitant selon VOC-064.
+L’événement PEUT aussi porter une référence `performer` à la personne, si l’{term-privacy-impact-assessment} le permet.
+Cette référence nomme une personne réelle par un identifiant selon OBS-092, et une exportation la remplace selon OBS-087.
+Elle NE DOIT PAS désigner un rôle ou une unité, que contient l’attribut de rôle.
 Un rôle suffit pour étudier un processus, alors qu’un identifiant de personne en fait une surveillance du personnel.
 
 == Modèles et corrections
@@ -108,6 +137,7 @@ Un outil qui a besoin d’un dossier par événement peut alors le construire ch
 
 === Références informatives
 
+* link:https://standards.ieee.org/ieee/1849/10907/[IEEE 1849-2023, Standard for eXtensible Event Stream (XES) for Achieving Interoperability in Event Logs and Event Streams], IEEE, 2023. link:https://web.archive.org/web/20260808221231/https://standards.ieee.org/ieee/1849/10907/[Copie archivée]
 * link:https://www.vdaalst.com/publications/p658.pdf[Process Mining Manifesto], IEEE Task Force on Process Mining, 2011. link:https://web.archive.org/web/20240703163130/https://vdaalst.com/publications/p658.pdf[Copie archivée]
 
 == Historique du document

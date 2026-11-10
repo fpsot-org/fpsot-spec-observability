@@ -30,10 +30,16 @@ The file exporter of OpenTelemetry would serve too, but its status is Developmen
 
 [[OBS-081]]
 *OBS-081.* A component SHOULD also export its records over the link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol] of opentelemetry-proto 1.11.1, over {abbr-http-first} or gRPC.
-The reference Java framework of {abbr-fpsot-first} may make its support of OpenTelemetry logs generally available.
-This rule then becomes a MUST in the next minor version of this specification.
-The page on implementation profiles names that framework.
 The {abbr-otlp-first} is Stable for logs, traces and metrics, but some frameworks offer it for logs only as a preview.
+A MUST would then exclude the reference Java framework of {abbr-fpsot-first}, which the page on implementation profiles names.
+
+=== Planned change
+
+This note is informative.
+Once that framework makes its support of OpenTelemetry logs generally available, {abbr-fpsot} plans to make OBS-081 a MUST.
+A stricter rule breaks implementations that met the old one.
+So the change will land in a new major version, as VCS-106 and link:https://semver.org/spec/v2.0.0.html[Semantic Versioning 2.0.0] ask.
+Before version 1.0.0, Semantic Versioning allows it in a new minor version.
 
 == Transport
 
@@ -76,6 +82,7 @@ It MUST map each business event to one {abbr-ocel-first} event, as this table sh
 |`org.fpsot.activity.key` |The `type` of the event, declared in `eventTypes`
 |`Timestamp` |The `time` of the event, under OBS-030
 |`org.fpsot.lifecycle` |The event attribute `lifecycle`
+|`org.fpsot.performer.role` |The event attribute `performer-role`, when present
 |`org.fpsot.bpmn.element_id` |The event attribute `bpmn-element-id`, when present
 |Each reference of `org.fpsot.objects` |One relationship, with the `objectId` and the `qualifier`, and one object with its `type`, declared in `objectTypes`
 |===
@@ -85,10 +92,18 @@ The file `examples/ocel-export.json` is the export of the three events of `examp
 The {abbr-ocel} 2.0 format is open, has a schema and keeps every object of each event.
 A flat log with one case per event cannot do that.
 
+This note is informative.
+A step that takes time yields a `start` event and a `complete` event with the same type.
+A tool that counts each type as one activity then counts the step twice.
+Such a tool can filter the events by their `lifecycle` attribute.
+An export tool can also offer a type that joins the activity key and the lifecycle, such as `review-application.start`.
+The attribute `performer-role` plays the part of `org:role` in XES.
+
 [[OBS-087]]
 *OBS-087.* An export for process mining MUST replace each identifier that leads to a person with a pseudonym, under OBS-093.
 It MUST do so before the export leaves the log store.
 This covers the identifiers of business objects that belong to one person, such as an application.
+A raw internal identifier of such an object MUST NOT appear in the export.
 An export goes to analysts who need patterns, not names.
 It often leaves the control of the team that runs the system.
 
@@ -109,6 +124,7 @@ A tool can offer one outside this specification, built from the main case of OBS
 
 === Informative
 
+* link:https://semver.org/spec/v2.0.0.html[Semantic Versioning], semver.org, 2.0.0, 2013-06-18. link:https://web.archive.org/web/20261026045444/https://semver.org/spec/v2.0.0.html[Archived copy]
 * link:https://www.rfc-editor.org/info/rfc5424[RFC 5424, The Syslog Protocol], IETF, Proposed Standard, 2009-03. link:https://web.archive.org/web/20261021143712/https://www.rfc-editor.org/info/rfc5424/[Archived copy]
 * link:https://github.com/cloudevents/spec/blob/fc1f6f31f5f011a72183f1bcea20c987cb683ade/cloudevents/extensions/distributed-tracing.md[CloudEvents Distributed Tracing Extension], CloudEvents, 1.0.2.
 * link:https://standards.ieee.org/ieee/1849/10907/[IEEE 1849-2023, Standard for eXtensible Event Stream (XES) for Achieving Interoperability in Event Logs and Event Streams], IEEE, 2023. link:https://web.archive.org/web/20260808221231/https://standards.ieee.org/ieee/1849/10907/[Archived copy]

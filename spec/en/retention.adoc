@@ -17,23 +17,32 @@ A component and a log store MUST NOT fix a retention period in their code.
 A log store MUST NOT destroy a record before the end of the period that applies to it.
 The laws of each jurisdiction differ, so only the operator can set the period.
 
+The inventory of OBS-015 MUST state the period of each stream.
+
 [[OBS-101]]
 *OBS-101.* A log store MUST ship the retention profile `ca-qc-floor`, and MUST apply it when the operator sets no other.
+The profile applies to the audit stream and to the business stream.
 
 [cols="2,1,1",options="header"]
 |===
 |Records |Online tier |Storage tier
-|Each stream |90 days |180 days after the online tier
+|Audit and business streams |90 days |180 days after the online tier
 |Records tied to a security incident |2 years |None
 |===
 
-The 180 days of the storage tier follow the 90 days of the online tier, for 270 days in all.
-
 The operator MUST set a longer period where a law or its retention schedule asks for one.
 A log store MAY ship other named profiles.
-Control `AU-11` of the {abbr-cgcd-first} sets these values: 90 days online, 180 in storage and 2 years for incidents.
+For audit records, control `AU-11` of the {abbr-cgcd-first} sets 90 days online, 180 in storage and 2 years for incidents.
 The link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance] of the Treasury Board of Canada Secretariat sets almost the same values for cloud services.
 The profile therefore meets both as a floor, and other laws can only make it longer.
+
+The control does not say whether the 180 days follow the 90 days or include them.
+This specification reads them as added, for 270 days in all, which is the longer reading.
+That reading is an interpretation, and the questions for counsel ask about it.
+
+The business stream takes the same floor by default, since it is often the only record of a decision.
+The control sets no floor for the technical stream.
+The operator sets its period in the inventory and SHOULD keep it short, as its records only serve operations.
 
 [[OBS-102]]
 *OBS-102.* Each retention rule of a log store MUST name the rule of the retention schedule that it applies.
@@ -77,6 +86,7 @@ Without an end date, an export would stay personal information forever.
 
 === Informative
 
+* Référentiel de sécurité, fiche AU-11, Conservation des enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-11/ref-au-11.pdf`.
 * link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance], Treasury Board of Canada Secretariat, 2025-12-08. link:https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Archived copy]
 * link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Privacy Regulations, SOR/83-508, section 4], Government of Canada, Justice Laws Website. link:https://web.archive.org/web/20260520065359/https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Archived copy]
 

@@ -33,13 +33,9 @@
                     {"key": "type", "value": {"stringValue": "Application"}},
                     {"key": "id", "value": {"stringValue": "01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23"}},
                     {"key": "qualifier", "value": {"stringValue": "subject"}}
-                  ]}},
-                  {"kvlistValue": {"values": [
-                    {"key": "type", "value": {"stringValue": "PartyRole"}},
-                    {"key": "id", "value": {"stringValue": "applicant"}},
-                    {"key": "qualifier", "value": {"stringValue": "performer"}}
                   ]}}
                 ]}}},
+                {"key": "org.fpsot.performer.role", "value": {"stringValue": "applicant"}},
                 {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
                 {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
                 {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "submit-application-task"}}
@@ -64,13 +60,9 @@
                     {"key": "type", "value": {"stringValue": "Application"}},
                     {"key": "id", "value": {"stringValue": "01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23"}},
                     {"key": "qualifier", "value": {"stringValue": "subject"}}
-                  ]}},
-                  {"kvlistValue": {"values": [
-                    {"key": "type", "value": {"stringValue": "PartyRole"}},
-                    {"key": "id", "value": {"stringValue": "case-officer"}},
-                    {"key": "qualifier", "value": {"stringValue": "performer"}}
                   ]}}
                 ]}}},
+                {"key": "org.fpsot.performer.role", "value": {"stringValue": "case-officer"}},
                 {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
                 {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
                 {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "review-application-task"}}
@@ -95,13 +87,9 @@
                     {"key": "type", "value": {"stringValue": "Application"}},
                     {"key": "id", "value": {"stringValue": "01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23"}},
                     {"key": "qualifier", "value": {"stringValue": "subject"}}
-                  ]}},
-                  {"kvlistValue": {"values": [
-                    {"key": "type", "value": {"stringValue": "PartyRole"}},
-                    {"key": "id", "value": {"stringValue": "case-officer"}},
-                    {"key": "qualifier", "value": {"stringValue": "performer"}}
                   ]}}
                 ]}}},
+                {"key": "org.fpsot.performer.role", "value": {"stringValue": "case-officer"}},
                 {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
                 {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
                 {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "review-application-task"}}

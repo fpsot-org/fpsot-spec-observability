@@ -22,7 +22,7 @@ Ce format ne correspond pas à OBS-080, et un composant a besoin de son propre f
 Un composant peut les associer aux événements d’audit du catalogue d’identité et d’accès, selon OBS-040.
 
 Quarkus rendra peut-être sa prise en charge des journaux OpenTelemetry généralement disponible.
-OBS-081 deviendra alors une règle DOIT dans la version mineure suivante de cette spécification.
+Le changement prévu d’OBS-081 s’appliquera alors, dans la version que nomme la page sur l’exportation.
 
 == Go
 
@@ -40,6 +40,27 @@ L’OpenTelemetry Collector convient au rôle de collecteur d’un magasin de jo
 * Son link:https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/f56f9a38c9864e892af542f1dbd28f475d6779dc/processor/redactionprocessor/metadata.yaml[processeur de caviardage] est encore Alpha pour les journaux.
 Pour cette raison, OBS-083 confie au composant le masquage des renseignements personnels.
 Un collecteur sert seulement de seconde défense.
+
+== Un service d’intégrité distinct
+
+Un simple magasin de journaux peut conserver les flux d’audit et d’affaires sans bâtir d’arbre de Merkle.
+Le déploiement ajoute alors un service d’intégrité, comme le permet OBS-001.
+Le magasin revendique `base`, et le service revendique `audit-integrity`.
+
+[source,text]
+----
+component --JSON Lines--> collector --> log store (base)
+                              |
+                              +--> integrity service (audit-integrity)
+                                     | builds the tree from each kept record
+                                     | signs checkpoints under OBS-112
+                                     +--> checkpoint store on another system (OBS-113)
+----
+
+Le service peut être une étape de collecteur, ou un conteneur auxiliaire qui lit le magasin de journaux.
+Il calcule le condensé de chaque enregistrement tel que le magasin le conserve, selon OBS-111.
+Il lit donc chaque enregistrement après le dernier filtre, jamais avant.
+L’inventaire du déploiement selon OBS-015 nomme le service et l’intervalle de ses points de contrôle.
 
 == Références
 

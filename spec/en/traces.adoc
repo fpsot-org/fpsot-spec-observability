@@ -37,6 +37,21 @@ A span name MUST NOT hold a value that varies, such as a path with an identifier
 Stable names let every tool read the spans in the same way.
 Fixed span names also keep the number of distinct names small.
 
+Some Stable attributes of these conventions can hold personal information or secrets.
+The component MUST drop or truncate them before export, in its own process, as this table shows.
+
+[cols="2,3",options="header"]
+|===
+|Attribute |Action
+|`client.address` |Drop it, or truncate it to the network prefix of OBS-091.
+|`network.peer.address` |Drop it, or truncate it to the network prefix of OBS-091.
+|`url.query` |Drop it, or keep only the names of the parameters.
+|`url.full` |Truncate it before the query and the fragment.
+|`user_agent.original` |Drop it, or truncate it to the name and version of the product.
+|===
+
+A collector that filters later comes too late, since the value has already left the process, under OBS-083.
+
 [[OBS-054]]
 *OBS-054.* A span attribute MUST follow the privacy rules of OBS-090 to OBS-092.
 A component MUST remove personal information and secrets from each recorded address and query string, under API-085.

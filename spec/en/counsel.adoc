@@ -11,7 +11,7 @@ This page marks each of them as _to be verified_.
 == Status of the Québec controls
 
 1. Does the référentiel of security measures of the {abbr-cgcd-first} bind every public body, or only some kinds of bodies?
-The question covers controls `AU-02`, `AU-03`, `AU-08`, `AU-09`, `AU-11` and `SC-45(01)`.
+The question covers controls `AU-02`, `AU-03`, `AU-08`, `AU-11`, `AU-12` and `SC-45(01)`, which the sheets mark as mandatory.
 The Québec act that governs information resources gives these controls their force.
 The article of that act that does so is _to be verified_.
 2. Does the Directive gouvernementale sur la sécurité de l’information set a format or a retention for logs?
@@ -49,7 +49,11 @@ When is the log only security telemetry?
 
 == Retention
 
-1. How long must a public body keep the entries of its register of confidentiality incidents?
+1. Control `AU-11` sets 90 days online and 180 days in storage for audit records.
+Are the 180 days added to the 90 days, for 270 days in all, or do they include them?
+OBS-101 takes the added reading as the floor, which is how {abbr-fpsot} interprets the control.
+Does the control also apply to records of business processes, which OBS-101 keeps for the same time?
+2. How long must a public body keep the entries of its register of confidentiality incidents?
 The research found 5 years, and that value is _to be verified_.
 Must the logs that support an entry stay for the same time?
 

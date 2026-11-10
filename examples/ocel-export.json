@@ -1,38 +1,35 @@
 {
   "eventTypes": [
-    {"name": "submit-application", "attributes": [{"name": "lifecycle", "type": "string"}, {"name": "bpmn-element-id", "type": "string"}]},
-    {"name": "review-application", "attributes": [{"name": "lifecycle", "type": "string"}, {"name": "bpmn-element-id", "type": "string"}]}
+    {"name": "submit-application", "attributes": [{"name": "lifecycle", "type": "string"}, {"name": "performer-role", "type": "string"}, {"name": "bpmn-element-id", "type": "string"}]},
+    {"name": "review-application", "attributes": [{"name": "lifecycle", "type": "string"}, {"name": "performer-role", "type": "string"}, {"name": "bpmn-element-id", "type": "string"}]}
   ],
   "objectTypes": [
-    {"name": "Application", "attributes": []},
-    {"name": "PartyRole", "attributes": []}
+    {"name": "Application", "attributes": []}
   ],
   "events": [
     {
       "id": "01a1c5c4-db10-7b10-9e2a-6c4d8f1e0a57",
       "type": "submit-application",
       "time": "2026-11-10T14:02:55.120Z",
-      "attributes": [{"name": "lifecycle", "value": "complete"}, {"name": "bpmn-element-id", "value": "submit-application-task"}],
-      "relationships": [{"objectId": "ps-7c1e9a4f20b85d36", "qualifier": "subject"}, {"objectId": "applicant", "qualifier": "performer"}]
+      "attributes": [{"name": "lifecycle", "value": "complete"}, {"name": "performer-role", "value": "applicant"}, {"name": "bpmn-element-id", "value": "submit-application-task"}],
+      "relationships": [{"objectId": "ps-7c1e9a4f20b85d36e1a04b9c2f6d8e3a", "qualifier": "subject"}]
     },
     {
       "id": "01a1c5c5-1ea2-7c22-a1b3-4e5f60718293",
       "type": "review-application",
       "time": "2026-11-10T14:03:12.418Z",
-      "attributes": [{"name": "lifecycle", "value": "start"}, {"name": "bpmn-element-id", "value": "review-application-task"}],
-      "relationships": [{"objectId": "ps-7c1e9a4f20b85d36", "qualifier": "subject"}, {"objectId": "case-officer", "qualifier": "performer"}]
+      "attributes": [{"name": "lifecycle", "value": "start"}, {"name": "performer-role", "value": "case-officer"}, {"name": "bpmn-element-id", "value": "review-application-task"}],
+      "relationships": [{"objectId": "ps-7c1e9a4f20b85d36e1a04b9c2f6d8e3a", "qualifier": "subject"}]
     },
     {
       "id": "01a1c624-9a56-7d31-b2c4-5f60718293a4",
       "type": "review-application",
       "time": "2026-11-10T15:47:30.006Z",
-      "attributes": [{"name": "lifecycle", "value": "complete"}, {"name": "bpmn-element-id", "value": "review-application-task"}],
-      "relationships": [{"objectId": "ps-7c1e9a4f20b85d36", "qualifier": "subject"}, {"objectId": "case-officer", "qualifier": "performer"}]
+      "attributes": [{"name": "lifecycle", "value": "complete"}, {"name": "performer-role", "value": "case-officer"}, {"name": "bpmn-element-id", "value": "review-application-task"}],
+      "relationships": [{"objectId": "ps-7c1e9a4f20b85d36e1a04b9c2f6d8e3a", "qualifier": "subject"}]
     }
   ],
   "objects": [
-    {"id": "ps-7c1e9a4f20b85d36", "type": "Application", "attributes": []},
-    {"id": "applicant", "type": "PartyRole", "attributes": []},
-    {"id": "case-officer", "type": "PartyRole", "attributes": []}
+    {"id": "ps-7c1e9a4f20b85d36e1a04b9c2f6d8e3a", "type": "Application", "attributes": []}
   ]
 }

@@ -11,3 +11,45 @@ rows:
     status: looser
     source: {title: "Gouvernement du Québec, Évaluation des facteurs relatifs à la vie privée", url: "https://www.quebec.ca/gouvernement/travailler-gouvernement/normes-gouvernance-pratiques-internes/protection-des-renseignements-personnels/evaluation-facteurs-relatifs-vie-privee", archive: "https://web.archive.org/web/20261010130121/https://www.quebec.ca/gouvernement/travailler-gouvernement/normes-gouvernance-pratiques-internes/protection-des-renseignements-personnels/evaluation-facteurs-relatifs-vie-privee"}
     last_checked: "2026-11-10"
+  - id: OBS-027
+    text: {en: "Mandatory control. Audit records must contain what establishes the type of event, the time, the place, the source, the outcome and the identities involved. It names no fields.", fr: "Mesure obligatoire. Les enregistrements de vérification doivent contenir ce qui établit le type d’événement, le moment, l’endroit, la source, le résultat et les identités en cause. Elle ne nomme aucun champ."}
+    status: same
+    # No archived copy of this sheet exists yet: archive repeats the official URL until a snapshot exists.
+    source: {title: "Gouvernement du Québec, Centre gouvernemental de cyberdéfense, Référentiel de sécurité, fiche AU-03, Contenu des enregistrements de vérification", date: "2026-07-15", url: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-03/ref-au-03.pdf", archive: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-03/ref-au-03.pdf"}
+    last_checked: "2026-11-10"
+  - id: OBS-030
+    text: {en: "Mandatory control. Audit records use the internal clocks of the system, in UTC, at a fixed offset from UTC or with the local offset. The precision depends on what the system can do.", fr: "Mesure obligatoire. Les enregistrements de vérification utilisent les horloges internes du système, en UTC, à un décalage fixe de l’UTC ou avec le décalage local. La précision dépend des capacités du système."}
+    status: looser
+    # No archived copy of this sheet exists yet: archive repeats the official URL until a snapshot exists.
+    source: {title: "Gouvernement du Québec, Centre gouvernemental de cyberdéfense, Référentiel de sécurité, fiche AU-08, Horodatage du contrôle", date: "2026-07-15", url: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-08/ref-au-08.pdf", archive: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-08/ref-au-08.pdf"}
+    last_checked: "2026-11-10"
+  - id: OBS-033
+    text: {en: "Mandatory control. Each body compares its internal clocks with an authoritative time source that it names, such as time.nrc.ca, and synchronizes them beyond a difference that it sets.", fr: "Mesure obligatoire. Chaque organisme compare ses horloges internes avec une source de temps faisant autorité qu’il nomme, comme time.nrc.ca, et les synchronise au-delà d’un écart qu’il fixe."}
+    status: same
+    # No archived copy of this sheet exists yet: archive repeats the official URL until a snapshot exists.
+    source: {title: "Gouvernement du Québec, Centre gouvernemental de cyberdéfense, Référentiel de sécurité, fiche SC-45(01), Synchronisation avec une source de temps faisant autorité", date: "2026-07-15", url: "https://www.cyber.gouv.qc.ca/publications/referentiel/sc-45-01/ref-sc-45-01.pdf", archive: "https://www.cyber.gouv.qc.ca/publications/referentiel/sc-45-01/ref-sc-45-01.pdf"}
+    last_checked: "2026-11-10"
+  - id: OBS-040
+    text: {en: "Mandatory control, with a shared responsibility. It lists events to log with both success and failure, for sign-in, accounts, roles, privileges, audit logs, operating systems and network devices. Some cover more than an application.", fr: "Mesure obligatoire, à responsabilité partagée. Elle énumère des événements à journaliser avec la réussite et l’échec, pour l’ouverture de session, les comptes, les rôles, les privilèges, les journaux d’audit, les systèmes d’exploitation et les équipements réseau. Certains dépassent le cadre d’une application."}
+    status: stricter
+    # No archived copy of this sheet exists yet: archive repeats the official URL until a snapshot exists.
+    source: {title: "Gouvernement du Québec, Centre gouvernemental de cyberdéfense, Référentiel de sécurité, fiche AU-02, Journalisation d’événements", date: "2026-07-15", url: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-02/ref-au-02.pdf", archive: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-02/ref-au-02.pdf"}
+    last_checked: "2026-11-10"
+  - id: OBS-090
+    text: {en: "Mandatory control. Systems generate audit records for the chosen events. Personal information in them that the audit does not need must be removed or redacted.", fr: "Mesure obligatoire. Les systèmes génèrent des enregistrements de vérification pour les événements choisis. Les renseignements personnels qui n’y sont pas requis pour la vérification doivent être retirés ou caviardés."}
+    status: same
+    # No archived copy of this sheet exists yet: archive repeats the official URL until a snapshot exists.
+    source: {title: "Gouvernement du Québec, Centre gouvernemental de cyberdéfense, Référentiel de sécurité, fiche AU-12, Génération d’enregistrements de vérification", date: "2026-07-15", url: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-12/ref-au-12.pdf", archive: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-12/ref-au-12.pdf"}
+    last_checked: "2026-11-10"
+  - id: OBS-101
+    text: {en: "Mandatory control. Audit records stay 90 days online, 180 days in storage and 2 years when tied to a security incident. The sheet does not say whether the 180 days follow the 90 days.", fr: "Mesure obligatoire. Les enregistrements de vérification restent 90 jours en ligne, 180 jours en stockage et 2 ans s’ils sont liés à un incident de sécurité. La fiche ne précise pas si les 180 jours suivent les 90 jours."}
+    status: same
+    # No archived copy of this sheet exists yet: archive repeats the official URL until a snapshot exists.
+    source: {title: "Gouvernement du Québec, Centre gouvernemental de cyberdéfense, Référentiel de sécurité, fiche AU-11, Conservation des enregistrements de vérification", date: "2026-07-15", url: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-11/ref-au-11.pdf", archive: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-11/ref-au-11.pdf"}
+    last_checked: "2026-11-10"
+  - id: OBS-110
+    text: {en: "The sheet suggests signed hashes to protect audit information, but names no responsible party, so it is not mandatory. AU-09 and its other parts are not mandatory either.", fr: "La fiche suggère des condensés signés pour protéger l’information de vérification, mais ne nomme aucun responsable, donc elle n’est pas obligatoire. AU-09 et ses autres parties ne le sont pas non plus."}
+    status: looser
+    # No archived copy of this sheet exists yet: archive repeats the official URL until a snapshot exists.
+    source: {title: "Gouvernement du Québec, Centre gouvernemental de cyberdéfense, Référentiel de sécurité, fiche AU-09(03), Protection cryptographique", date: "2026-07-15", url: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-03/ref-au-09-03.pdf", archive: "https://www.cyber.gouv.qc.ca/publications/referentiel/au-09-03/ref-au-09-03.pdf"}
+    last_checked: "2026-11-10"

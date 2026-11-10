@@ -40,6 +40,7 @@ An attribute whose class is not `none` MUST also state its purpose.
 
 The {term-privacy-impact-assessment} of the system can then cite each field by name.
 Control `AU-03(03)` of the {abbr-cgcd-first} limits personal information in audit records to the elements that this assessment identifies.
+That control is not mandatory, but mandatory control `AU-12` asks to remove personal information that the audit does not need.
 A pseudonymous identifier is still personal information, as OBS-094 states.
 The class only shows how directly it points to a person.
 
@@ -66,11 +67,34 @@ A technical record MAY leave it out, and a reader then treats it as `technical`.
 Each stream has its own rules for retention, readers and integrity.
 A log store can then sort records without reading their content.
 
+== The inventory of a log store
+
+[[OBS-015]]
+*OBS-015.* Each log store MUST ship an inventory, in the form of OBS-010.
+A deployment MUST also have an inventory, which covers the parts that no component inventory covers.
+The inventory of a log store or of a deployment MUST list:
+
+* the profiles that each part claims, under OBS-001, and the part that claims `audit-integrity`;
+* the streams that it keeps, and the components that send each one;
+* the retention profile and the period of each stream, under OBS-100 and OBS-101;
+* the roles that may read, query or export each stream;
+* the checkpoint interval and the origin of each tree, under OBS-112;
+* each log public key, with its period of validity, under OBS-113.
+
+An auditor needs one place that says how the operator keeps and protects the records.
+Component inventories cannot say it, because the operator makes these choices when it deploys.
+
 == References
 
 === Normative
 
 * link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+
+=== Informative
+
+* Référentiel de sécurité, fiche AU-02, Journalisation d’événements, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-02/ref-au-02.pdf`.
+* Référentiel de sécurité, fiche AU-03(03), Limitation des éléments liés aux renseignements personnels, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-03-03/ref-au-03-03.pdf`.
+* Référentiel de sécurité, fiche AU-12, Génération d’enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-12/ref-au-12.pdf`.
 
 == Document history
 

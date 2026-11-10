@@ -30,7 +30,7 @@ Le fichier `examples/log-record.jsonl` montre un événement d’audit, qui ress
     "org.fpsot.stream": "audit",
     "org.fpsot.outcome": "success",
     "org.fpsot.purpose": "case-processing",
-    "org.fpsot.client.network": "192.0.2.0/24"
+    "org.fpsot.network.client.prefix": "192.0.2.0/24"
   }
 }
 ----
@@ -49,7 +49,7 @@ Donnez à chaque accès un code de finalité tiré du schéma de l’exploitant,
 
 Demandez le schéma d’activités à la personne responsable du processus, selon OBS-071.
 Émettez à chaque frontière d’étape un événement avec clé, cycle de vie et objets, selon OBS-070 à OBS-073.
-Nommez la personne qui fait l’étape par son rôle, selon OBS-075.
+Nommez le rôle qui fait l’étape dans `org.fpsot.performer.role`, selon OBS-075.
 N’employez jamais l’identifiant de trace comme dossier, selon OBS-074.
 Le fichier `examples/business-events.otlp.json` montre trois de ces événements.
 
@@ -70,6 +70,8 @@ Elle ne prouve pas tout le profil, et un outil de conformité suivra, selon OBS-
 Remettez à l’exploitant l’inventaire et le guide de déploiement.
 Le guide indique la source de temps, selon OBS-033, et les destinations, selon OBS-012.
 L’exploitant fixe ensuite le profil de conservation, `ca-qc-floor` par défaut, selon OBS-101.
+L’exploitant rédige l’inventaire du déploiement, selon OBS-015.
+Il y nomme la partie qui bâtit l’arbre de Merkle : le magasin, ou un service d’intégrité distinct, selon OBS-001.
 
 == Historique du document
 

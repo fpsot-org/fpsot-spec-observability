@@ -45,6 +45,9 @@ broken bad-lifecycle business-events.otlp.json "t.replace('\"start\"', '\"starte
 broken trace-as-case business-events.otlp.json "t.replace('01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23', '4bf92f3577b34da6a3ce929d0e0e4736')" "trace ID must not serve"
 broken ocel-wrong-type ocel-export.json "t.replace('\"type\": \"review-application\"', '\"type\": \"Review application\"', 1)" "is not declared"
 broken ocel-missing-event ocel-export.json "__import__('json').dumps(dict(__import__('json').loads(t), events=__import__('json').loads(t)['events'][1:]))" "no event with the ID"
+broken ocel-raw-id ocel-export.json "t.replace('ps-7c1e9a4f20b85d36e1a04b9c2f6d8e3a', '01a1c5c4-db10-7a3f-8c41-2d9e6f0a1b23')" "not pseudonymized"
+broken body-name-sin log-record.jsonl "t.replace('Application file exported', 'Application file of Firstname Lastname, SIN 123 456 782, exported')" "social insurance number"
+broken url-query log-record.jsonl "t.replace('\"org.fpsot.export.format\"', '\"url.full\":\"https://permits.example.org/files/42?token=abc123&email=firstname.lastname@example.org\",\"org.fpsot.export.format\"')" "url.full must not hold a query"
 
 [ $fail -eq 0 ] && echo "PASS"
 exit $fail

@@ -22,7 +22,7 @@ That format does not match OBS-080, so a component needs its own formatter or a 
 A component can map them to the audit events of the identity and access catalog, under OBS-040.
 
 Quarkus may move its OpenTelemetry logs support to general availability.
-OBS-081 then becomes a MUST in the next minor version of this specification.
+The planned change of OBS-081 then applies, in the version that the export page names.
 
 == Go
 
@@ -40,6 +40,27 @@ The OpenTelemetry Collector suits the role of the collector of a log store.
 * Its link:https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/f56f9a38c9864e892af542f1dbd28f475d6779dc/processor/redactionprocessor/metadata.yaml[redaction processor] is still Alpha for logs.
 For this reason, OBS-083 makes the component mask personal information.
 A collector serves only as a second defense.
+
+== A separate integrity service
+
+A plain log store can keep the audit and business streams without building a Merkle tree.
+The deployment then adds an integrity service, as OBS-001 allows.
+The log store claims `base`, and the service claims `audit-integrity`.
+
+[source,text]
+----
+component --JSON Lines--> collector --> log store (base)
+                              |
+                              +--> integrity service (audit-integrity)
+                                     | builds the tree from each kept record
+                                     | signs checkpoints under OBS-112
+                                     +--> checkpoint store on another system (OBS-113)
+----
+
+The service can be a collector stage, or a sidecar that reads the log store.
+It hashes each record as the log store keeps it, under OBS-111.
+So it reads each record after the last filter, never before.
+The deployment inventory of OBS-015 names the service and its checkpoint interval.
 
 == References
 

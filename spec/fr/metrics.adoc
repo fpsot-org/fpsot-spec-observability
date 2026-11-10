@@ -24,8 +24,9 @@ Il peut aussi montrer que ses horloges étaient justes quand il utilise un enreg
 *OBS-062.* Un attribut de métrique NE DOIT PAS contenir l’identifiant d’une personne ou d’un objet d’affaires.
 Il NE DOIT PAS non plus contenir une autre valeur sans borne fixe.
 Un attribut comme un code d’état ou un modèle de route convient.
+Cette règle et OBS-090 visent aussi les exemplaires (_exemplars_) d’une métrique et leurs attributs filtrés.
 Chaque valeur distincte d’un attribut crée une nouvelle série chronologique, qui coûte du stockage.
-Un identifiant de personne dans une métrique échappe aussi aux règles de vie privée des journaux.
+Un identifiant de personne dans une métrique ou dans son exemplaire échappe aussi aux règles de vie privée des journaux.
 
 [[OBS-063]]
 *OBS-063.* Un composant DEVRAIT exporter ses métriques au moyen de l’{abbr-otlp-first} d’OBS-081.

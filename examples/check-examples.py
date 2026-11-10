@@ -12,8 +12,14 @@ DIR holds three files:
 
 The check uses the Python standard library only. It fails when a file does
 not parse, when a required field is missing or has the wrong form, when a
-record holds a forbidden attribute or a full IP address (OBS-091), or when the
-OCEL export does not match the business events it comes from.
+record holds a forbidden attribute, a full IP address (OBS-091), something that
+looks like a social insurance number or an email address (OBS-092), or a URL
+with a query (OBS-053), or when the OCEL export does not match the business
+events it comes from or keeps a raw object ID (OBS-086, OBS-087).
+
+The OCEL checks mirror the required members of the OCEL 2.0 JSON schema. The
+schema itself is not copied here, because its publisher states no licence
+for it.
 """
 import datetime
 import json
@@ -28,6 +34,8 @@ EVENT_NAME = re.compile(r"^org\.fpsot(\.[a-z][a-z0-9]*(-[a-z0-9]+)*){3}$")
 HEX32 = re.compile(r"^[0-9a-f]{32}$")
 HEX16 = re.compile(r"^[0-9a-f]{16}$")
 FULL_IPV4 = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b(?!/)")
+SIN = re.compile(r"(?<![\w.-])\d{3}[ -]?\d{3}[ -]?\d{3}(?![\w.-])")
+EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 LINKML_CLASS = re.compile(r"^[A-Z][A-Za-z0-9]*$")
 
 RESOURCE_KEYS = ("service.name", "service.namespace", "service.version",
@@ -52,10 +60,37 @@ def check_keys(where, keys):
             fail(where, f"forbidden attribute {key} (OBS-022, OBS-026, OBS-091)")
 
 
+def strings(value):
+    """Yields every string inside a JSON value, keys excluded."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for v in value.values():
+            yield from strings(v)
+    elif isinstance(value, list):
+        for v in value:
+            yield from strings(v)
+
+
 def check_no_full_ip(where, value):
     text = json.dumps(value)
     for match in FULL_IPV4.finditer(text):
         fail(where, f"full IP address {match.group()} (OBS-091)")
+    for s in strings(value):
+        if SIN.search(s):
+            fail(where, f"a value looks like a social insurance number: {s!r} (OBS-092)")
+        if EMAIL.search(s):
+            fail(where, f"a value holds an email address: {s!r} (OBS-092)")
+
+
+def check_http_attributes(where, attrs):
+    """OBS-053: the component drops or truncates these before export."""
+    url = attrs.get("url.full")
+    if isinstance(url, str) and ("?" in url or "#" in url):
+        fail(where, "url.full must not hold a query or a fragment (OBS-053)")
+    for key in ("client.address", "network.peer.address"):
+        if isinstance(attrs.get(key), str) and FULL_IPV4.search(attrs[key]):
+            fail(where, f"{key} must be dropped or truncated to a prefix (OBS-053)")
 
 
 def check_json_lines(path):
@@ -98,6 +133,7 @@ def check_json_lines(path):
             fail(where, "traceId must be 32 lower-case hex digits (OBS-051)")
         if "spanId" in rec and not HEX16.match(rec["spanId"]):
             fail(where, "spanId must be 16 lower-case hex digits (OBS-051)")
+        check_http_attributes(where, attrs)
         check_no_full_ip(where, rec)
 
 
@@ -161,6 +197,7 @@ def check_business_events(path):
                     continue
                 attrs = attributes(where, lr.get("attributes"))
                 check_keys(where, list(resource) + list(attrs))
+                check_http_attributes(where, attrs)
                 check_no_full_ip(where, lr)
                 event_id = attrs.get("org.fpsot.event.id", "")
                 if not UUID7.match(str(event_id)):
@@ -185,8 +222,13 @@ def check_business_events(path):
                 trace = lr.get("traceId", "")
                 if trace and any(o.get("id") == trace for o in objects if isinstance(o, dict)):
                     fail(where, "the trace ID must not serve as a case or object ID (OBS-074)")
+                if any(isinstance(o, dict) and o.get("qualifier") == "performer"
+                       and o.get("type") == "PartyRole" for o in objects):
+                    fail(where, "a performer reference must point to a person, not a role (OBS-075)")
                 events.append({"id": event_id, "type": key, "time": nanos_to_instant(nanos),
-                               "lifecycle": attrs.get("org.fpsot.lifecycle"), "objects": objects})
+                               "lifecycle": attrs.get("org.fpsot.lifecycle"),
+                               "performer_role": attrs.get("org.fpsot.performer.role"),
+                               "objects": objects})
     if not events:
         fail(path.name, "no business event")
     return events
@@ -229,6 +271,10 @@ def check_ocel(path, business):
                 fail(path.name, f"event {e['id']} links to an unknown object {rel.get('objectId')}")
         by_id[e["id"]] = e
     check_no_full_ip(path.name, doc)
+    raw = {o["id"] for b in business for o in b["objects"] if isinstance(o, dict)}
+    for oid in sorted(raw & (set(objects) | {r.get("objectId") for e in doc["events"]
+                                             for r in e.get("relationships", [])})):
+        fail(path.name, f"object ID {oid} is not pseudonymized (OBS-087)")
     if len(by_id) != len(business):
         fail(path.name, f"{len(by_id)} events, but {len(business)} business events")
     for b in business:
@@ -243,6 +289,11 @@ def check_ocel(path, business):
         attrs = {a.get("name"): a.get("value") for a in e.get("attributes", [])}
         if attrs.get("lifecycle") != b["lifecycle"]:
             fail(path.name, f"event {b['id']}: the lifecycle attribute must be {b['lifecycle']}")
+        if attrs.get("performer-role") != b["performer_role"]:
+            fail(path.name, f"event {b['id']}: the performer-role attribute must be {b['performer_role']} (OBS-086)")
+        for a in e.get("attributes", []):
+            if not isinstance(a.get("value"), str):
+                fail(path.name, f"event {b['id']}: attribute {a.get('name')} must be a string (OCEL 2.0 JSON schema)")
         rels = e.get("relationships", [])
         if sorted(r.get("qualifier") for r in rels) != sorted(o["qualifier"] for o in b["objects"]):
             fail(path.name, f"event {b['id']}: qualifiers differ from the business event (OBS-086)")

@@ -8,19 +8,19 @@ In Québec and in federal law, such a record is also a document that the public 
 == What a record may hold
 
 [[OBS-090]]
-*OBS-090.* A component MUST write personal information only in the attributes that its inventory declares for it.
-These are the attributes with a class other than `none`, under OBS-011.
+*OBS-090.* A component MUST write personal information only in the attributes that its inventory declares for it, under OBS-011.
 The operator MUST turn off each such attribute that the {term-privacy-impact-assessment} of the system does not name.
 The `Body` and the names of events, spans and metrics MUST NOT hold personal information.
 Control `AU-03(03)` of the {abbr-cgcd-first} limits personal information in audit records to the elements that this assessment identifies.
+That control is not mandatory, but mandatory control `AU-12` asks to remove personal information that an audit does not need.
 A field that nobody declared is a field that nobody protects.
 
 [[OBS-091]]
 *OBS-091.* A record MUST NOT hold a password, a secret, a key, a token or a session cookie, under SEC-020.
 It MUST NOT hold an authorization header, or the full content of a request or response with personal information.
-A record MUST keep only the network prefix of a client address, such as `192.0.2.0/24`, in the attribute `org.fpsot.client.network`.
-The prefix is 24 bits for IPv4 and 48 bits for IPv6.
-An authentication event MAY keep the full address in the attribute `client.address`, when the privacy impact assessment names it.
+A record MUST keep only the prefix of a client address, /24 for IPv4 and /48 for IPv6, in `org.fpsot.network.client.prefix`.
+The FPSOT identity and access specification marks some events as needing the full client address.
+Such an event MAY keep it in `client.address`, when the privacy impact assessment names it.
 A full address points to a home or a device, while a prefix is enough to spot most attacks.
 
 [[OBS-092]]
@@ -35,10 +35,14 @@ The name then stays in one protected place, and the copies of the logs do not sp
 [[OBS-093]]
 *OBS-093.* An export for process mining MUST replace each identifier that leads to a person with a keyed pseudonym.
 The pseudonym MUST be a link:https://www.rfc-editor.org/info/rfc2104[keyed hash], such as HMAC-SHA-256, with a key for one purpose and one period.
+It MUST keep at least 128 bits of the output, such as 32 hexadecimal digits.
 A custodian outside the team of analysts MUST hold the key, and MUST destroy it when the period ends.
 A tool MUST NOT use a hash without a key, since anyone can hash every possible file number and compare.
-The performer of a step SHOULD appear as a role or a unit, under OBS-075.
 This pattern is the practice of {abbr-fpsot-first}, not the guidance of a regulator.
+
+The performer of a step appears as a role, under OBS-075.
+One key per export is the safest choice, since nobody can then join two exports.
+The custodian of the key can be the privacy officer of the operator.
 
 [[OBS-094]]
 *OBS-094.* The documentation of a component and of a log store MUST state that pseudonymous records are still personal information.
@@ -73,6 +77,8 @@ Logs of test systems often have weaker protection than production logs.
 
 === Informative
 
+* Référentiel de sécurité, fiche AU-03(03), Limitation des éléments liés aux renseignements personnels, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-03-03/ref-au-03-03.pdf`.
+* Référentiel de sécurité, fiche AU-12, Génération d’enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-12/ref-au-12.pdf`.
 * link:https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[Privacy Implementation Notice 2023-01: De-identification], Treasury Board of Canada Secretariat, 2023. link:https://web.archive.org/web/20260924091633/https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information-privacy-notices/2023-01-de-identification.html[Archived copy]
 * link:https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[Press release 107/23, Judgment in Case C-579/21 Pankki S], Court of Justice of the European Union, 2023-06-22. link:https://web.archive.org/web/20251127124614/https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-06/cp230107en.pdf[Archived copy]
 

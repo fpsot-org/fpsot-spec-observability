@@ -13,7 +13,7 @@ Cette page ajoute les autres événements que les gouvernements du Canada et du 
 [[OBS-040]]
 *OBS-040.* Un composant DOIT consigner, comme événement d’audit, chaque événement du catalogue d’identité et d’accès qu’il utilise.
 Il DOIT suivre les règles d’enregistrement de cette spécification pour cet événement.
-Le magasin de journaux conserve l’événement selon les règles de conservation et d’intégrité.
+Le magasin le conserve selon les règles de conservation, et lui ou un service d’intégrité le protège, selon OBS-001.
 Pour chaque événement d’audit qu’il consigne, un composant DOIT consigner à la fois la réussite et l’échec.
 La mesure `AU-02` du {abbr-cgcd-first} énumère chacun de ses événements avec les deux résultats.
 Une tentative ratée est souvent le premier signe d’une attaque.
@@ -27,11 +27,11 @@ La mesure `AU-02` demande les changements aux règles d’alerte, comme un audit
 Qui peut désactiver une mesure sans laisser de trace peut ensuite agir sans laisser de trace.
 
 [[OBS-042]]
-*OBS-042.* Un composant DOIT consigner chaque accès aux renseignements personnels ou sensibles qu’il détient.
-Un accès est une lecture, une création, une modification, une suppression, une exportation, un téléchargement ou une impression.
+*OBS-042.* Un composant DOIT consigner chaque lecture, création, modification, suppression, exportation, téléchargement ou impression de renseignements personnels ou sensibles.
+L’{term-privacy-impact-assessment} du système fixe les lectures de renseignements personnels que le composant consigne.
+Au minimum, il DOIT consigner chaque accès à une information Protégé B ou plus, comme le demande la mesure `AU-02`.
 Chaque tel événement DOIT porter un code de finalité dans `org.fpsot.purpose`, tiré d’un schéma de l’exploitant selon VOC-001 et VOC-064.
-L’link:https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[indication d’application IA-SI-2023-001-OP] du Québec demande de surveiller l’accès à ces données.
-Elle vise aussi leurs téléchargements et leurs impressions.
+L’link:https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[indication d’application IA-SI-2023-001-OP] du Québec demande de surveiller l’accès à ces données, téléchargements et impressions compris.
 Un code de finalité permet de répondre à une personne qui demande quand et pourquoi on a consulté son dossier.
 
 [[OBS-043]]
@@ -66,7 +66,9 @@ De nombreux outils de sécurité lisent l’{abbr-ocsf}, et une correspondance p
 Cette note est informative.
 Le link:https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[règlement européen sur la cyberrésilience] demande aux produits de consigner les activités utiles à la sécurité.
 Il prévoit une désactivation par l’utilisateur, au point `(2)(l)` de la partie I de l’annexe I.
+
 Les règles des gouvernements du Canada et du Québec supposent que la journalisation reste active.
+Par exemple, le link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[guide fédéral sur la consignation des événements] demande de l’activer sur tous les actifs informatiques.
 Cette spécification confie cette désactivation à l’exploitant, jamais à l’utilisatrice ou l’utilisateur final.
 Savoir si l’exploitant est l’utilisateur au sens de ce règlement fait partie des questions pour le conseiller juridique.
 
@@ -81,6 +83,8 @@ Savoir si l’exploitant est l’utilisateur au sens de ce règlement fait parti
 * link:https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[IA-SI-2023-001-OP, Mesures minimales de sécurité au regard des données lors de l’utilisation de solutions technologiques], Gouvernement du Québec, Dirigeant principal de l’information, 2023-02-01. link:https://web.archive.org/web/20260129213432/https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[Copie archivée]
 * link:https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[Introduction to logging for security purposes], National Cyber Security Centre, United Kingdom. link:https://web.archive.org/web/20261031113648/https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[Copie archivée]
 * link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework], OCSF project of the Linux Foundation, 1.9.0, 2026-08-03.
+* link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance], Treasury Board of Canada Secretariat, 2025-12-08. link:https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Copie archivée]
+* Référentiel de sécurité, fiche AU-02, Journalisation d’événements, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-02/ref-au-02.pdf`.
 * link:https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[Regulation (EU) 2024/2847 on horizontal cybersecurity requirements for products with digital elements (Cyber Resilience Act)], European Parliament and Council of the European Union, 2024-10-23. link:https://web.archive.org/web/20261108180849/https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[Copie archivée]
 
 == Historique du document

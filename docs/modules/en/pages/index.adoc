@@ -30,7 +30,7 @@ The file `examples/log-record.jsonl` shows an audit event, which looks like this
     "org.fpsot.stream": "audit",
     "org.fpsot.outcome": "success",
     "org.fpsot.purpose": "case-processing",
-    "org.fpsot.client.network": "192.0.2.0/24"
+    "org.fpsot.network.client.prefix": "192.0.2.0/24"
   }
 }
 ----
@@ -49,7 +49,7 @@ Give each access a purpose code from the scheme of the operator, under OBS-042.
 
 Ask the owner of the process for the activity scheme, under OBS-071.
 At each step boundary, emit an event with its key, lifecycle and objects, under OBS-070 to OBS-073.
-Name the performer by role, under OBS-075.
+Name the performer by its role in `org.fpsot.performer.role`, under OBS-075.
 Never use the trace identifier as a case, under OBS-074.
 The file `examples/business-events.otlp.json` shows three such events.
 
@@ -70,6 +70,8 @@ It does not prove the whole profile, and a conformance tool will follow, under O
 Give the operator the inventory and the deployment guide.
 The guide states the time source, under OBS-033, and the destinations, under OBS-012.
 The operator then sets the retention profile, `ca-qc-floor` by default, under OBS-101.
+The operator writes the deployment inventory, under OBS-015.
+It names the part that builds the Merkle tree: the log store, or a separate integrity service, under OBS-001.
 
 == Document history
 

@@ -38,7 +38,7 @@ description:
       processus avec une exportation en OCEL 2.0, la minimisation des
       renseignements personnels et les pseudonymes à clé, le profil de
       conservation ca-qc-floor, la préservation de la preuve et les traces de
-      destruction, et la preuve d’altération par des arbres de Merkle et des
+      destruction, et la détection des altérations par des arbres de Merkle et des
       points de contrôle C2SP signés. Les règles nomment des capacités et des
       normes, pas des produits.
     features:

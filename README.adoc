@@ -12,8 +12,9 @@ Read the normative text in `spec/en/` or `spec/fr/`.
 Each requirement has an ID from `OBS-001` to `OBS-117`.
 
 * Choose your profiles: `base` for every component and log store, `traces-metrics`, `process-mining` and `audit-integrity` (OBS-001).
+  The `audit-integrity` profile can be claimed by the log store or by a separate integrity service of the deployment.
   The table "Profiles" in `spec/en/index.adoc` lists the rules of each.
-* Write the log inventory of each component, with a personal information class for each attribute (OBS-010, OBS-011).
+* Write the log inventory of each component, with a personal information class for each attribute (OBS-010, OBS-011), and the inventory of each log store and deployment (OBS-015).
 * Write records as JSON Lines on the standard output, with UTC timestamps and an `org.fpsot.event.id` on each audit and business event (OBS-020 to OBS-033, OBS-080).
 * Record the audit events of OBS-040 to OBS-046, and the business events of OBS-070 to OBS-079.
 * Mask personal information in the component, and keep only network prefixes of client addresses (OBS-083, OBS-090 to OBS-096).
@@ -24,7 +25,7 @@ Each requirement has an ID from `OBS-001` to `OBS-117`.
 Read the guide in `docs/modules/en/pages/index.adoc` or `docs/modules/fr/pages/index.adoc`.
 It takes a component from its inventory to records that meet the `base` and `process-mining` profiles.
 A request for proposals can require a component or a log store to claim given profiles of this specification (OBS-001).
-A log store ships the retention profile `ca-qc-floor` by default, and the operator sets longer periods where its law or its retention schedule asks (OBS-101).
+A log store ships the retention profile `ca-qc-floor` by default for the audit and business streams, and the operator sets longer periods where its law or its retention schedule asks (OBS-101).
 The comparison data in `jurisdictions/` shows how the guidance of Canada and Québec differs.
 The pages `implementation.adoc` and `counsel.adoc` are informative, and the latter lists the legal questions that a lawyer must settle.
 This specification is not legal advice.
