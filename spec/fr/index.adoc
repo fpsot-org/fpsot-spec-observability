@@ -1,4 +1,4 @@
-= Titre de la spécification
+= Spécification FPSOT sur l'observabilité
 include::_fpsot-terms.adoc[]
 
 Remplacez cette page par le texte normatif de la spécification.

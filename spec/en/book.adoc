@@ -1,4 +1,4 @@
-= Specification title
+= FPSOT observability specification
 :doctype: book
 :toc:
 

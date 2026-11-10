@@ -1,4 +1,4 @@
-= Specification title
+= FPSOT observability specification
 include::_fpsot-terms.adoc[]
 
 Replace this page with the normative text of the specification.

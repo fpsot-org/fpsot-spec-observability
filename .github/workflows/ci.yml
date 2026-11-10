@@ -10,7 +10,7 @@ permissions:
   contents: read
 env:
   # Requirement ID prefix of this specification.
-  SPEC_PREFIX: TPL
+  SPEC_PREFIX: OBS
 jobs:
   prefix:
     runs-on: ubuntu-latest
