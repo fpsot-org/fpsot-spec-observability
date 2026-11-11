@@ -78,9 +78,9 @@ The inventory names each such class, which follows DMO-020, such as `PartyRole` 
 A {abbr-uuid-first} takes the canonical form of DAT-065.
 * `qualifier` is a kebab-case code for the role of the object in this event, such as `subject` or `co-applicant`.
 
-A log store that cannot hold lists of maps MAY use flat attributes instead, of the form `org.fpsot.object.<type>.<qualifier>`.
+A log store that cannot hold lists of maps MAY use flat attributes instead, of the form `org.fpsot.object.<type>.<qualifier>.ids`.
 The type and the qualifier are then in snake_case, as OBS-022 asks, and the value is a list of identifiers.
-An example is `org.fpsot.object.party_role.co_applicant`.
+An example is `org.fpsot.object.party_role.co_applicant.ids`.
 A tool that converts between the two forms MUST lose no reference.
 One step can touch several objects, such as an application, a payment and a permit.
 A single case number would hide that.
@@ -110,7 +110,7 @@ A role is enough to study a process, while a person identifier turns process min
 
 [[OBS-076]]
 *OBS-076.* When a {abbr-bpmn-first} model describes the process, each business event SHOULD carry three attributes.
-They are `org.fpsot.bpmn.process_id`, `org.fpsot.bpmn.process_version` and `org.fpsot.bpmn.element_id`.
+They are `org.fpsot.bpmn.process.id`, `org.fpsot.bpmn.process.version` and `org.fpsot.bpmn.element.id`.
 The element identifier is the `id` of the task or event in the model.
 Each version of a model MUST stay unchanged and reachable once a component has used it.
 Conformance checking compares each event with its model element, in the version that applied at the time.
@@ -123,7 +123,7 @@ A key that varies per case breaks the counts of process mining, and can leak per
 
 [[OBS-078]]
 *OBS-078.* A component or a log store MUST NOT change or delete a business event before its retention ends.
-To fix a wrong event, a component MUST emit a new event with the attribute `org.fpsot.event.corrects`.
+To fix a wrong event, a component MUST emit a new event with the attribute `org.fpsot.event.corrected_event.id`.
 That attribute holds the `org.fpsot.event.id` of the wrong event.
 A log that a system rewrites after the fact gives results that nobody can repeat.
 

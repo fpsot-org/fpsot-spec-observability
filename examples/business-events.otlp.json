@@ -36,9 +36,9 @@
                   ]}}
                 ]}}},
                 {"key": "org.fpsot.performer.role", "value": {"stringValue": "applicant"}},
-                {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
-                {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
-                {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "submit-application-task"}}
+                {"key": "org.fpsot.bpmn.process.id", "value": {"stringValue": "building-permit"}},
+                {"key": "org.fpsot.bpmn.process.version", "value": {"stringValue": "3"}},
+                {"key": "org.fpsot.bpmn.element.id", "value": {"stringValue": "submit-application-task"}}
               ]
             },
             {
@@ -63,9 +63,9 @@
                   ]}}
                 ]}}},
                 {"key": "org.fpsot.performer.role", "value": {"stringValue": "case-officer"}},
-                {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
-                {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
-                {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "review-application-task"}}
+                {"key": "org.fpsot.bpmn.process.id", "value": {"stringValue": "building-permit"}},
+                {"key": "org.fpsot.bpmn.process.version", "value": {"stringValue": "3"}},
+                {"key": "org.fpsot.bpmn.element.id", "value": {"stringValue": "review-application-task"}}
               ]
             },
             {
@@ -90,9 +90,9 @@
                   ]}}
                 ]}}},
                 {"key": "org.fpsot.performer.role", "value": {"stringValue": "case-officer"}},
-                {"key": "org.fpsot.bpmn.process_id", "value": {"stringValue": "building-permit"}},
-                {"key": "org.fpsot.bpmn.process_version", "value": {"stringValue": "3"}},
-                {"key": "org.fpsot.bpmn.element_id", "value": {"stringValue": "review-application-task"}}
+                {"key": "org.fpsot.bpmn.process.id", "value": {"stringValue": "building-permit"}},
+                {"key": "org.fpsot.bpmn.process.version", "value": {"stringValue": "3"}},
+                {"key": "org.fpsot.bpmn.element.id", "value": {"stringValue": "review-application-task"}}
               ]
             }
           ]

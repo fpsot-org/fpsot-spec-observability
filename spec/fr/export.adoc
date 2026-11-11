@@ -86,7 +86,7 @@ Il DOIT associer chaque événement d’affaires à un seul événement {abbr-oc
 |`Timestamp` |Le `time` de l’événement, selon OBS-030
 |`org.fpsot.lifecycle` |L’attribut d’événement `lifecycle`
 |`org.fpsot.performer.role` |L’attribut d’événement `performer-role`, s’il est présent
-|`org.fpsot.bpmn.element_id` |L’attribut d’événement `bpmn-element-id`, s’il est présent
+|`org.fpsot.bpmn.element.id` |L’attribut d’événement `bpmn-element-id`, s’il est présent
 |Chaque référence d’`org.fpsot.objects` |Une relation, avec l’`objectId` et le `qualifier`, et un objet avec son `type`, déclaré dans `objectTypes`
 |===
 

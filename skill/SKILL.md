@@ -78,12 +78,12 @@ The FPSOT identity and access specification owns the list of identity and access
 - Must emit an explicit business event at each boundary of each listed step, with `EventName` `org.fpsot.observability.activity.transitioned` and `org.fpsot.stream` = `business`; tools must not infer them from spans or database changes (OBS-070).
 - Must carry `org.fpsot.activity.key`, a code (VOC-005, VOC-006, VOC-064) from an activity scheme of the vocabularies spec, never a label; one code must stand for one step, whatever its state (OBS-071).
 - Must carry `org.fpsot.lifecycle`: `schedule`, `start`, `suspend`, `resume`, `complete`, `abort`; an instant step must emit only `complete`; a step with duration must emit `start` then `complete` or `abort`, with the same key and objects (OBS-072).
-- Must carry `org.fpsot.objects`, a list of maps `{type, id, qualifier}`: a class of the data models spec or of the product's LinkML schema, named in the inventory (DMO-020); an internal string id (DAT-060, DAT-061; DAT-065 form for a UUID); a kebab-case qualifier; a log store may use flat `org.fpsot.object.<type>.<qualifier>` attributes with type and qualifier in snake_case (`PartyRole` to `party_role`, `-` to `_`, reversible under NAM-011); converters must lose no reference (OBS-073).
+- Must carry `org.fpsot.objects`, a list of maps `{type, id, qualifier}`: a class of the data models spec or of the product's LinkML schema, named in the inventory (DMO-020); an internal string id (DAT-060, DAT-061; DAT-065 form for a UUID); a kebab-case qualifier; a log store may use flat `org.fpsot.object.<type>.<qualifier>.ids` attributes with type and qualifier in snake_case (`PartyRole` to `party_role`, `-` to `_`, reversible under NAM-011); converters must lose no reference (OBS-073).
 - Must not use a trace or span identifier as a case or object identifier (OBS-074).
 - Should carry `org.fpsot.performer.role` with the code of the role or unit; may add a `performer` object reference to a real person only if the privacy impact assessment allows, by an OBS-092 identifier; a `performer` reference must not point to a role or unit (OBS-075).
-- Should carry `org.fpsot.bpmn.process_id`, `org.fpsot.bpmn.process_version`, `org.fpsot.bpmn.element_id` when a BPMN model exists; model versions must stay unchanged and reachable (OBS-076).
+- Should carry `org.fpsot.bpmn.process.id`, `org.fpsot.bpmn.process.version`, `org.fpsot.bpmn.element.id` when a BPMN model exists; model versions must stay unchanged and reachable (OBS-076).
 - Keys, qualifiers and event names must not hold free text, personal information or per-case values (OBS-077).
-- Must not change or delete business events before retention ends; corrections must be new events with `org.fpsot.event.corrects` (OBS-078).
+- Must not change or delete business events before retention ends; corrections must be new events with `org.fpsot.event.corrected_event.id` (OBS-078).
 - The inventory should name the main case object type of each process (OBS-079).
 
 ## Export and transport

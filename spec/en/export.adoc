@@ -83,7 +83,7 @@ It MUST map each business event to one {abbr-ocel-first} event, as this table sh
 |`Timestamp` |The `time` of the event, under OBS-030
 |`org.fpsot.lifecycle` |The event attribute `lifecycle`
 |`org.fpsot.performer.role` |The event attribute `performer-role`, when present
-|`org.fpsot.bpmn.element_id` |The event attribute `bpmn-element-id`, when present
+|`org.fpsot.bpmn.element.id` |The event attribute `bpmn-element-id`, when present
 |Each reference of `org.fpsot.objects` |One relationship, with the `objectId` and the `qualifier`, and one object with its `type`, declared in `objectTypes`
 |===
 

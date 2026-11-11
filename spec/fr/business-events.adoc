@@ -80,8 +80,8 @@ Un {abbr-uuid-first} prend la forme canonique de DAT-065.
 * `qualifier` est un code en kebab-case pour le rôle de l’objet dans cet événement, comme `subject` ou `co-applicant`.
 
 Un magasin de journaux qui ne peut pas conserver de listes de tables PEUT plutôt utiliser des attributs à plat.
-Leur forme est `org.fpsot.object.<type>.<qualifier>`, en snake_case selon OBS-022, avec une liste d’identifiants comme valeur.
-Un exemple est `org.fpsot.object.party_role.co_applicant`.
+Leur forme est `org.fpsot.object.<type>.<qualifier>.ids`, en snake_case selon OBS-022, avec une liste d’identifiants comme valeur.
+Un exemple est `org.fpsot.object.party_role.co_applicant.ids`.
 Un outil qui convertit d’une forme à l’autre NE DOIT PAS perdre de référence.
 Une étape peut toucher plusieurs objets, comme une demande, un paiement et un permis.
 Un seul numéro de dossier le cacherait.
@@ -111,7 +111,7 @@ Un rôle suffit pour étudier un processus, alors qu’un identifiant de personn
 
 [[OBS-076]]
 *OBS-076.* Quand un modèle {abbr-bpmn-first} décrit le processus, chaque événement d’affaires DEVRAIT porter trois attributs.
-Ce sont `org.fpsot.bpmn.process_id`, `org.fpsot.bpmn.process_version` et `org.fpsot.bpmn.element_id`.
+Ce sont `org.fpsot.bpmn.process.id`, `org.fpsot.bpmn.process.version` et `org.fpsot.bpmn.element.id`.
 L’identifiant d’élément est l’`id` de la tâche ou de l’événement dans le modèle.
 Chaque version d’un modèle DOIT rester inchangée et accessible dès qu’un composant l’a utilisée.
 La vérification de conformité compare chaque événement à son élément de modèle, dans la version en vigueur à ce moment.
@@ -125,7 +125,7 @@ Elle peut aussi faire fuir des renseignements personnels dans chaque rapport.
 
 [[OBS-078]]
 *OBS-078.* Un composant ou un magasin NE DOIT PAS modifier ni supprimer un événement d’affaires avant sa fin de conservation.
-Pour corriger un événement erroné, un composant DOIT émettre un nouvel événement avec l’attribut `org.fpsot.event.corrects`.
+Pour corriger un événement erroné, un composant DOIT émettre un nouvel événement avec l’attribut `org.fpsot.event.corrected_event.id`.
 Cet attribut contient l’`org.fpsot.event.id` de l’événement erroné.
 Un journal qu’un système réécrit après coup donne des résultats que personne ne peut reproduire.
 
