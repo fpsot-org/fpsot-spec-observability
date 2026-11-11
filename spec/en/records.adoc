@@ -21,20 +21,14 @@ A technical record SHOULD have an `EventName` too.
 The semantic conventions ask for a fixed name per structure, so that a reader can count and route events.
 
 [[OBS-022]]
-*OBS-022.* The name of an attribute that {abbr-fpsot} or a product defines MUST start with `org.fpsot.`.
-It MUST follow the link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[naming rules of the semantic conventions], in lower case with snake_case words and dots between parts.
-It MUST also meet NAM-004, NAM-005, NAM-006 and NAM-009.
-It MUST NOT start with a namespace of the semantic conventions, such as `process.`, which names an operating system process.
+*OBS-022.* The name of an attribute that {abbr-fpsot} defines MUST start with `org.fpsot.`.
+An organization that defines its own attributes MUST use its own reversed domain instead.
+All these names MUST follow NAM-053 to NAM-058.
+Those rules apply the link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[naming rules of the semantic conventions]: dotted names with snake_case segments, such as `org.fpsot.event.id`.
 An attribute of the semantic conventions keeps its exact name, under NAM-007.
-The conventions ask each organization to use its reversed domain, so its names never collide with standard names.
 
-These names are an exception to NAM-010, which sets lowerCamelCase for {abbr-json-first} field names.
-An OpenTelemetry attribute name follows the naming rules of OpenTelemetry, in dotted snake_case, such as `org.fpsot.event.id`.
-NAM-010 still applies to the members of the envelope of OBS-080 and to the `data` of a CloudEvents event.
-
-This note is informative.
-The naming specification lists no context for telemetry attribute names yet.
-A later version of it should add a row for them to the table of NAM-010.
+NAM-010 sets this form for telemetry attributes and keeps lowerCamelCase for {abbr-json-first} field names.
+So lowerCamelCase still applies to the members of the envelope of OBS-080 and to the `data` of a CloudEvents event.
 
 [[OBS-023]]
 *OBS-023.* Each record MUST carry these resource attributes, which the semantic conventions mark Stable: `service.name`, `service.namespace`, `service.version`, `service.instance.id` and `deployment.environment.name`.

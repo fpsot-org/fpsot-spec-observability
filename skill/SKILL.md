@@ -35,7 +35,7 @@ The FPSOT identity and access specification owns the list of identity and access
 
 - Records must follow the OpenTelemetry logs data model 1.62.0; an event is a record with a non-empty `EventName`; must not depend on a separate events API; `Body` should be a short fixed English text (OBS-020).
 - Audit and business events must have an `EventName` of the form of NAM-050 and NAM-051, with no varying value and no label; technical records should have one (OBS-021).
-- FPSOT attributes must start with `org.fpsot.`, follow the semantic conventions naming rules (dotted snake_case, an exception to NAM-010's lowerCamelCase) and NAM-004, NAM-005, NAM-006, NAM-009, and must not reuse a semconv namespace such as `process.`; semconv attributes keep their names (OBS-022).
+- FPSOT attributes must start with `org.fpsot.`; another organization uses its own reversed domain; all follow NAM-053 to NAM-058 (dotted names, snake_case segments, plural for lists, `id` segment for identifiers); semconv attributes keep their names (OBS-022).
 - Each record must carry `service.name`, `service.namespace`, `service.version`, `service.instance.id` and `deployment.environment.name`; `service.instance.id` should be a random UUID and must not name a person or a personal device (OBS-023).
 - Audit and business events must carry `org.fpsot.event.id`, a new identifier per DAT-063 and DAT-065, kept through every copy and export; technical records should (OBS-024).
 - `SeverityNumber` must be 1 to 24 in the data model ranges; `SeverityText` should keep the source level (OBS-025).

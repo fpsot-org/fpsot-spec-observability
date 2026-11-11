@@ -22,20 +22,14 @@ Un enregistrement technique DEVRAIT aussi avoir un `EventName`.
 Les conventions sémantiques demandent un nom fixe par structure, pour qu’un lecteur puisse compter et acheminer les événements.
 
 [[OBS-022]]
-*OBS-022.* Le nom d’un attribut que la {abbr-fpsot} ou un produit définit DOIT commencer par `org.fpsot.`.
-Il DOIT suivre les link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[règles de nommage des conventions sémantiques] : minuscules, mots en snake_case et points entre les parties.
-Il DOIT aussi respecter NAM-004, NAM-005, NAM-006 et NAM-009.
-Il NE DOIT PAS commencer par un espace de noms des conventions sémantiques, comme `process.`, réservé aux processus du système.
+*OBS-022.* Le nom d’un attribut que la {abbr-fpsot} définit DOIT commencer par `org.fpsot.`.
+Une organisation qui définit ses propres attributs DOIT plutôt utiliser son propre domaine inversé.
+Tous ces noms DOIVENT suivre NAM-053 à NAM-058.
+Elles appliquent les link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[règles de nommage des conventions sémantiques] : noms à points, segments en snake_case, comme `org.fpsot.event.id`.
 Un attribut des conventions sémantiques garde son nom exact, selon NAM-007.
-Les conventions demandent à chaque organisation d’utiliser son domaine inversé, pour que ses noms n’entrent jamais en conflit.
 
-Ces noms font exception à NAM-010, qui fixe le lowerCamelCase pour les noms de champs {abbr-json-first}.
-Un nom d’attribut OpenTelemetry suit les règles de nommage d’OpenTelemetry, en snake_case avec des points, comme `org.fpsot.event.id`.
-NAM-010 s’applique toujours aux membres de l’enveloppe d’OBS-080 et aux `data` d’un événement CloudEvents.
-
-Cette note est informative.
-La spécification sur le nommage ne prévoit pas encore de contexte pour les noms d’attributs de télémétrie.
-Une version ultérieure devrait leur ajouter une ligne dans le tableau de NAM-010.
+NAM-010 fixe cette forme pour les attributs de télémétrie et garde le lowerCamelCase pour les noms de champs {abbr-json-first}.
+Le lowerCamelCase s’applique donc toujours aux membres de l’enveloppe d’OBS-080 et aux `data` d’un événement CloudEvents.
 
 [[OBS-023]]
 *OBS-023.* Chaque enregistrement DOIT porter ces attributs de ressource, que les conventions sémantiques marquent Stable.
