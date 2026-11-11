@@ -1,33 +1,34 @@
-= FPSOT specification template
+= FPSOT observability specification
 
-This repository is the starting point for an FPSOT specification.
-Create a new repository from it, then replace this text.
-
-== Start a specification
-
-. Set `SPEC_PREFIX` in `.github/workflows/ci.yml` to the three-letter prefix of the requirement IDs.
-. Replace the titles in `spec/`, `docs/antora.yml`, `publiccode.yml`, `AGENTS.md`, `NOTICE` and `skill/SKILL.md`.
-. Replace the example requirement TPL-001 and the example row in `jurisdictions/baseline.yaml`.
-. List each spec page in `spec/<lang>/book.adoc`. The glossary stays the last include.
-
-Each page ends with a document history.
-Each guide page sets `:page-type:` to tutorial, how-to, reference or explanation.
-Write abbreviations and defined terms as `{abbr-…}` and `{term-…}` from the term base of `fpsot-spec-writing`.
-Write English in US spelling.
-Each page that cites outside sources ends with a References section, right before its document history.
-Each code block names its language, such as `[source,text]` or `[source,plantuml]`.
-The continuous integration writes `_fpsot-terms.adoc`, the glossaries and the comparison pages. Git ignores them.
+Rules for how FPSOT software records logs, traces and metrics, and how a public body keeps, protects and destroys those records.
+It builds on the stable core of OpenTelemetry and W3C Trace Context, and adds three event streams: technical, audit and business.
+Business events feed process mining, with an export to OCEL 2.0.
+Audit and business records go into a Merkle tree with signed C2SP checkpoints, built so that records can still be destroyed on schedule.
+The rules name capabilities and standards, not products. Version 0.1 is a draft.
 
 == Implement this spec
 
 Read the normative text in `spec/en/` or `spec/fr/`.
-Each requirement has an ID, such as `XYZ-001`.
-Check your implementation against every requirement.
+Each requirement has an ID from `OBS-001` to `OBS-117`.
+
+* Choose your profiles: `base` for every component and log store, `traces-metrics`, `process-mining` and `audit-integrity` (OBS-001).
+  The `audit-integrity` profile can be claimed by the log store or by a separate integrity service of the deployment.
+  The table "Profiles" in `spec/en/index.adoc` lists the rules of each.
+* Write the log inventory of each component, with a personal information class for each attribute (OBS-010, OBS-011), and the inventory of each log store and deployment (OBS-015).
+* Write records as JSON Lines on the standard output, with UTC timestamps and an `org.fpsot.event.id` on each audit and business event (OBS-020 to OBS-033, OBS-080).
+* Record the audit events of OBS-040 to OBS-046, and the business events of OBS-070 to OBS-079.
+* Mask personal information in the component, and keep only network prefixes of client addresses (OBS-083, OBS-090 to OBS-096).
+* Run `bash examples/test-examples.sh` to check the example files. The script `examples/check-examples.py` checks a folder with the same three files.
 
 == Adopt this spec
 
-Read the guides in `docs/modules/en/pages/` or `docs/modules/fr/pages/`.
-They explain what the spec gives your organization and how to require it.
+Read the guide in `docs/modules/en/pages/index.adoc` or `docs/modules/fr/pages/index.adoc`.
+It takes a component from its inventory to records that meet the `base` and `process-mining` profiles.
+A request for proposals can require a component or a log store to claim given profiles of this specification (OBS-001).
+A log store ships the retention profile `ca-qc-floor` by default for the audit and business streams, and the operator sets longer periods where its law or its retention schedule asks (OBS-101).
+The comparison data in `jurisdictions/` shows how the guidance of Canada and Québec differs.
+The pages `implementation.adoc` and `counsel.adoc` are informative, and the latter lists the legal questions that a lawyer must settle.
+This specification is not legal advice.
 
 == Layout
 
@@ -36,10 +37,13 @@ They explain what the spec gives your organization and how to require it.
 | Folder | Content
 
 | `spec/`
-| Normative text, in English and French. `book.adoc` joins the pages into one book.
+| Normative text, in English and French. `book.adoc` joins the pages into one book, published as PDF with each release.
 
 | `docs/`
 | Guides, in the Antora folder layout.
+
+| `examples/`
+| A JSON Lines audit record, three business events in OTLP/JSON, their OCEL 2.0 export, and the scripts that check them.
 
 | `skill/`
 | The agent skill: a short summary that cites requirement IDs.
@@ -51,7 +55,7 @@ They explain what the spec gives your organization and how to require it.
 | PlantUML sources and their rendered SVG files.
 
 | `jurisdictions/`
-| Comparison data per jurisdiction. `baseline.yaml` lists the compared requirements.
+| Comparison data: how each government handles the same topics.
 |===
 
 == License

@@ -1,12 +1,107 @@
 # Comparison data. The format is defined by fpsot-spec-doc (model/jurisdiction.yaml).
-# This example row compares requirement TPL-001. Replace it with the rows of this specification.
-# Add one file per jurisdiction, such as ca.yaml or ca/qc.yaml, only when a source exists.
 topics:
-  keywords: {en: Requirement keywords, fr: Mots clés des exigences}
+  inventory: {en: Log inventory, fr: Inventaire des journaux}
+  record-model: {en: Record model, fr: Modèle d’enregistrement}
+  record-content: {en: Content of audit records, fr: Contenu des enregistrements d’audit}
+  injection: {en: Log injection, fr: Injection dans les journaux}
+  time: {en: Timestamps and clocks, fr: Horodatage et horloges}
+  personal-data-access: {en: Access to personal information, fr: Accès aux renseignements personnels}
+  logging-stops: {en: Alert when logging stops, fr: Alerte quand la journalisation s’arrête}
+  trace-context: {en: Trace propagation, fr: Propagation des traces}
+  separate-store: {en: Separate log store, fr: Magasin de journaux distinct}
+  process-mining-export: {en: Export for process mining, fr: Exportation pour l’exploration de processus}
+  retention: {en: Retention, fr: Conservation}
+  integrity: {en: Integrity and tamper evidence, fr: Intégrité et détection des altérations}
+  audit-events: {en: Events to record, fr: Événements à consigner}
+  minimization: {en: Minimization of personal information, fr: Minimisation des renseignements personnels}
 rows:
-  - id: TPL-001
-    topic: keywords
-    requirement: {en: Use the BCP 14 keywords., fr: Utiliser les mots clés du BCP 14.}
-    international: {en: "BCP 14 defines MUST, SHOULD and MAY. Only the capital forms carry that meaning.", fr: "Le BCP 14 définit MUST, SHOULD et MAY. Seules les majuscules ont ce sens."}
-    international_source: {title: "RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words (BCP 14)", version: "BCP 14", date: "2017-05", url: "https://www.rfc-editor.org/info/rfc8174", archive: "https://web.archive.org/web/20261103005743/https://www.rfc-editor.org/info/rfc8174/"}
-    fpsot: {en: "Keywords in capitals, with a fixed French mapping.", fr: "Mots clés en majuscules, avec une correspondance française fixe."}
+  - id: OBS-010
+    topic: inventory
+    requirement: {en: "Each component ships a machine-readable log inventory with each release.", fr: "Chaque composant livre un inventaire de journaux lisible par machine avec chaque version."}
+    international: {en: "Requirement 16.1.1 asks for an inventory of the logging at each layer: the events, their format, their storage, who can read them and how long they stay.", fr: "L’exigence 16.1.1 demande un inventaire de la journalisation à chaque couche : les événements, leur format, leur stockage, qui peut les lire et leur durée de conservation."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.1.1", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "A JSON or YAML file with a published schema, shipped with each release, with a personal information class and a purpose for each attribute.", fr: "Un fichier JSON ou YAML avec un schéma publié, livré avec chaque version, avec une classe de renseignements personnels et une finalité pour chaque attribut."}
+  - id: OBS-020
+    topic: record-model
+    requirement: {en: "Each record follows the OpenTelemetry logs data model, and an event is a record with an event name.", fr: "Chaque enregistrement suit le modèle de données des journaux d’OpenTelemetry, et un événement est un enregistrement avec un nom d’événement."}
+    international: {en: "The logs data model of OpenTelemetry is Stable. It defines the fields of a log record, and treats a record with a non-empty event name as an event.", fr: "Le modèle de données des journaux d’OpenTelemetry est Stable. Il définit les champs d’un enregistrement de journal, et traite un enregistrement dont le nom d’événement n’est pas vide comme un événement."}
+    international_source: {title: "OpenTelemetry Specification, Logs Data Model", version: "1.62.0", date: "2026-10-22", url: "https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md", archive: "https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md"}
+    fpsot: {en: "The OpenTelemetry data model, with FPSOT attributes under org.fpsot, a unique event identifier and a JSON Lines output on the standard output.", fr: "Le modèle de données d’OpenTelemetry, avec des attributs FPSOT sous org.fpsot, un identifiant d’événement unique et une sortie JSON Lines sur la sortie standard."}
+  - id: OBS-027
+    topic: record-content
+    requirement: {en: "Each audit event shows what happened, when, where, from which source, with what outcome and to whom.", fr: "Chaque événement d’audit montre ce qui s’est passé, quand, où, de quelle source, avec quel résultat et à qui."}
+    international: {en: "Requirement 16.2.1 asks each log entry to carry the metadata, such as when, where, who and what, that an investigation of the timeline needs.", fr: "L’exigence 16.2.1 demande que chaque entrée de journal porte les métadonnées, comme quand, où, qui et quoi, dont une enquête sur la chronologie a besoin."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.2.1", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "Fixed attributes for the actor, the outcome and the objects, with codes for the outcome and the type of actor.", fr: "Des attributs fixes pour l’acteur, le résultat et les objets, avec des codes pour le résultat et le type d’acteur."}
+  - id: OBS-028
+    topic: injection
+    requirement: {en: "Each value from outside is encoded, so that it cannot forge a record.", fr: "Chaque valeur venue de l’extérieur est encodée, pour qu’elle ne puisse pas forger un enregistrement."}
+    international: {en: "Requirement 16.4.1 asks every logging component to encode data so as to prevent log injection.", fr: "L’exigence 16.4.1 demande à chaque composant de journalisation d’encoder les données pour empêcher l’injection dans les journaux."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.4.1", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "Encoding of every outside value, escaped control characters, no format strings built from input and a size limit per record.", fr: "L’encodage de chaque valeur externe, des caractères de commande échappés, aucune chaîne de format construite à partir d’une entrée et une taille limite par enregistrement."}
+  - id: OBS-030
+    topic: time
+    requirement: {en: "Text encodings write each instant in UTC with the letter Z and at least milliseconds.", fr: "Les encodages textuels écrivent chaque instant en UTC avec la lettre Z et au moins les millisecondes."}
+    international: {en: "Requirement 16.2.2 asks for synchronized time sources, and for timestamps in UTC or with an explicit offset. It recommends UTC.", fr: "L’exigence 16.2.2 demande des sources de temps synchronisées, et un horodatage en UTC ou avec un décalage explicite. Elle recommande l’UTC."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.2.2", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "RFC 3339 in UTC with Z and milliseconds in text encodings, integer nanoseconds in OTLP, and clocks synchronized with an authoritative source.", fr: "Le RFC 3339 en UTC avec Z et les millisecondes dans les encodages textuels, des nanosecondes entières dans l’OTLP, et des horloges synchronisées avec une source qui fait autorité."}
+  - id: OBS-033
+    topic: time
+    requirement: {en: "Each host synchronizes its clock with an authoritative time source that the operator names.", fr: "Chaque hôte synchronise son horloge avec une source de temps qui fait autorité et que nomme l’exploitant."}
+    international: {en: "Requirement 16.2.2 asks that the time sources of all logging components be synchronized.", fr: "L’exigence 16.2.2 demande que les sources de temps de tous les composants de journalisation soient synchronisées."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.2.2", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "Synchronization with a named authoritative source, Network Time Security when the source offers it, and the need stated in the deployment guide.", fr: "La synchronisation avec une source nommée qui fait autorité, Network Time Security quand la source l’offre, et le besoin indiqué dans le guide de déploiement."}
+  - id: OBS-040
+    topic: audit-events
+    requirement: {en: "Each component records the identity and access events that it uses, with both success and failure.", fr: "Chaque composant consigne les événements d’identité et d’accès qu’il utilise, avec la réussite comme l’échec."}
+    international: {en: "Requirement 16.3.1 asks to log every authentication operation, whether it succeeds or fails.", fr: "L’exigence 16.3.1 demande de journaliser chaque opération d’authentification, qu’elle réussisse ou échoue."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.3.1", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "The events of the FPSOT identity and access catalog, each with both outcomes, recorded under the record rules of this specification.", fr: "Les événements du catalogue FPSOT d’identité et d’accès, chacun avec ses deux résultats, consignés selon les règles d’enregistrement de cette spécification."}
+  - id: OBS-042
+    topic: personal-data-access
+    requirement: {en: "Each access to personal information is recorded, exports, downloads and prints included, with a purpose code.", fr: "Chaque accès aux renseignements personnels est consigné, exportations, téléchargements et impressions compris, avec un code de finalité."}
+    international: {en: "Requirement 16.3.2 asks to log failed authorization. At Level 3 only, it adds every authorization decision and each access to sensitive data.", fr: "L’exigence 16.3.2 demande de journaliser les autorisations refusées. Au niveau 3 seulement, elle ajoute chaque décision d’autorisation et chaque accès aux données sensibles."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.3.2", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "Each access to personal or sensitive information that the privacy impact assessment names, and at least each access to Protected B information, with a purpose code from a published scheme.", fr: "Chaque accès aux renseignements personnels ou sensibles que nomme l’évaluation des facteurs relatifs à la vie privée, et au moins chaque accès à une information Protégé B, avec un code de finalité tiré d’un schéma publié."}
+  - id: OBS-045
+    topic: logging-stops
+    requirement: {en: "A log store raises an alert when an expected source sends no records.", fr: "Un magasin de journaux lance une alerte quand une source attendue n’envoie aucun enregistrement."}
+    international: {en: "The guidance asks organizations to alert when log messages stop arriving centrally, or else to send test events and check that they arrive.", fr: "Le guide demande aux organisations de lancer une alerte quand les journaux cessent d’arriver au point central, ou sinon d’envoyer des événements de test et de vérifier leur arrivée."}
+    international_source: {title: "National Cyber Security Centre, Introduction to logging for security purposes", version: "1.0", date: "2018-07-08", url: "https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes", archive: "https://web.archive.org/web/20261031113648/https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes"}
+    fpsot: {en: "An alert after a period that the operator sets, backed by pipeline health metrics for each stream.", fr: "Une alerte après une période que fixe l’exploitant, appuyée par des métriques sur l’état de la chaîne de journalisation pour chaque flux."}
+  - id: OBS-050
+    topic: trace-context
+    requirement: {en: "Each component reads and sends the W3C Trace Context headers.", fr: "Chaque composant lit et envoie les en-têtes W3C Trace Context."}
+    international: {en: "Trace Context Level 1 defines the traceparent and tracestate headers that carry the identity of a trace from one service to the next.", fr: "Trace Context Level 1 définit les en-têtes traceparent et tracestate qui transmettent l’identité d’une trace d’un service au suivant."}
+    international_source: {title: "W3C, Trace Context Level 1", version: "Recommendation", date: "2021-11", url: "https://www.w3.org/TR/trace-context/", archive: "https://web.archive.org/web/20261101165619/https://www.w3.org/TR/trace-context/"}
+    fpsot: {en: "Level 1 on every HTTP request, with the random flag of Level 2 as a recommendation, and no personal information in tracestate or baggage.", fr: "Le niveau 1 sur chaque requête HTTP, avec l’indicateur aléatoire du niveau 2 comme recommandation, et aucun renseignement personnel dans tracestate ou le bagage."}
+  - id: OBS-082
+    topic: separate-store
+    requirement: {en: "Audit and business records reach a log store on another system, over TLS.", fr: "Les enregistrements d’audit et d’affaires atteignent un magasin de journaux sur un autre système, par TLS."}
+    international: {en: "Requirement 16.4.3 asks that logs travel securely to a logically separate system, so that a breach of the application does not reach them.", fr: "L’exigence 16.4.3 demande que les journaux circulent de façon sécuritaire vers un système logiquement distinct, pour qu’une brèche de l’application ne les atteigne pas."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.4.3", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "A separate system, TLS 1.2 or 1.3, authenticated senders, and no lasting local copy of the only audit record.", fr: "Un système distinct, TLS 1.2 ou 1.3, des expéditeurs authentifiés, et aucune copie locale durable du seul enregistrement d’audit."}
+  - id: OBS-086
+    topic: process-mining-export
+    requirement: {en: "Business events export to OCEL 2.0, one OCEL event per business event.", fr: "Les événements d’affaires s’exportent en OCEL 2.0, un événement OCEL par événement d’affaires."}
+    international: {en: "OCEL 2.0 defines an object-centric event log in which each event has one type and one time, and links to any number of typed objects with a qualifier.", fr: "OCEL 2.0 définit un journal d’événements centré sur les objets, où chaque événement a un type et un moment, et se lie à des objets typés avec un qualificatif."}
+    international_source: {title: "OCEL (Object-Centric Event Log) 2.0 Specification", version: "2.0", date: "2024-03-04", url: "https://arxiv.org/abs/2403.01975", archive: "https://web.archive.org/web/20261024211221/https://arxiv.org/abs/2403.01975"}
+    fpsot: {en: "OCEL 2.0 JSON valid against its schema, with a fixed mapping of the activity key, the lifecycle and the objects, and pseudonyms for identifiers that lead to a person.", fr: "OCEL 2.0 en JSON valide selon son schéma, avec une correspondance fixe de la clé d’activité, du cycle de vie et des objets, et des pseudonymes pour les identifiants menant à une personne."}
+  - id: OBS-090
+    topic: minimization
+    requirement: {en: "A record holds personal information only in the attributes that the inventory declares and the privacy impact assessment names.", fr: "Un enregistrement ne contient des renseignements personnels que dans les attributs que déclare l’inventaire et que nomme l’évaluation des facteurs relatifs à la vie privée."}
+    international: {en: "Requirement 16.2.5 asks the application to log sensitive data according to its protection level. Some data, such as credentials, may not be logged at all.", fr: "L’exigence 16.2.5 demande à l’application de journaliser les données sensibles selon leur niveau de protection. Certaines données, comme les identifiants de connexion, ne peuvent pas du tout être journalisées."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.2.5", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "A personal information class and a purpose for each attribute, no personal information in bodies and names, and network prefixes instead of full addresses.", fr: "Une classe de renseignements personnels et une finalité pour chaque attribut, aucun renseignement personnel dans les corps et les noms, et des préfixes réseau au lieu des adresses complètes."}
+  - id: OBS-101
+    topic: retention
+    requirement: {en: "A log store ships the retention profile ca-qc-floor and applies it by default.", fr: "Un magasin de journaux livre le profil de conservation ca-qc-floor et l’applique par défaut."}
+    international: {en: "The guidance recommends keeping the logs that answer incident questions for at least 6 months.", fr: "Le guide recommande de garder au moins 6 mois les journaux qui répondent aux questions sur les incidents."}
+    international_source: {title: "National Cyber Security Centre, Introduction to logging for security purposes", version: "1.0", date: "2018-07-08", url: "https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes", archive: "https://web.archive.org/web/20261031113648/https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes"}
+    fpsot: {en: "90 days online and then 180 days in storage for the audit and business streams, 2 years for records tied to a security incident, longer where a law or a retention schedule asks. The inventory sets the period of the technical stream.", fr: "90 jours en ligne puis 180 jours en stockage pour les flux d’audit et d’affaires, 2 ans pour les enregistrements liés à un incident de sécurité, plus longtemps quand une loi ou un calendrier de conservation l’exige. L’inventaire fixe la durée du flux technique."}
+  - id: OBS-110
+    topic: integrity
+    requirement: {en: "Audit and business records go into a Merkle tree with signed checkpoints.", fr: "Les enregistrements d’audit et d’affaires vont dans un arbre de Merkle avec des points de contrôle signés."}
+    international: {en: "Requirement 16.4.2 asks that logs be protected from unauthorized access and that nobody can modify them. It names no technique.", fr: "L’exigence 16.4.2 demande que les journaux soient protégés contre l’accès non autorisé et que personne ne puisse les modifier. Elle ne nomme aucune technique."}
+    international_source: {title: "OWASP Application Security Verification Standard 5.0.0, V16 Security Logging and Error Handling, requirement 16.4.2", version: "5.0.0", date: "2025-05-30", url: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md", archive: "https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"}
+    fpsot: {en: "An RFC 6962 Merkle tree over salted hashes, built by the log store or by a separate integrity service, C2SP checkpoints with an Ed25519 signature, a witness as a recommendation and write-once storage as a recommendation.", fr: "Un arbre de Merkle du RFC 6962 sur des condensés salés, bâti par le magasin de journaux ou par un service d’intégrité distinct, des points de contrôle C2SP avec une signature Ed25519, un témoin recommandé et un stockage à écriture unique recommandé."}

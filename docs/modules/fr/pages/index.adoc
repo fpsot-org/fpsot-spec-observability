@@ -1,15 +1,82 @@
-= Guide
-:page-type: explanation
+= Rendre un composant observable
+:page-type: how-to
 include::_fpsot-terms.adoc[]
 
-Cette page explique la spécification aux personnes qui l’adoptent.
-Chaque page de guide a un seul type.
-C’est un tutoriel, un guide pratique, une référence ou une explication.
+Ce guide mène une équipe d’un nouveau composant à des enregistrements qui respectent les profils `base` et `process-mining`.
+Chaque étape cite la règle qu’elle respecte.
+
+== Avant d’écrire du code
+
+Rédigez l’inventaire de journaux du composant, selon OBS-010.
+Énumérez chaque événement, son flux et ses attributs.
+Donnez à chaque attribut une classe de renseignements personnels, selon OBS-011.
+Envoyez la liste des champs personnels à la personne qui rédige l’{term-privacy-impact-assessment-first} du système.
+
+== Écrire chaque enregistrement
+
+Écrivez chaque enregistrement comme une ligne de {abbr-json-first} sur la sortie standard, selon OBS-080.
+Placez le moment de l’événement dans `timestamp`, en {abbr-utc-first} avec les millisecondes, selon OBS-030 et OBS-032.
+Donnez à chaque événement d’audit et d’affaires un nouvel `org.fpsot.event.id`, selon OBS-024.
+Le fichier `examples/log-record.jsonl` montre un événement d’audit, qui ressemble à ceci une fois indenté.
+
+[source,json]
+----
+{
+  "timestamp": "2026-11-10T17:01:41.250Z",
+  "severityNumber": 9,
+  "eventName": "org.fpsot.permit.application.exported",
+  "attributes": {
+    "org.fpsot.event.id": "01a1c668-8602-7e40-8d5e-60718293a4b5",
+    "org.fpsot.stream": "audit",
+    "org.fpsot.outcome": "success",
+    "org.fpsot.purpose": "case-processing",
+    "org.fpsot.network.client.prefix": "192.0.2.0/24"
+  }
+}
+----
+
+Désignez les personnes seulement par des identifiants opaques, selon OBS-092.
+Gardez seulement le préfixe réseau d’une adresse client, selon OBS-091.
+Masquez les secrets et les champs personnels dans le composant, avant que l’enregistrement le quitte, selon OBS-083.
+
+== Consigner les événements d’audit
+
+Consignez chaque événement d’identité et d’accès que le composant utilise, selon OBS-040.
+Consignez chaque changement de configuration, chaque accès aux renseignements personnels et chaque défaillance d’une mesure, selon OBS-041 à OBS-044.
+Donnez à chaque accès un code de finalité tiré du schéma de l’exploitant, selon OBS-042.
+
+== Consigner les étapes d’affaires
+
+Demandez le schéma d’activités à la personne responsable du processus, selon OBS-071.
+Émettez à chaque frontière d’étape un événement avec clé, cycle de vie et objets, selon OBS-070 à OBS-073.
+Nommez le rôle qui fait l’étape dans `org.fpsot.performer.role`, selon OBS-075.
+N’employez jamais l’identifiant de trace comme dossier, selon OBS-074.
+Le fichier `examples/business-events.otlp.json` montre trois de ces événements.
+
+== Vérifier la sortie
+
+Lancez la vérification des exemples sur votre propre sortie, avec les trois mêmes fichiers que le dossier `examples/`.
+
+[source,text]
+----
+python3 examples/check-examples.py chemin/vers/votre/sortie
+----
+
+Une réussite montre les champs principaux d’OBS-020 à OBS-033 et d’OBS-070 à OBS-087.
+Elle ne prouve pas tout le profil, et un outil de conformité suivra, selon OBS-004.
+
+== Remettre le composant à l’exploitant
+
+Remettez à l’exploitant l’inventaire et le guide de déploiement.
+Le guide indique la source de temps, selon OBS-033, et les destinations, selon OBS-012.
+L’exploitant fixe ensuite le profil de conservation, `ca-qc-floor` par défaut, selon OBS-101.
+L’exploitant rédige l’inventaire du déploiement, selon OBS-015.
+Il y nomme la partie qui bâtit l’arbre de Merkle : le magasin, ou un service d’intégrité distinct, selon OBS-001.
 
 == Historique du document
 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Changement
-|0.1.0 |2026-11-03 |Première version.
+|0.1.0 |2026-11-10 |Première version.
 |===

@@ -1,0 +1,161 @@
+= Enregistrements, noms et temps
+include::_fpsot-terms.adoc[]
+
+Ces règles fixent le modèle de chaque enregistrement, ses noms, ses identifiants et son horodatage.
+Elles s’appliquent à chaque flux.
+
+== Modèle d’enregistrement
+
+[[OBS-020]]
+*OBS-020.* Chaque enregistrement DOIT suivre le link:https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md[modèle de données des journaux d’OpenTelemetry 1.62.0].
+Un événement est un enregistrement de journal dont le champ `EventName` n’est pas vide.
+Une mise en œuvre NE DOIT PAS dépendre d’une {abbr-api-first} d’événements distincte, qu’OpenTelemetry a retirée à la version 1.41.0.
+Le `Body` DEVRAIT être un court texte fixe en anglais, et les données variables vont dans les attributs.
+Un lecteur trouve alors chaque valeur par son nom, et tout outil OpenTelemetry lit ce modèle Stable.
+
+[[OBS-021]]
+*OBS-021.* Chaque événement d’audit et chaque événement d’affaires DOIT avoir un `EventName`.
+Un `EventName` que la {abbr-fpsot-first} ou un produit définit DOIT suivre NAM-050 et NAM-051.
+Un exemple est `org.fpsot.permit.application.exported`.
+Il NE DOIT PAS contenir de valeur variable, comme un identifiant ou une date, ni de libellé pour les personnes.
+Un enregistrement technique DEVRAIT aussi avoir un `EventName`.
+Les conventions sémantiques demandent un nom fixe par structure, pour qu’un lecteur puisse compter et acheminer les événements.
+
+[[OBS-022]]
+*OBS-022.* Le nom d’un attribut que la {abbr-fpsot} définit DOIT commencer par `org.fpsot.`.
+Une organisation qui définit ses propres attributs DOIT plutôt utiliser son propre domaine inversé.
+Tous ces noms DOIVENT suivre NAM-053 à NAM-058.
+Elles appliquent les link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[règles de nommage des conventions sémantiques] : noms à points, segments en snake_case, comme `org.fpsot.event.id`.
+Un attribut des conventions sémantiques garde son nom exact, selon NAM-007.
+
+NAM-010 fixe cette forme pour les attributs de télémétrie et garde le lowerCamelCase pour les noms de champs {abbr-json-first}.
+Le lowerCamelCase s’applique donc toujours aux membres de l’enveloppe d’OBS-080 et aux `data` d’un événement CloudEvents.
+
+[[OBS-023]]
+*OBS-023.* Chaque enregistrement DOIT porter ces attributs de ressource, que les conventions sémantiques marquent Stable.
+Ce sont `service.name`, `service.namespace`, `service.version`, `service.instance.id` et `deployment.environment.name`.
+La valeur de `service.instance.id` DEVRAIT être un {abbr-uuid-first} aléatoire.
+Elle NE DOIT PAS contenir le nom d’une personne ou d’un appareil personnel.
+Ces attributs indiquent quel programme, quelle version et quelle copie ont écrit l’enregistrement.
+
+[[OBS-024]]
+*OBS-024.* Chaque événement d’audit et chaque événement d’affaires DOIT porter l’attribut `org.fpsot.event.id`.
+Sa valeur DOIT être un nouvel identifiant pour chaque événement, dans la forme de DAT-063 et DAT-065.
+Chaque copie, exportation et réexpédition de l’événement DOIT garder la même valeur.
+Un enregistrement technique DEVRAIT aussi le porter.
+Un lecteur peut alors écarter un doublon et suivre un événement d’une exportation à l’autre.
+L’attribut `log.record.uid` des conventions sémantiques conviendrait, mais son statut est Development.
+
+[[OBS-025]]
+*OBS-025.* Chaque enregistrement DOIT donner à `SeverityNumber` une valeur de 1 à 24, dans les plages du modèle de données.
+Il DEVRAIT garder le niveau de sa source dans `SeverityText`.
+Le modèle de données divise l’échelle en six plages de quatre valeurs chacune.
+Ce sont, dans l’ordre, trace, débogage, information, avertissement, erreur et erreur fatale.
+Une seule échelle permet de filtrer de la même façon les enregistrements de toutes les sources.
+
+[[OBS-026]]
+*OBS-026.* Un composant NE DOIT PAS émettre les attributs `enduser.*` ni `event.name`, que les conventions sémantiques 1.45.0 marquent Deprecated.
+Il DOIT consigner une exception dans un journal, pas dans un segment, selon les link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/exceptions/exceptions-logs.md[conventions Stable des exceptions].
+L’enregistrement DOIT porter `exception.type`, `exception.message` et `exception.stacktrace`.
+L’inventaire DOIT leur donner la classe `personal`, sauf pour le message et la pile qu’un composant épure.
+Les outils abandonnent les noms dépréciés avec le temps, et les données qui en dépendent disparaissent avec eux.
+Un message ou une pile d’appels cite souvent l’entrée qui a causé l’erreur.
+
+[[OBS-027]]
+*OBS-027.* Chaque événement d’audit DOIT établir ce qui s’est passé, quand, où, de quelle source, avec quel résultat, à qui.
+Il le fait avec ces champs.
+
+[cols="2,3",options="header"]
+|===
+|Contenu |Champ
+|Type d’événement |`EventName`
+|Moment |`Timestamp`, selon OBS-032
+|Endroit |Les attributs de ressource d’OBS-023
+|Source |`org.fpsot.actor.id`, `org.fpsot.actor.type` et, s’il y a lieu, `org.fpsot.network.client.prefix` d’OBS-091
+|Résultat |`org.fpsot.outcome`, avec le code `success` ou `failure`, et `error.type` en cas d’échec
+|Identités |`org.fpsot.actor.id`, `org.fpsot.actor.role` et la liste d’objets `org.fpsot.objects` d’OBS-073
+|===
+
+La valeur de `org.fpsot.actor.type` DOIT être `person`, `service` ou `system`.
+L’identifiant de l’acteur DOIT suivre OBS-092.
+La mesure `AU-03` du {abbr-cgcd-first} rend ce contenu obligatoire pour les organismes publics du Québec.
+La spécification FPSOT sur l’identité et l’accès peut ajouter des champs à ses propres événements, mais pas retirer ceux-ci.
+
+Un catalogue d’événements d’une autre spécification de la {abbr-fpsot} DOIT nommer chaque attribut qu’il ajoute `org.fpsot.<domain>.<field>`.
+Le domaine est celui de ses noms d’événements selon NAM-051.
+Des exemples sont `org.fpsot.identity.session.id` et `org.fpsot.identity.client.id`.
+Le schéma {abbr-json} d’un tel catalogue régit les `data` de l’événement CloudEvents, et non les attributs OpenTelemetry.
+Cette page et OBS-022 régissent les attributs.
+Chaque nom a alors un seul responsable, et deux catalogues ne revendiquent jamais le même nom.
+
+[[OBS-028]]
+*OBS-028.* Un composant DOIT encoder chaque valeur venue de l’extérieur avant de l’écrire dans un enregistrement.
+Une valeur NE DOIT PAS pouvoir ajouter une ligne, un champ ou un enregistrement à la sortie.
+Dans un encodage textuel, chaque caractère de commande d’une valeur DOIT paraître sous forme échappée, comme un saut de ligne.
+Un composant NE DOIT PAS construire un enregistrement en insérant une entrée non fiable dans une chaîne de format.
+L’exigence 16.4.1 de l’link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[ASVS 5.0.0] demande cet encodage.
+Une personne qui peut forger un enregistrement peut cacher une attaque ou accuser quelqu’un d’autre.
+
+[[OBS-029]]
+*OBS-029.* Un composant NE DOIT PAS écrire un enregistrement plus long que la limite que fixe son inventaire.
+Il DEVRAIT couper une valeur longue et ajouter l’attribut `org.fpsot.truncated` avec la valeur `true`.
+Sans limite, un attaquant peut remplir le magasin de journaux.
+Une grande valeur peut aussi contenir des renseignements personnels par erreur.
+
+== Temps
+
+[[OBS-030]]
+*OBS-030.* Un encodage textuel DOIT écrire chaque instant dans la forme de DAT-010, en {abbr-utc-first} avec la lettre `Z`.
+Il DOIT donner au moins les millisecondes, comme `2026-11-10T14:03:12.418Z`.
+Les encodages textuels sont la sortie {abbr-json} Lines d’OBS-080, syslog, l’exportation {abbr-ocel-first} et CloudEvents.
+La mesure `AU-08` du {abbr-cgcd} demande l’{abbr-utc} ou un décalage explicite.
+L’exigence 16.2.2 de l’{abbr-asvs-first} 5.0.0 dit la même chose.
+Un seul fuseau et une précision fixe permettent de fusionner et d’ordonner les enregistrements de nombreux hôtes.
+
+[[OBS-031]]
+*OBS-031.* En {abbr-otlp-first}, un composant DOIT écrire chaque instant en nanosecondes entières depuis 1970.
+En {abbr-otlp}/{abbr-json}, il DOIT écrire cet entier comme une chaîne décimale, comme `"1794319392418000000"`.
+La version link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[opentelemetry-proto 1.11.1] exige cette forme.
+DAT-013 ne s’applique pas dans une charge utile {abbr-otlp}, car le protocole fixe cette forme.
+Un outil qui convertit l’{abbr-otlp} en encodage textuel DOIT convertir chaque instant selon OBS-030, sans perdre les millisecondes.
+Un tel entier dépasse la plage exacte d’un nombre {abbr-json}, et le protocole l’écrit donc comme une chaîne.
+
+[[OBS-032]]
+*OBS-032.* Un composant DOIT donner à `Timestamp` le moment où l’événement s’est produit.
+`ObservedTimestamp` est le moment où la chaîne de journalisation a vu l’enregistrement pour la première fois.
+Un lecteur DOIT ordonner les événements d’un processus selon `Timestamp`, jamais selon `ObservedTimestamp`.
+Un enregistrement peut attendre des minutes dans une file.
+Le moment de son exportation ne dit alors rien de l’ordre du travail.
+
+[[OBS-033]]
+*OBS-033.* Chaque hôte d’un composant ou d’un magasin DOIT synchroniser son horloge avec une source de temps qui fait autorité.
+L’exploitant nomme la source, comme `time.nrc.ca` du Conseil national de recherches du Canada.
+Un hôte DEVRAIT utiliser link:https://www.rfc-editor.org/info/rfc8915[Network Time Security] quand la source l’offre.
+Le guide de déploiement d’un composant DOIT indiquer ce besoin.
+La mesure `SC-45(01)` du {abbr-cgcd} rend cette synchronisation obligatoire.
+Un enregistrement fait preuve seulement si l’horloge qui l’a daté était juste.
+
+== Références
+
+=== Références normatives
+
+* link:https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md[OpenTelemetry Specification, Logs Data Model], OpenTelemetry, 1.62.0, 2026-10-22.
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[OpenTelemetry Semantic Conventions, Naming], OpenTelemetry, 1.45.0, 2026-11-02.
+* link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol Specification], OpenTelemetry, opentelemetry-proto 1.11.1, 2026-09-29.
+* link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+* link:https://www.rfc-editor.org/info/rfc8915[RFC 8915, Network Time Security for the Network Time Protocol], IETF, Proposed Standard, 2020-09. link:https://web.archive.org/web/20261014054448/https://www.rfc-editor.org/info/rfc8915/[Copie archivée]
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/exceptions/exceptions-logs.md[OpenTelemetry Semantic Conventions, Exceptions in logs], OpenTelemetry, 1.45.0, 2026-11-02.
+
+=== Références informatives
+
+* Référentiel de sécurité, fiche AU-03, Contenu des enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-03/ref-au-03.pdf`.
+* Référentiel de sécurité, fiche AU-08, Horodatage du contrôle, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/au-08/ref-au-08.pdf`.
+* Référentiel de sécurité, fiche SC-45(01), Synchronisation avec une source de temps faisant autorité, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. Il n’en existe aucune copie archivée. Le PDF se trouve à `https://www.cyber.gouv.qc.ca/publications/referentiel/sc-45-01/ref-sc-45-01.pdf`.
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

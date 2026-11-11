@@ -1,0 +1,138 @@
+= Export and transport
+include::_fpsot-terms.adoc[]
+
+These rules set the formats in which a component writes its records, and how the records reach the log store.
+They also set the export of business events for process mining.
+
+== Output of a component
+
+[[OBS-080]]
+*OBS-080.* A component MUST write each record to its standard output in the {abbr-json-first} Lines form of this rule.
+Each line MUST be one {abbr-json} object, encoded under DAT-001 and DAT-003, with the members of this table.
+
+[cols="2,3",options="header"]
+|===
+|Member |Content
+|`timestamp` |The `Timestamp` of the record, under OBS-030 and OBS-032.
+|`observedTimestamp` |The `ObservedTimestamp` of the record, under OBS-030.
+|`severityNumber` and `severityText` |The severity, under OBS-025.
+|`eventName` |The `EventName`, under OBS-021, when the record is an event.
+|`body` |The `Body`, under OBS-020, when the record has one.
+|`traceId`, `spanId` and `traceFlags` |The trace context, under OBS-051, when the record comes from a span.
+|`resource` |An object with the resource attributes, under OBS-023.
+|`attributes` |An object with the attributes of the record.
+|===
+
+The members of the envelope follow NAM-010, and the keys inside `resource` and `attributes` keep their OpenTelemetry names, under NAM-007.
+The file `examples/log-record.jsonl` shows one record.
+The standard output works in every runtime, and link:https://jsonlines.org/[JSON Lines] lets any tool read one record per line.
+The file exporter of OpenTelemetry would serve too, but its status is Development, under OBS-003.
+
+[[OBS-081]]
+*OBS-081.* A component SHOULD also export its records over the link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol] of opentelemetry-proto 1.11.1, over {abbr-http-first} or gRPC.
+The {abbr-otlp-first} is Stable for logs, traces and metrics, but some frameworks offer it for logs only as a preview.
+A MUST would then exclude the reference Java framework of {abbr-fpsot-first}, which the page on implementation profiles names.
+
+=== Planned change
+
+This note is informative.
+Once that framework makes its support of OpenTelemetry logs generally available, {abbr-fpsot} plans to make OBS-081 a MUST.
+A stricter rule breaks implementations that met the old one.
+So the change will land in a new major version, as VCS-106 and link:https://semver.org/spec/v2.0.0.html[Semantic Versioning 2.0.0] ask.
+Before version 1.0.0, Semantic Versioning allows it in a new minor version.
+
+== Transport
+
+[[OBS-082]]
+*OBS-082.* Each audit and business record MUST reach a log store on another system than the one it records.
+It MUST travel over {abbr-tls-first} 1.2 or 1.3, and the log store MUST authenticate each sender.
+A component MUST NOT keep the only copy of an audit record on its host for longer than delivery takes.
+Requirement 16.4.3 of link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[ASVS 5.0.0] asks for a separate system.
+An attacker who takes over a host then cannot erase the trace of the attack.
+
+[[OBS-083]]
+*OBS-083.* A component MUST remove or mask personal information and secrets before a record leaves its process.
+OBS-090 and OBS-091 set what to remove.
+A collector of the log store MAY filter records again, as a second defense.
+A rule of this specification MUST NOT rely on a collector component whose status is Alpha.
+The redaction processor of the OpenTelemetry Collector is still Alpha for logs.
+A record that leaves the process unmasked has already leaked.
+
+[[OBS-084]]
+*OBS-084.* A log store SHOULD accept records in link:https://www.rfc-editor.org/info/rfc5424[syslog], and map them to the data model as its appendix shows.
+It MAY export audit events in the Common Event Format for a security tool, but never as its only format.
+Older systems often send syslog, while the Common Event Format belongs to one vendor.
+
+[[OBS-085]]
+*OBS-085.* A business event that one service sends to another SHOULD be a CloudEvents event under API-100.
+It SHOULD carry the link:https://github.com/cloudevents/spec/blob/fc1f6f31f5f011a72183f1bcea20c987cb683ade/cloudevents/extensions/distributed-tracing.md[distributed tracing extension] of CloudEvents, and its `id` SHOULD equal its `org.fpsot.event.id`.
+The receiver can then join the event to the trace and to the records of the sender.
+
+== Export for process mining
+
+[[OBS-086]]
+*OBS-086.* A tool that exports business events for process mining MUST write them in the {abbr-json} format of link:https://www.ocel-standard.org/[OCEL 2.0].
+The export MUST be valid against the published schema.
+It MUST map each business event to one {abbr-ocel-first} event, as this table shows.
+
+[cols="2,3",options="header"]
+|===
+|Business event |{abbr-ocel} 2.0
+|`org.fpsot.event.id` |The `id` of the event
+|`org.fpsot.activity.key` |The `type` of the event, declared in `eventTypes`
+|`Timestamp` |The `time` of the event, under OBS-030
+|`org.fpsot.lifecycle` |The event attribute `lifecycle`
+|`org.fpsot.performer.role` |The event attribute `performer-role`, when present
+|`org.fpsot.bpmn.element.id` |The event attribute `bpmn-element-id`, when present
+|Each reference of `org.fpsot.objects` |One relationship, with the `objectId` and the `qualifier`, and one object with its `type`, declared in `objectTypes`
+|===
+
+The tool SHOULD also offer the SQLite format of {abbr-ocel} 2.0 for large exports.
+The file `examples/ocel-export.json` is the export of the three events of `examples/business-events.otlp.json`.
+The {abbr-ocel} 2.0 format is open, has a schema and keeps every object of each event.
+A flat log with one case per event cannot do that.
+
+This note is informative.
+A step that takes time yields a `start` event and a `complete` event with the same type.
+A tool that counts each type as one activity then counts the step twice.
+Such a tool can filter the events by their `lifecycle` attribute.
+An export tool can also offer a type that joins the activity key and the lifecycle, such as `review-application.start`.
+The attribute `performer-role` plays the part of `org:role` in XES.
+
+[[OBS-087]]
+*OBS-087.* An export for process mining MUST replace each identifier that leads to a person with a pseudonym, under OBS-093.
+It MUST do so before the export leaves the log store.
+This covers the identifiers of business objects that belong to one person, such as an application.
+A raw internal identifier of such an object MUST NOT appear in the export.
+An export goes to analysts who need patterns, not names.
+It often leaves the control of the team that runs the system.
+
+== Flat exports
+
+This note is informative.
+This version sets no export in the XES format of link:https://standards.ieee.org/ieee/1849/10907/[IEEE 1849-2023], because its text is not free to read.
+A tool can offer one outside this specification, built from the main case of OBS-079.
+
+== References
+
+=== Normative
+
+* link:https://jsonlines.org/[JSON Lines], jsonlines.org. link:https://web.archive.org/web/20261021102619/https://jsonlines.org/[Archived copy]
+* link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol Specification], OpenTelemetry, opentelemetry-proto 1.11.1, 2026-09-29.
+* link:https://www.ocel-standard.org/[OCEL 2.0 Standard and Schemas], RWTH Aachen University, 2.0. link:https://web.archive.org/web/20261027031045/https://www.ocel-standard.org/[Archived copy]
+* link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+
+=== Informative
+
+* link:https://semver.org/spec/v2.0.0.html[Semantic Versioning], semver.org, 2.0.0, 2013-06-18. link:https://web.archive.org/web/20261026045444/https://semver.org/spec/v2.0.0.html[Archived copy]
+* link:https://www.rfc-editor.org/info/rfc5424[RFC 5424, The Syslog Protocol], IETF, Proposed Standard, 2009-03. link:https://web.archive.org/web/20261021143712/https://www.rfc-editor.org/info/rfc5424/[Archived copy]
+* link:https://github.com/cloudevents/spec/blob/fc1f6f31f5f011a72183f1bcea20c987cb683ade/cloudevents/extensions/distributed-tracing.md[CloudEvents Distributed Tracing Extension], CloudEvents, 1.0.2.
+* link:https://standards.ieee.org/ieee/1849/10907/[IEEE 1849-2023, Standard for eXtensible Event Stream (XES) for Achieving Interoperability in Event Logs and Event Streams], IEEE, 2023. link:https://web.archive.org/web/20260808221231/https://standards.ieee.org/ieee/1849/10907/[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

@@ -1,0 +1,99 @@
+= Retention, legal hold and destruction
+include::_fpsot-terms.adoc[]
+
+These rules set how long a log store keeps records, and how it destroys them.
+A record that a public body holds is a document of that body.
+In Québec, a body may destroy its documents only under its retention schedule.
+A job that deletes old logs therefore destroys documents of the body.
+So it needs to leave a trace of what it destroyed.
+
+== Retention
+
+[[OBS-100]]
+*OBS-100.* A log store MUST let the operator set a retention period for each stream, in two tiers.
+In the online tier, the records are ready for search.
+In the storage tier, the records are out of search, but can come back on request.
+A component and a log store MUST NOT fix a retention period in their code.
+A log store MUST NOT destroy a record before the end of the period that applies to it.
+The laws of each jurisdiction differ, so only the operator can set the period.
+
+The inventory of OBS-015 MUST state the period of each stream.
+
+[[OBS-101]]
+*OBS-101.* A log store MUST ship the retention profile `ca-qc-floor`, and MUST apply it when the operator sets no other.
+The profile applies to the audit stream and to the business stream.
+
+[cols="2,1,1",options="header"]
+|===
+|Records |Online tier |Storage tier
+|Audit and business streams |90 days |180 days after the online tier
+|Records tied to a security incident |2 years |None
+|===
+
+The operator MUST set a longer period where a law or its retention schedule asks for one.
+A log store MAY ship other named profiles.
+For audit records, control `AU-11` of the {abbr-cgcd-first} sets 90 days online, 180 in storage and 2 years for incidents.
+The link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance] of the Treasury Board of Canada Secretariat sets almost the same values for cloud services.
+The profile therefore meets both as a floor, and other laws can only make it longer.
+
+The control does not say whether the 180 days follow the 90 days or include them.
+This specification reads them as added, for 270 days in all, which is the longer reading.
+That reading is an interpretation, and the questions for counsel ask about it.
+
+The business stream takes the same floor by default, since it is often the only record of a decision.
+The control sets no floor for the technical stream.
+The operator sets its period in the inventory and SHOULD keep it short, as its records only serve operations.
+
+[[OBS-102]]
+*OBS-102.* Each retention rule of a log store MUST name the rule of the retention schedule that it applies.
+Examples are a rule of a Québec calendrier de conservation or a federal disposition authority.
+A log store MUST record that reference with each destruction, under OBS-104.
+An auditor can then check each destruction against the schedule that allowed it.
+
+== Legal hold
+
+[[OBS-103]]
+*OBS-103.* A log store MUST let an authorized role place a {term-legal-hold} on records.
+A log store MUST NOT destroy the records under a hold until a role lifts it, whatever their retention period.
+A hold MUST be able to cover the records of one object, of a time range or of a stream.
+Each hold, and each lift of a hold, MUST create an audit event under OBS-043.
+The operator places a hold for an open access request, a complaint, an incident or a lawsuit.
+Federally, section 4 of the link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Privacy Regulations] asks for such a hold until the requester has used up their recourse.
+
+== Destruction
+
+[[OBS-104]]
+*OBS-104.* Each destruction run of a log store MUST create an audit event with the `EventName` `org.fpsot.observability.record-batch.destroyed`.
+The event MUST give the stream, the time range and the number of records.
+It MUST also give the retention rule under OBS-102 and the latest checkpoint of OBS-112.
+It MUST NOT hold the content of the destroyed records.
+The event proves that a destruction followed the schedule, without keeping what the schedule asked to destroy.
+
+[[OBS-105]]
+*OBS-105.* A log store that moves records to another format or medium MUST keep a transfer record.
+The transfer record MUST give the method, the date and the number of records.
+It MUST also give a hash of the records before and after the move.
+The Québec act on information technology asks to document a transfer, in articles _to be verified_.
+A hash before and after shows that the move changed nothing.
+
+[[OBS-106]]
+*OBS-106.* Before it starts, each export for process mining MUST state its purpose and its retention period.
+It MUST also state the date on which its pseudonym key ends.
+The custodian MUST destroy the key on that date, under OBS-093.
+Without an end date, an export would stay personal information forever.
+
+== References
+
+=== Informative
+
+* Référentiel de sécurité, fiche AU-11, Conservation des enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-11/ref-au-11.pdf`.
+* link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance], Treasury Board of Canada Secretariat, 2025-12-08. link:https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Archived copy]
+* link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Privacy Regulations, SOR/83-508, section 4], Government of Canada, Justice Laws Website. link:https://web.archive.org/web/20260520065359/https://laws-lois.justice.gc.ca/eng/regulations/SOR-83-508/section-4.html[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

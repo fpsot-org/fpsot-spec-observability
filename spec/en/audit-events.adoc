@@ -1,0 +1,95 @@
+= Audit events
+include::_fpsot-terms.adoc[]
+
+These rules set which events the audit stream records.
+Each audit event follows the record rules, and OBS-027 sets its content.
+
+The FPSOT identity and access specification lists the events of sign-in, sessions, accounts, roles and access decisions.
+It also sets what each one holds.
+This page adds the other events that the governments of Canada and Québec ask public bodies to record.
+
+== Events to record
+
+[[OBS-040]]
+*OBS-040.* A component MUST record, as an audit event, each event of the identity and access catalog that it uses.
+It MUST follow the record rules of this specification for that event.
+The log store keeps it under the retention rules, and it or an integrity service protects it, under OBS-001.
+For each audit event that it records, a component MUST record both the success and the failure.
+Control `AU-02` of the {abbr-cgcd-first} lists each of its events with both outcomes.
+A failed attempt is often the first sign of an attack.
+
+[[OBS-041]]
+*OBS-041.* A component MUST record each change to its configuration, its security policy, its logging policy and its alert rules.
+The event MUST name the setting that changed and the actor.
+It MUST NOT hold the new value of a setting that is a secret, under SEC-020.
+Control `AU-02` asks for the changes to alert rules as an audit of the auditor.
+Someone who can turn off a control without a trace can then act without a trace.
+
+[[OBS-042]]
+*OBS-042.* A component MUST record each access to personal or sensitive information, such as a read or a print.
+Creations, changes, deletions, exports and downloads count too, and the {term-privacy-impact-assessment} sets which reads the component records.
+As a floor, it MUST record each access to information classed Protected B or higher, as control `AU-02` asks.
+Each such event MUST carry a purpose code in `org.fpsot.purpose`, from a scheme of the operator under VOC-001 and VOC-064.
+The Québec link:https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[indication d’application IA-SI-2023-001-OP] asks public bodies to supervise access to such data, downloads and prints included.
+A purpose code lets the operator answer a person who asks when and why someone consulted their file.
+
+[[OBS-043]]
+*OBS-043.* A log store MUST record each access to the records that it keeps, as an audit event.
+This covers each read, query and export, each change to a retention rule and each change to a {term-legal-hold}.
+Control `AU-02` lists access to audit logs as an event to record.
+The people who read the logs can also misuse them, so their reads need a trace too.
+
+[[OBS-044]]
+*OBS-044.* A component MUST record each failure of a security control and each attempt to get around a control.
+It MUST also record each unexpected error and each crash.
+An example of a failure is a token that fails its signature check.
+Requirements 16.3.3 and 16.3.4 of link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[ASVS 5.0.0] ask for these events.
+They show an attack in progress, or a fault that an attacker could use.
+
+[[OBS-045]]
+*OBS-045.* A component MUST record when its logging starts and stops, and when it cannot deliver records.
+A log store MUST raise an alert when an expected source sends no records for longer than a set period.
+The operator sets that period.
+The link:https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[guidance of the UK National Cyber Security Centre] asks for an alert when logs stop arriving.
+An attacker often turns off logging first, and silence then looks like calm.
+
+== Mappings
+
+[[OBS-046]]
+*OBS-046.* A component SHOULD map each of its audit events to a class of the link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework 1.9.0].
+A log store MAY then send audit events to security tools in the {abbr-ocsf-first} form.
+Many security tools read {abbr-ocsf}, and a published mapping saves each operator from writing its own.
+
+== Activity recording and opt-out
+
+This note is informative.
+The European link:https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[Cyber Resilience Act] asks products to record security-relevant activity, with an opt-out for the user.
+Point `(2)(l)` of Part I of Annex I sets this duty.
+
+Government rules in Canada and Québec expect logging to stay on.
+For example, the federal link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance] asks to enable event logging on all information technology assets.
+This specification puts that opt-out in the hands of the operator, never of the end user.
+Whether the operator is the user under that act is one of the questions for counsel.
+
+== References
+
+=== Normative
+
+* link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+
+=== Informative
+
+* link:https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[IA-SI-2023-001-OP, Mesures minimales de sécurité au regard des données lors de l’utilisation de solutions technologiques], Gouvernement du Québec, Dirigeant principal de l’information, 2023-02-01. link:https://web.archive.org/web/20260129213432/https://www.cyber.gouv.qc.ca/publications/IA-SI-2023-001-OP_Protection_donnees_solutions_technologiques.pdf[Archived copy]
+* link:https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[Introduction to logging for security purposes], National Cyber Security Centre, United Kingdom. link:https://web.archive.org/web/20261031113648/https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes[Archived copy]
+* link:https://github.com/ocsf/ocsf-schema/blob/856d462bd20dc46cc1ffed2dfffe3b91ef0fbeba/CHANGELOG.md[Open Cybersecurity Schema Framework], OCSF project of the Linux Foundation, 1.9.0, 2026-08-03.
+* link:https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Event Logging Guidance], Treasury Board of Canada Secretariat, 2025-12-08. link:https://web.archive.org/web/20261007122953/https://www.canada.ca/en/government/system/digital-government/online-security-privacy/cyber-security-guidance-policy/event-logging-guidance.html[Archived copy]
+* Référentiel de sécurité, fiche AU-02, Journalisation d’événements, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-02/ref-au-02.pdf`.
+* link:https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[Regulation (EU) 2024/2847 on horizontal cybersecurity requirements for products with digital elements (Cyber Resilience Act)], European Parliament and Council of the European Union, 2024-10-23. link:https://web.archive.org/web/20261108180849/https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

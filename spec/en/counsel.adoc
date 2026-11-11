@@ -1,0 +1,73 @@
+= Questions for counsel
+include::_fpsot-terms.adoc[]
+
+This page is informative.
+It sets no rule, and it is not legal advice.
+It lists the legal points that the research of {abbr-fpsot-first} raised and could not settle.
+A lawyer must answer each one before {abbr-fpsot} or an operator relies on it.
+Some article numbers below come from secondary sources, and nobody has checked them in the official text.
+This page marks each of them as _to be verified_.
+
+== Status of the Québec controls
+
+1. Does the référentiel of security measures of the {abbr-cgcd-first} bind every public body, or only some kinds of bodies?
+The question covers controls `AU-02`, `AU-03`, `AU-08`, `AU-11`, `AU-12` and `SC-45(01)`, which the sheets mark as mandatory.
+The Québec act that governs information resources gives these controls their force.
+The article of that act that does so is _to be verified_.
+2. Does the Directive gouvernementale sur la sécurité de l’information set a format or a retention for logs?
+Its article on the register of security events may do so, and its number is _to be verified_.
+
+== Logs as personal information
+
+1. Under the Québec access act, is an entry such as "employee X consulted file Y" personal information about both people?
+Which article governs its collection, such as the rule on necessity?
+The number of that article is _to be verified_.
+2. Does a process-mining export with keyed pseudonyms remain de-identified information under the access act?
+The number of the article on de-identified information is _to be verified_.
+Could any realistic export meet the low risk that the Québec regulation on anonymization asks for?
+3. After a destruction under the calendrier de conservation, are the salted leaf hashes of OBS-111 still personal information?
+Are they public documents?
+Can that design meet the Archives Act of Québec and the Québec act on information technology at the same time?
+4. A study of workload or of the split of duties can use the performer of business events.
+Is that a new purpose?
+Would that purpose need its own privacy impact assessment and a consultation with the unions?
+Where does such a study end, and where does the monitoring of staff begin?
+
+== Requests from people
+
+1. Must a Québec public body give a citizen the names of the employees who consulted their file?
+The European Pankki S judgment answers no, except in rare cases, but it does not bind Québec.
+The Commission d’accès à l’information decided a similar request at a hospital in 2005.
+Nobody at {abbr-fpsot} has read its outcome.
+2. The Québec access act limits access to documents that need a calculation or a comparison.
+Does a query of logs by person count as such a calculation?
+The numbers of the articles on this limit and on the scope of documents are _to be verified_.
+Does a query that the software offers change the answer?
+3. Federally, when do the Privacy Regulations treat an application audit log as used for an administrative purpose?
+Paragraph `4(1)(a)` then keeps it for at least 2 years after its last use.
+When is the log only security telemetry?
+
+== Retention
+
+1. Control `AU-11` sets 90 days online and 180 days in storage for audit records.
+Are the 180 days added to the 90 days, for 270 days in all, or do they include them?
+OBS-101 takes the added reading as the floor, which is how {abbr-fpsot} interprets the control.
+Does the control also apply to records of business processes, which OBS-101 keeps for the same time?
+2. How long must a public body keep the entries of its register of confidentiality incidents?
+The research found 5 years, and that value is _to be verified_.
+Must the logs that support an entry stay for the same time?
+
+== The Cyber Resilience Act
+
+1. A public body may deploy software of {abbr-fpsot} that records activity.
+Who is then the user that may turn off that recording, under the European Cyber Resilience Act?
+Point `(2)(l)` of Part I of Annex I sets that opt-out.
+Is {abbr-fpsot} a manufacturer or an open-source software steward for these components?
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===

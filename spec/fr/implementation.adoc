@@ -1,0 +1,80 @@
+= Profils de mise en œuvre
+include::_fpsot-terms.adoc[]
+
+Cette page est informative.
+Elle ne fixe aucune règle, et les règles des autres pages ne nomment aucun produit.
+Elle montre comment deux piles qu’emploie la {abbr-fpsot-first} peuvent respecter les règles aujourd’hui, et où elles restent en deçà.
+Les versions sont celles du 10 novembre 2026.
+
+== Quarkus 3.40
+
+Quarkus est le cadriciel Java de référence de la {abbr-fpsot}, et sa version 3.40 est la référence de cette version.
+
+* Le link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/opentelemetry.adoc[guide OpenTelemetry de Quarkus 3.40.1] active les traces par défaut.
+* Sa prise en charge des journaux et des métriques OpenTelemetry est un aperçu technique, désactivé par défaut.
+Les paramètres `quarkus.otel.logs.enabled` et `quarkus.otel.metrics.enabled` les activent.
+Pour cette raison, OBS-081 est une règle DEVRAIT dans cette version.
+* Le guide ne recommande pas l’agent Java d’OpenTelemetry, qui ne fonctionne pas en mode natif.
+* L’extension de journaux {abbr-json-first} offre un format Elastic Common Schema.
+Le link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/logging.adoc[guide de journalisation] énumère ses champs, comme `@timestamp`, `log.level` et `process.thread.name`.
+Ce format ne correspond pas à OBS-080, et un composant a besoin de son propre formateur ou d’une correspondance.
+* Le guide offre des événements de sécurité au moyen de `quarkus.otel.security-events.enabled`.
+Un composant peut les associer aux événements d’audit du catalogue d’identité et d’accès, selon OBS-040.
+
+Quarkus rendra peut-être sa prise en charge des journaux OpenTelemetry généralement disponible.
+Le changement prévu d’OBS-081 s’appliquera alors, dans la version que nomme la page sur l’exportation.
+
+== Go
+
+La {abbr-fpsot} écrit en Go ses outils hors des capacités du secteur public, comme le futur outil d’OBS-004.
+
+* link:https://github.com/open-telemetry/opentelemetry-go/blob/66cfc9520e205b7d450183532772401bc2b6674c/CHANGELOG.md[OpenTelemetry Go 1.47.0] est la première version dont l’{abbr-api-first} et la bibliothèque de journaux sont stables.
+* Ses exportateurs de journaux sur {abbr-otlp-first} et son pont pour le paquet standard `log/slog` restent sous la version 1.0.
+Un outil qui les emploie épingle la version exacte de chacun, selon SEC-030.
+
+== Collecteur
+
+L’OpenTelemetry Collector convient au rôle de collecteur d’un magasin de journaux.
+
+* Son récepteur et ses exportateurs {abbr-otlp} sont Stable pour les journaux, les traces et les métriques.
+* Son link:https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/f56f9a38c9864e892af542f1dbd28f475d6779dc/processor/redactionprocessor/metadata.yaml[processeur de caviardage] est encore Alpha pour les journaux.
+Pour cette raison, OBS-083 confie au composant le masquage des renseignements personnels.
+Un collecteur sert seulement de seconde défense.
+
+== Un service d’intégrité distinct
+
+Un simple magasin de journaux peut conserver les flux d’audit et d’affaires sans bâtir d’arbre de Merkle.
+Le déploiement ajoute alors un service d’intégrité, comme le permet OBS-001.
+Le magasin revendique `base`, et le service revendique `audit-integrity`.
+
+[source,text]
+----
+component --JSON Lines--> collector --> log store (base)
+                              |
+                              +--> integrity service (audit-integrity)
+                                     | builds the tree from each kept record
+                                     | signs checkpoints under OBS-112
+                                     +--> checkpoint store on another system (OBS-113)
+----
+
+Le service peut être une étape de collecteur, ou un conteneur auxiliaire qui lit le magasin de journaux.
+Il calcule le condensé de chaque enregistrement tel que le magasin le conserve, selon OBS-111.
+Il lit donc chaque enregistrement après le dernier filtre, jamais avant.
+L’inventaire du déploiement selon OBS-015 nomme le service et l’intervalle de ses points de contrôle.
+
+== Références
+
+=== Références informatives
+
+* link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/opentelemetry.adoc[Quarkus, Using OpenTelemetry], Quarkus project, 3.40.1.
+* link:https://github.com/quarkusio/quarkus/blob/6ce99878508d792f3c2a2a7f9520b086a1c32cab/docs/src/main/asciidoc/logging.adoc[Quarkus, Logging configuration], Quarkus project, 3.40.1.
+* link:https://github.com/open-telemetry/opentelemetry-go/blob/66cfc9520e205b7d450183532772401bc2b6674c/CHANGELOG.md[OpenTelemetry Go, Changelog], OpenTelemetry, 1.47.0, 2026-10-02.
+* link:https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/f56f9a38c9864e892af542f1dbd28f475d6779dc/processor/redactionprocessor/metadata.yaml[OpenTelemetry Collector Contrib, Redaction Processor], OpenTelemetry, 0.165.0.
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-10 |Première version.
+|===

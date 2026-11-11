@@ -1,0 +1,158 @@
+= Records, names and time
+include::_fpsot-terms.adoc[]
+
+These rules set the model of each record, its names, its identifiers and its timestamps.
+They apply to every stream.
+
+== Record model
+
+[[OBS-020]]
+*OBS-020.* Each record MUST follow the link:https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md[logs data model of OpenTelemetry 1.62.0].
+An event is a log record whose `EventName` field is not empty.
+An implementation MUST NOT depend on a separate events {abbr-api-first}, because OpenTelemetry removed it in version 1.41.0.
+The `Body` SHOULD be a short fixed text in English, with variable data in attributes instead.
+A reader then finds each value by name, and any OpenTelemetry tool can read the Stable data model.
+
+[[OBS-021]]
+*OBS-021.* Each audit event and each business event MUST have an `EventName`.
+An `EventName` that {abbr-fpsot-first} or a product defines MUST follow NAM-050 and NAM-051, such as `org.fpsot.permit.application.exported`.
+It MUST NOT hold a varying value, such as an identifier or a date, nor a label for people.
+A technical record SHOULD have an `EventName` too.
+The semantic conventions ask for a fixed name per structure, so that a reader can count and route events.
+
+[[OBS-022]]
+*OBS-022.* The name of an attribute that {abbr-fpsot} defines MUST start with `org.fpsot.`.
+An organization that defines its own attributes MUST use its own reversed domain instead.
+All these names MUST follow NAM-053 to NAM-058.
+Those rules apply the link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[naming rules of the semantic conventions]: dotted names with snake_case segments, such as `org.fpsot.event.id`.
+An attribute of the semantic conventions keeps its exact name, under NAM-007.
+
+NAM-010 sets this form for telemetry attributes and keeps lowerCamelCase for {abbr-json-first} field names.
+So lowerCamelCase still applies to the members of the envelope of OBS-080 and to the `data` of a CloudEvents event.
+
+[[OBS-023]]
+*OBS-023.* Each record MUST carry these resource attributes, which the semantic conventions mark Stable: `service.name`, `service.namespace`, `service.version`, `service.instance.id` and `deployment.environment.name`.
+The value of `service.instance.id` SHOULD be a random {abbr-uuid-first}.
+It MUST NOT hold the name of a person or of a personal device.
+These attributes tell a reader which program, which version and which copy of it wrote the record.
+
+[[OBS-024]]
+*OBS-024.* Each audit event and each business event MUST carry the attribute `org.fpsot.event.id`.
+Its value MUST be a new identifier for each event, in the form of DAT-063 and DAT-065.
+Each copy, export and resend of the event MUST keep the same value.
+A technical record SHOULD carry it too.
+A reader can then drop a duplicate and follow one event across exports.
+The attribute `log.record.uid` of the semantic conventions would serve, but its status is Development.
+
+[[OBS-025]]
+*OBS-025.* Each record MUST set `SeverityNumber` to a value from 1 to 24, in the ranges of the data model.
+It SHOULD keep the level of its source in `SeverityText`.
+The data model splits the scale into six ranges of four values each.
+They are, in order, trace, debug, information, warning, error and fatal error.
+One scale lets a reader filter records from every source in the same way.
+
+[[OBS-026]]
+*OBS-026.* A component MUST NOT emit the attributes `enduser.*` or the attribute `event.name`, which the semantic conventions 1.45.0 mark Deprecated.
+It MUST record an exception as a log record, not a span event, under the Stable link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/exceptions/exceptions-logs.md[exceptions in logs].
+The record MUST carry `exception.type`, `exception.message` and `exception.stacktrace`.
+The inventory MUST give `exception.message` and `exception.stacktrace` the class `personal`, unless the component scrubs them of personal information.
+Tools drop deprecated names over time, and the data under them goes with them.
+A message or a stack trace often quotes the input that caused the error.
+
+[[OBS-027]]
+*OBS-027.* Each audit event MUST establish what happened, when, where, from which source, with what outcome and to whom.
+It does so with these fields.
+
+[cols="2,3",options="header"]
+|===
+|Content |Field
+|Type of event |`EventName`
+|Time |`Timestamp`, under OBS-032
+|Place |The resource attributes of OBS-023
+|Source |`org.fpsot.actor.id`, `org.fpsot.actor.type` and, where it applies, `org.fpsot.network.client.prefix` of OBS-091
+|Outcome |`org.fpsot.outcome`, with the code `success` or `failure`, and `error.type` on a failure
+|Identities |`org.fpsot.actor.id`, `org.fpsot.actor.role` and the object list `org.fpsot.objects` of OBS-073
+|===
+
+The value of `org.fpsot.actor.type` MUST be `person`, `service` or `system`.
+The actor identifier MUST follow OBS-092.
+Control `AU-03` of the {abbr-cgcd-first} makes this content mandatory for the public bodies of Québec.
+The FPSOT identity and access specification can add fields to its own events, but not remove these.
+
+An event catalog of another {abbr-fpsot} specification MUST name each attribute that it adds `org.fpsot.<domain>.<field>`.
+The domain is the one of its event names under NAM-051.
+Examples are `org.fpsot.identity.session.id` and `org.fpsot.identity.client.id`.
+The {abbr-json} Schema of such a catalog governs the `data` of the CloudEvents event, not the OpenTelemetry attributes.
+This page and OBS-022 govern the attributes.
+Each name then has one owner, and two catalogs never claim the same name.
+
+[[OBS-028]]
+*OBS-028.* A component MUST encode each value that comes from outside the component before it writes it to a record.
+A value MUST NOT be able to add a line, a field or a record to the output.
+In a text encoding, each control character in a value MUST appear in escaped form, such as a line feed.
+A component MUST NOT build a record by joining untrusted input into a format string.
+Requirement 16.4.1 of link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[ASVS 5.0.0] asks for this encoding.
+An attacker who can forge a record can hide an attack or blame someone else.
+
+[[OBS-029]]
+*OBS-029.* A component MUST NOT write a record that is longer than the limit that its inventory states.
+It SHOULD cut a long value and add the attribute `org.fpsot.truncated` with the value `true`.
+Without a limit, an attacker can fill the log store.
+A large value can also carry personal information by mistake.
+
+== Time
+
+[[OBS-030]]
+*OBS-030.* A text encoding MUST write each instant in the form of DAT-010, in {abbr-utc-first} with the letter `Z`.
+It MUST give at least the milliseconds, such as `2026-11-10T14:03:12.418Z`.
+Text encodings are the {abbr-json} Lines output of OBS-080, syslog, the {abbr-ocel-first} export and CloudEvents.
+Control `AU-08` of the {abbr-cgcd} asks for {abbr-utc} or an explicit offset.
+Requirement 16.2.2 of {abbr-asvs-first} 5.0.0 says the same.
+One time zone and a fixed precision let a reader merge and order records from many hosts.
+
+[[OBS-031]]
+*OBS-031.* In {abbr-otlp-first}, a component MUST write each instant as integer nanoseconds since 1970.
+In {abbr-otlp}/{abbr-json}, it MUST write that integer as a decimal string, such as `"1794319392418000000"`.
+The link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[opentelemetry-proto 1.11.1] requires this form.
+DAT-013 does not apply inside an {abbr-otlp} payload, because the protocol fixes this form.
+A tool that turns {abbr-otlp} into a text encoding MUST convert each instant under OBS-030, without losing the milliseconds.
+Such an integer exceeds the exact range of a {abbr-json} number, so the protocol writes it as a string.
+
+[[OBS-032]]
+*OBS-032.* A component MUST set `Timestamp` to the time when the event happened.
+`ObservedTimestamp` is the time when the pipeline first saw the record.
+A reader MUST order the events of one process by `Timestamp`, never by `ObservedTimestamp`.
+A record can wait in a queue for minutes.
+The time of its export then says nothing about the order of the work.
+
+[[OBS-033]]
+*OBS-033.* Each host of a component or log store MUST synchronize its clock with an authoritative time source.
+The operator names the source, such as `time.nrc.ca` of the National Research Council of Canada.
+A host SHOULD use link:https://www.rfc-editor.org/info/rfc8915[Network Time Security] when the source offers it.
+The deployment guide of a component MUST state this need.
+Control `SC-45(01)` of the {abbr-cgcd} makes this mandatory, and a record is evidence only if its clock was right.
+
+== References
+
+=== Normative
+
+* link:https://github.com/open-telemetry/opentelemetry-specification/blob/18c5c1706e346fec3bdb5e135a6e3a78f461e586/specification/logs/data-model.md[OpenTelemetry Specification, Logs Data Model], OpenTelemetry, 1.62.0, 2026-10-22.
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/general/naming.md[OpenTelemetry Semantic Conventions, Naming], OpenTelemetry, 1.45.0, 2026-11-02.
+* link:https://github.com/open-telemetry/opentelemetry-proto/blob/b3f75588eb23c5fca62264edd05d382de49beb1a/docs/specification.md[OpenTelemetry Protocol Specification], OpenTelemetry, opentelemetry-proto 1.11.1, 2026-09-29.
+* link:https://github.com/OWASP/ASVS/blob/5cf9b032440be53ce345ab3c130fda46ba1ce7a2/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md[OWASP Application Security Verification Standard, V16 Security Logging and Error Handling], OWASP Foundation, 5.0.0, 2025-05-30.
+* link:https://www.rfc-editor.org/info/rfc8915[RFC 8915, Network Time Security for the Network Time Protocol], IETF, Proposed Standard, 2020-09. link:https://web.archive.org/web/20261014054448/https://www.rfc-editor.org/info/rfc8915/[Archived copy]
+* link:https://github.com/open-telemetry/semantic-conventions/blob/fb30ca17193b551473b1f43c315482918ab6987c/docs/exceptions/exceptions-logs.md[OpenTelemetry Semantic Conventions, Exceptions in logs], OpenTelemetry, 1.45.0, 2026-11-02.
+
+=== Informative
+
+* Référentiel de sécurité, fiche AU-03, Contenu des enregistrements de vérification, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-03/ref-au-03.pdf`.
+* Référentiel de sécurité, fiche AU-08, Horodatage du contrôle, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/au-08/ref-au-08.pdf`.
+* Référentiel de sécurité, fiche SC-45(01), Synchronisation avec une source de temps faisant autorité, Gouvernement du Québec, Centre gouvernemental de cyberdéfense, 2026-07-15. No archived copy exists. The PDF is at `https://www.cyber.gouv.qc.ca/publications/referentiel/sc-45-01/ref-sc-45-01.pdf`.
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-10 |First version.
+|===
