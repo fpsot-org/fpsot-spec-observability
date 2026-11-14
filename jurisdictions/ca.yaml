@@ -4,8 +4,8 @@ rows:
   - id: OBS-030
     text: {en: "The guardrail asks departments to set an appropriate time zone on audit records in the cloud. It does not ask for UTC or for a timestamp format.", fr: "La mesure de protection demande aux ministères de régler un fuseau horaire approprié sur les enregistrements d’audit dans l’infonuagique. Elle n’exige ni l’UTC ni un format d’horodatage."}
     status: looser
-    source: {title: "Government of Canada, Cloud Guardrails, Guardrail 11, Logging and Monitoring", date: "2024-02-01", url: "https://github.com/canada-ca/cloud-guardrails/blob/27236a73da39b52ff65a50ef26c5de69d85ab3c2/EN/11_Logging-and-Monitoring.md", archive: "https://github.com/canada-ca/cloud-guardrails/blob/27236a73da39b52ff65a50ef26c5de69d85ab3c2/EN/11_Logging-and-Monitoring.md"}
-    last_checked: "2026-11-10"
+    source: {title: "Government of Canada, Cloud Guardrails, Guardrail 11, Logging and Monitoring", date: "2024-02-01", url: "https://github.com/canada-ca/cloud-guardrails/blob/27236a73da39b52ff65a50ef26c5de69d85ab3c2/EN/11_Logging-and-Monitoring.md", archive: "https://web.archive.org/web/20261114193944/https://github.com/canada-ca/cloud-guardrails/blob/27236a73da39b52ff65a50ef26c5de69d85ab3c2/EN/11_Logging-and-Monitoring.md"}
+    last_checked: "2026-11-14"
   - id: OBS-042
     text: {en: "For applications, the guidance lists user authentication, file and object access, audit log access and transactions as events to log. It asks databases to log access to privacy-related data. It sets no purpose code and does not name exports or prints.", fr: "Pour les applications, le guide énumère l’authentification, l’accès aux fichiers et aux objets, l’accès aux journaux d’audit et les transactions comme événements à journaliser. Il demande aux bases de données de journaliser l’accès aux données liées à la vie privée. Il ne fixe aucun code de finalité et ne nomme ni les exportations ni les impressions."}
     status: looser

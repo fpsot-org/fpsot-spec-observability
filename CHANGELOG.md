@@ -6,6 +6,12 @@ and versions follow [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.h
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-14
+
+### Fixed
+
+- References: archived copies for the sources that had none. The comparison data now points at Wayback snapshots for the OWASP ASVS, OpenTelemetry, Cloud Guardrails and Québec security framework sources, not at the live addresses.
+
 ## [0.1.0] - 2026-11-10
 
 ### Added
@@ -23,5 +29,6 @@ and versions follow [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.h
 - Comparison data with Canada and Québec rows.
 - How-to guide that makes a component observable.
 
-[Unreleased]: https://github.com/fpsot-org/fpsot-spec-observability/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/fpsot-org/fpsot-spec-observability/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/fpsot-org/fpsot-spec-observability/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/fpsot-org/fpsot-spec-observability/releases/tag/v0.1.0
